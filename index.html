@@ -1521,7 +1521,7 @@ function mostrarLogin(){
   $('#nav').innerHTML='';
   $('#lbtn').onclick=async()=>{
     const{error}=await sb.auth.signInWithPassword({email:$('#le').value.trim(),password:$('#ls').value});
-    if(error)return alert('Não foi possível entrar. Confira o e-mail e a senha.');
+    if(error)return alert('Não foi possível entrar. '+(error.message||'Confira o e-mail e a senha.'));
     location.reload();
   };
 }
