@@ -449,6 +449,7 @@ button:active{transform:scale(.96)}
 @keyframes slideIn{from{opacity:0;transform:translateX(18px)}to{opacity:1;transform:none}}
 .enter{animation:slideIn .38s cubic-bezier(.2,.7,.2,1) both}
 .enter .hero b{will-change:transform}
+.sair{text-align:center;margin:18px 0 6px}
 </style>
 </head>
 <body>
@@ -459,6 +460,7 @@ button:active{transform:scale(.96)}
 </main>
 <nav class="bnav" id="nav"></nav>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
 <script>
 const $=s=>document.querySelector(s);
 let S={p:[],c:[],v:[],d:[]},tab='painel',per='mes',sub='res',ST=null,REMOTE=false,READY=false;
@@ -1486,21 +1488,61 @@ function render(){
   $('#app').innerHTML=READY||!REMOTE?window['view_'+tab]():'<div class="empty">Carregando dados…</div>';
 }
 
-// ---- inicialização ----
-(async()=>{
-  ST=local;animarProximo();render();
-  let db=null;
-  try{db=await window.claude.use('db')}catch(e){db=null}
-  if(db){
-    REMOTE=true;ST=remoteStore(db);
-    const watch=(c,key)=>db.collection(c).onSnapshot(snap=>{
-      S[key]=snap.docs.map(d=>({id:d.id,...d.data()}));if(!READY){READY=true;animarProximo()}render()
-    },e=>console.error(c,e));
-    watch('produtos','p');watch('clientes','c');watch('vendas','v');watch('gastos','d');
-  }else{
-    try{const r=localStorage.getItem('pods');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+
+/* ===== CONFIGURAÇÃO DO SUPABASE ===== */
+const SUPABASE_URL='COLE_A_URL_DO_PROJETO_AQUI';
+const SUPABASE_KEY='COLE_A_CHAVE_ANON_PUBLIC_AQUI';
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+const TABELAS={produtos:'p',clientes:'c',vendas:'v',gastos:'d'};
+
+function supabaseStore(){
+  return{
+    set:async(c,id,d)=>{const{error}=await sb.from(c).upsert({id,dados:d});if(error)throw error},
+    upd:async(c,id,d)=>{
+      const cur=S[KEY[c]].find(x=>x.id===id)||{};
+      const{id:_,...limpo}={...cur,...d};
+      const{error}=await sb.from(c).upsert({id,dados:limpo});if(error)throw error;
+    },
+    del:async(c,id)=>{const{error}=await sb.from(c).delete().eq('id',id);if(error)throw error}
+  };
+}
+async function carregarTudo(){
+  for(const [tab,key] of Object.entries(TABELAS)){
+    const{data,error}=await sb.from(tab).select('id,dados');
+    if(error){console.error(tab,error);continue}
+    S[key]=(data||[]).map(r=>({id:r.id,...r.dados}));
   }
+}
+function mostrarLogin(){
+  $('#app').innerHTML=`<div class="card" style="margin-top:30px"><div class="form">
+    <label class="w">E-mail<input id="le" type="email" autocomplete="username"></label>
+    <label class="w">Senha<input id="ls" type="password" autocomplete="current-password"></label></div>
+    <button class="btn" id="lbtn">Entrar</button></div>`;
+  $('#nav').innerHTML='';
+  $('#lbtn').onclick=async()=>{
+    const{error}=await sb.auth.signInWithPassword({email:$('#le').value.trim(),password:$('#ls').value});
+    if(error)return alert('Não foi possível entrar. Confira o e-mail e a senha.');
+    location.reload();
+  };
+}
+async function entrarNoApp(){
+  REMOTE=true;ST=supabaseStore();READY=false;
   render();
+  await carregarTudo();
+  READY=true;animarProximo();render();
+  sb.channel('smpodsp-tempo-real')
+    .on('postgres_changes',{event:'*',schema:'public'},async()=>{await carregarTudo();render()})
+    .subscribe();
+  const sair=document.createElement('div');
+  sair.className='sair';
+  sair.innerHTML='<button class="sm" id="sairbtn">Sair</button>';
+  document.querySelector('main').appendChild(sair);
+  $('#sairbtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
+}
+(async()=>{
+  const{data}=await sb.auth.getSession();
+  if(data&&data.session)await entrarNoApp();
+  else mostrarLogin();
 })();
 </script>
 </body>
