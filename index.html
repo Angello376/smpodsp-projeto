@@ -1595,9 +1595,10 @@ function cobrarWhats(id){
       <button type="button" class="cob-btn" id="cbcopy">Copiar mensagem</button>
       <button type="button" class="cob-btn" id="cbcopy2">Copiar Pix</button>
     </div>
-    <a class="cob-open" id="cbopen" href="#">💬 Abrir no aplicativo WhatsApp</a>
+    <a class="cob-open" id="cbopen" href="#">💬 Abrir WhatsApp com a cobrança</a>
+    <a class="cob-open" id="cbopenpix" href="#">💸 Enviar a chave Pix em seguida</a>
     <a class="cob-web" id="cbweb" href="#" target="_blank" rel="noopener">Não abriu? Usar WhatsApp Web</a>
-    <p class="cob-foot">O botão principal tenta abrir o aplicativo instalado neste dispositivo. A chave Pix já vem preenchida e fica salva neste aparelho.</p>
+    <p class="cob-foot">Envie a cobrança primeiro. Depois toque em “Enviar a chave Pix em seguida” para abrir a mesma conversa com o Pix preenchido. O WhatsApp exige que você confirme o envio de cada mensagem.</p>
   </div>`;
   document.body.appendChild(ov);
   const fechar=()=>ov.remove();
@@ -1614,21 +1615,31 @@ function cobrarWhats(id){
     ov.querySelector('#cbcopy2').textContent=ok?'Pix copiado ✓':'Não consegui copiar';
   };
   const abrir=ov.querySelector('#cbopen');
+  const abrirPix=ov.querySelector('#cbopenpix');
   const web=ov.querySelector('#cbweb');
   const atualizarLinks=()=>{
     const texto=encodeURIComponent(ov.querySelector('#cbmsg').value);
+    const textoPix=encodeURIComponent(ov.querySelector('#cbpix').value);
     abrir.href='whatsapp://send?phone='+num+'&text='+texto;
+    abrirPix.href='whatsapp://send?phone='+num+'&text='+textoPix;
     web.href='https://web.whatsapp.com/send?phone='+num+'&text='+texto;
   };
   atualizarLinks();
   ov.querySelector('#cbmsg').addEventListener('input',atualizarLinks);
+  ov.querySelector('#cbpix').addEventListener('input',atualizarLinks);
   abrir.onclick=()=>{
     atualizarLinks();
-    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Abrindo o WhatsApp',descricao:'Se o aplicativo estiver instalado neste dispositivo, ele será aberto com a mensagem preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
+    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Abrindo o WhatsApp',descricao:'Confira a cobrança e toque em Enviar. Depois volte aqui e toque no botão da chave Pix para preparar a segunda mensagem.',botao:'Entendi',confete:false});
+  };
+  abrirPix.onclick=()=>{
+    const pv=ov.querySelector('#cbpix').value;
+    try{localStorage.setItem('smp_pix',pv)}catch(e){}
+    atualizarLinks();
+    animarConfirmacao({kicker:'Segunda mensagem',titulo:'Chave Pix preparada!',descricao:'A conversa será aberta com a chave Pix preenchida. Toque em Enviar no WhatsApp para mandar a segunda mensagem.',botao:'Entendi',confete:false});
   };
   web.onclick=()=>{
     atualizarLinks();
-    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Mensagem preparada!',descricao:'O WhatsApp Web vai abrir com a mensagem preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
+    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Mensagem preparada!',descricao:'O WhatsApp Web vai abrir com a cobrança preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
   };
 }
 
