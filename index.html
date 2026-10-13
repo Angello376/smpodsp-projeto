@@ -1364,17 +1364,19 @@ function view_clientes(){
 function textoRelacaoPrazos(lista){
   const hojeData=hoje();
   const ordenada=lista.slice().sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999'));
-  const linhas=['\u{1F4CB} Prazos pendentes',''];
-  ordenada.forEach(x=>{
-    linhas.push('\u{1F464} '+cli(x.cid));
-    linhas.push('\u{1F4B0} R$ '+fmtNum(saldoDe(x)));
-    if(x.venc&&x.venc<hojeData)linhas.push('\u{1F4C5} Data de pagamento: '+fd(x.venc)+' — atrasado');
-    else if(x.venc===hojeData)linhas.push('\u{1F4C5} Data de pagamento: hoje');
-    else if(x.venc)linhas.push('\u{1F4C5} Data de pagamento: '+fd(x.venc));
-    else linhas.push('\u{1F4C5} Data de pagamento não informada');
+  const linhas=['PRAZOS PENDENTES',''];
+  ordenada.forEach((x,i)=>{
+    if(i>0)linhas.push('--------------------');
+    linhas.push('Cliente: '+cli(x.cid));
+    if(x.venc&&x.venc<hojeData)linhas.push('Pagamento: '+fd(x.venc)+' (ATRASADO)');
+    else if(x.venc===hojeData)linhas.push('Pagamento: hoje');
+    else if(x.venc)linhas.push('Pagamento: '+fd(x.venc));
+    else linhas.push('Pagamento: data nao informada');
+    linhas.push('Valor: R$ '+fmtNum(saldoDe(x)));
     linhas.push('');
   });
-  linhas.push('\u{1F4B5} Total pendente: R$ '+fmtNum(ordenada.reduce((s,x)=>s+saldoDe(x),0)));
+  linhas.push('--------------------');
+  linhas.push('TOTAL PENDENTE: R$ '+fmtNum(ordenada.reduce((s,x)=>s+saldoDe(x),0)));
   return linhas.join('\n');
 }
 async function copiarRelacaoPrazos(){
