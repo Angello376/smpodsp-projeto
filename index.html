@@ -661,6 +661,46 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .ic-linha{flex-direction:column}
 }
 
+
+/* ===== PAINEL CLEAN: menos ruído visual ===== */
+@media(max-width:600px){
+  /* Menos molduras, brilho e espaço vazio */
+  main{padding:10px 13px calc(86px + env(safe-area-inset-bottom,0px))!important}
+  main>h1{font-size:24px!important;letter-spacing:-.04em;margin:3px 3px 12px!important}
+  .painel-periodo{margin:0 0 12px!important;background:rgba(120,140,175,.08);border:1px solid rgba(120,140,175,.12);border-radius:12px;padding:3px!important;gap:3px!important}
+  .painel-periodo button{min-height:38px;font-size:11px!important;letter-spacing:.08em!important;border-radius:9px}
+  .hero.amarelo,.hero.verde{padding:16px!important;margin:0 0 12px!important;border-radius:16px!important;box-shadow:none!important}
+  .hero.amarelo{background:rgba(255,193,59,.055)!important;border:1px solid rgba(255,193,59,.22)!important;color:var(--fg)!important}
+  .hero.verde{background:rgba(57,255,136,.07)!important;border:1px solid rgba(57,255,136,.2)!important;color:var(--fg)!important}
+  .hero.amarelo small,.hero.verde small{font-size:10px!important;letter-spacing:.12em;opacity:.72}
+  .hero.amarelo b,.hero.verde b{font-size:23px!important;line-height:1.2;margin:7px 0 3px!important;letter-spacing:-.04em}
+  .hero.amarelo small:last-child,.hero.verde small:last-child{font-size:11px!important;line-height:1.45;letter-spacing:0;opacity:.65}
+  .ic{background:rgba(13,19,32,.72)!important;border:1px solid rgba(125,155,205,.14)!important;padding:14px!important;margin:0 0 12px!important;border-radius:16px!important;box-shadow:none!important}
+  .ic-top{align-items:center!important}
+  .ic-titulo{font-size:12px!important;font-weight:550!important;color:var(--mut)}
+  .ic-pct{font-size:21px!important;color:#65f5ad!important}
+  .ic-bar{height:5px!important;margin:10px 0!important;background:rgba(125,155,205,.12)!important}
+  .ic-linha{display:flex!important;flex-direction:row!important;justify-content:space-between!important;gap:8px!important;font-size:11px!important;color:var(--mut)}
+  .ic-falta{margin-top:10px!important;display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}
+  .ic-falta-valor{font-size:17px!important;font-weight:750}
+  .ic-falta-txt{font-size:11px!important;color:var(--mut)}
+  .ic-pods{display:none!important}
+  .ic-aviso{margin-top:10px}
+  .painel-subnav{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr))!important;background:transparent!important;border:1px solid rgba(125,155,205,.15)!important;border-radius:12px!important;padding:3px!important;gap:3px!important;margin:0 0 8px!important}
+  .painel-subnav button{min-width:0;min-height:38px!important;padding:7px 2px!important;font-size:11px!important;font-weight:600!important;letter-spacing:0!important;color:var(--mut)!important;border-radius:9px!important;white-space:nowrap}
+  .painel-subnav button.on{background:rgba(57,255,136,.09)!important;color:#65f5ad!important;box-shadow:none!important}
+  .painel-subnav .dot{right:3px;top:3px}
+  .painel-subnav~.card{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0 3px!important;margin:0 0 8px!important}
+  .painel-subnav~.card .line{padding:12px 0!important;font-size:13px!important;border-bottom:1px solid rgba(125,155,205,.12)!important}
+  .painel-subnav~.card .line:last-child{border-bottom:0!important;font-weight:700}
+  .painel-subnav~.card .line:last-child span:last-child{font-size:12px}
+  .painel-subnav~.card .bar{margin:5px 0 12px!important;height:4px!important}
+}
+@media(max-width:380px){
+  .ic-linha{font-size:10px!important}
+  .hero.amarelo b,.hero.verde b{font-size:21px!important}
+}
+
 </style>
 </head>
 <body>
