@@ -644,10 +644,26 @@ function vsQ(d){
   vsFill();
 }
 
+const SAB_SAVE_TIMERS={};
 async function stepSab(pid,nome,d){
   const p=S.p.find(x=>x.id===pid);if(!p)return;
   const L=norm(p).map(f=>f.nome===nome?{nome:f.nome,est:Math.max(0,f.est+d)}:f);
-  await run(()=>ST.upd('produtos',pid,{sabores:L,est:L.reduce((s,f)=>s+f.est,0)}))}
+  const est=L.reduce((s,f)=>s+f.est,0);
+  // Atualiza a tela imediatamente; agrupa cliques rápidos em um único salvamento.
+  Object.assign(p,{sabores:L,est});
+  render();
+  clearTimeout(SAB_SAVE_TIMERS[pid]);
+  SAB_SAVE_TIMERS[pid]=setTimeout(async()=>{
+    try{
+      await ST.upd('produtos',pid,{sabores:L,est});
+    }catch(e){
+      alert('Não foi possível salvar o estoque do sabor. '+(e&&e.message?e.message:'Verifique a conexão e tente novamente.'));
+      await carregarTudo();
+      render();
+    }
+    delete SAB_SAVE_TIMERS[pid];
+  },400);
+}
 
 
 async function stepEst(pid,d){
