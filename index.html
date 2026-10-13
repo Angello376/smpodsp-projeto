@@ -595,13 +595,8 @@ async function addP(){
   const botao=document.querySelector('button[onclick="addP()"]');
   if(botao){botao.disabled=true;botao.textContent='Salvando…';}
   try{
-    await run(async()=>{await ST.set('produtos',uid(),{nome,custo:n('pc'),preco:n('pp'),est,sabores:L});});
-    if(botao && botao.disabled){
-      // run() trata falhas exibindo a mensagem; atualiza a tela após salvar.
-    }
-    const campoAtual=$('#pn');
-    if(campoAtual){campoAtual.value='';}
-    if(botao){botao.disabled=false;botao.textContent='Adicionar';}
+    await ST.set('produtos',uid(),{nome,custo:n('pc'),preco:n('pp'),est,sabores:L});
+    FORM.prod=false;
     render();
   }catch(e){
     alert('Não foi possível salvar o produto. '+(e&&e.message?e.message:'Verifique sua conexão e as permissões do Supabase.'));
