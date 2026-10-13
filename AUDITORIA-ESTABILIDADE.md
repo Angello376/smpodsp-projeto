@@ -54,3 +54,17 @@
 - Auditoria estática inicial do arquivo principal; não é um teste de ponta a ponta.
 - Não foram realizadas gravações ou exclusões no banco real.
 - Não foi possível comprovar o comportamento do Realtime, as políticas de acesso do Supabase ou a restauração de backup somente pela leitura do frontend.
+
+
+## Atualização — melhorias iniciais aplicadas na branch de auditoria
+
+Commit: `c1dd872693bcbd5eb6c0f104035ff0082d7a1192`
+
+- **Sincronização centralizada:** os eventos do Realtime agora solicitam a rotina única de sincronização completa, em vez de consultar diretamente uma tabela por fora da trava de sincronização. Isso reduz concorrência entre leituras disparadas por Realtime e pelo polling. O polling de 5 segundos continua como rede de segurança.
+- **Falha no armazenamento local observável:** `saveLocal()` agora retorna sucesso/falha e registra aviso no console quando o navegador não consegue gravar os dados, em vez de engolir silenciosamente a exceção.
+
+### O que ainda não está comprovado
+- Essas mudanças passaram por revisão do código e conferência dos trechos alterados, mas não foram executadas num navegador conectado ao Supabase nesta etapa.
+- A sincronização centralizada reduz uma condição de concorrência entre leituras, mas não resolve por si só todos os conflitos entre gravações simultâneas feitas em dispositivos diferentes.
+- O aviso de `localStorage` aparece no console; ainda não há alerta visual para o usuário final.
+- Estoque, cálculos financeiros, backup/restauração e reconexão continuam exigindo testes funcionais antes de declarar a auditoria concluída.
