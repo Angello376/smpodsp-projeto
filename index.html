@@ -586,9 +586,28 @@ async function salvarSab(id){
   await run(()=>ST.upd('produtos',id,{sabores:lista,est}))}
 function selP(){const p=S.p.find(x=>x.id===v('vp'));if(!p)return;$('#vv').value=p.preco;$('#vs').innerHTML=optSab(p);$('#vsw').style.display=norm(p).length?'':'none'}
 async function addP(){
-  const nome=v('pn').trim();if(!nome)return;
+  const campoNome=$('#pn');
+  const nome=campoNome?campoNome.value.trim():'';
+  if(!campoNome){alert('Não consegui localizar o formulário de produto. Atualize a página e tente novamente.');return;}
+  if(!nome){alert('Digite o nome do produto antes de adicionar.');campoNome.focus();return;}
+  if(!ST || typeof ST.set!=='function'){alert('O sistema ainda está carregando. Atualize a página e tente novamente.');return;}
   const L=parseSab(v('ps'));const est=L.length?L.reduce((s,x)=>s+x.est,0):n('pe');
-  await run(()=>ST.set('produtos',uid(),{nome,custo:n('pc'),preco:n('pp'),est,sabores:L}))}
+  const botao=document.querySelector('button[onclick="addP()"]');
+  if(botao){botao.disabled=true;botao.textContent='Salvando…';}
+  try{
+    await run(async()=>{await ST.set('produtos',uid(),{nome,custo:n('pc'),preco:n('pp'),est,sabores:L});});
+    if(botao && botao.disabled){
+      // run() trata falhas exibindo a mensagem; atualiza a tela após salvar.
+    }
+    const campoAtual=$('#pn');
+    if(campoAtual){campoAtual.value='';}
+    if(botao){botao.disabled=false;botao.textContent='Adicionar';}
+    render();
+  }catch(e){
+    alert('Não foi possível salvar o produto. '+(e&&e.message?e.message:'Verifique sua conexão e as permissões do Supabase.'));
+    if(botao){botao.disabled=false;botao.textContent='Adicionar';}
+  }
+}
 
 
 function viewSabor(){
