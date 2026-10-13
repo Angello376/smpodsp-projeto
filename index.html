@@ -1363,32 +1363,20 @@ function view_clientes(){
 
 function textoRelacaoPrazos(lista){
   const hojeData=hoje();
-  const atrasados=lista.filter(x=>x.venc&&x.venc<hojeData);
-  const hojeV=lista.filter(x=>x.venc===hojeData);
-  const futuros=lista.filter(x=>x.venc&&x.venc>hojeData);
-  const semData=lista.filter(x=>!x.venc);
-  const linhas=[];
-  linhas.push('📋 *RELAÇÃO DE PRAZOS — SMPODSP*');
-  linhas.push('Data: '+fd(hojeData),'');
-  const adicionar=(titulo,arr,rotulo)=>{
-    if(!arr.length)return;
-    linhas.push(titulo);
-    arr.sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999'));
-    arr.forEach(x=>{
-      const cliente=cli(x.cid);
-      const venc=x.venc?' — '+fd(x.venc):' — sem vencimento cadastrado';
-      const atraso=x.venc&&x.venc<hojeData?' — '+diasEntre(x.venc,hojeData)+' dia(s) em atraso':'';
-      linhas.push('• '+cliente+' — '+x.nome+(x.sabor?' '+x.sabor:'')+' — R$ '+fmtNum(saldoDe(x))+venc+atraso);
-    });
-    linhas.push(rotulo+': R$ '+fmtNum(arr.reduce((s,x)=>s+saldoDe(x),0)),'');
-  };
-  adicionar('🔴 *EM ATRASO*',atrasados,'Subtotal em atraso');
-  adicionar('🟡 *VENCE HOJE*',hojeV,'Subtotal vence hoje');
-  adicionar('🟢 *A VENCER*',futuros,'Subtotal a vencer');
-  adicionar('⚪ *SEM DATA DE VENCIMENTO*',semData,'Subtotal sem vencimento');
-  linhas.push('*TOTAL PENDENTE: R$ '+fmtNum(lista.reduce((s,x)=>s+saldoDe(x),0))+'*');
-  linhas.push('','_Gerado pelo SMPODSP._');
-  return linhas.join('\n');
+  const ordenada=lista.slice().sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999'));
+  const linhas=['📋 Prazos pendentes — SMPODSP',''];
+  ordenada.forEach(x=>{
+    linhas.push('👤 '+cli(x.cid));
+    linhas.push('📦 '+x.nome+(x.sabor?' '+x.sabor:''));
+    linhas.push('💰 R$ '+fmtNum(saldoDe(x)));
+    if(x.venc&&x.venc<hojeData)linhas.push('🔴 Atrasado');
+    else if(x.venc===hojeData)linhas.push('🟡 Vence hoje');
+    else if(x.venc)linhas.push('📅 Vencimento: '+fd(x.venc));
+    else linhas.push('📅 Sem vencimento definido');
+    linhas.push('');
+  });
+  linhas.push('💵 Total pendente: R$ '+fmtNum(ordenada.reduce((s,x)=>s+saldoDe(x),0)));
+  return '```'+linhas.join('\\n')+'```';
 }
 async function copiarRelacaoPrazos(){
   const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
