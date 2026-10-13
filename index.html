@@ -1376,7 +1376,7 @@ function textoRelacaoPrazos(lista){
     linhas.push('');
   });
   linhas.push('💵 Total pendente: R$ '+fmtNum(ordenada.reduce((s,x)=>s+saldoDe(x),0)));
-  return linhas.join('\\n');
+  return linhas.join('\n');
 }
 async function copiarRelacaoPrazos(){
   const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
