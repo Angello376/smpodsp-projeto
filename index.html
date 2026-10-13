@@ -164,6 +164,22 @@ input,select{padding:11px;min-height:44px;border:1px solid var(--bd);border-radi
 .brand{display:flex;align-items:center;gap:10px}
 .logo{width:44px;height:44px;flex:none;object-fit:contain}
 
+/* Fundo mobile contínuo: remove a grade repetida e mantém os brilhos como uma única composição */
+@media(max-width:600px){
+  html{min-height:100%;background:var(--bg)}
+  body{
+    background-color:var(--bg)!important;
+    background-image:
+      radial-gradient(ellipse 115% 440px at 90% 0%,rgba(59,130,255,.19),transparent 72%),
+      radial-gradient(ellipse 105% 520px at 0% 30%,rgba(57,255,136,.09),transparent 74%),
+      linear-gradient(180deg,#05060b 0%,#05060b 100%)!important;
+    background-size:100% 720px,100% 900px,100% 100%!important;
+    background-position:top center,top center,center!important;
+    background-repeat:no-repeat!important;
+    background-attachment:scroll!important;
+  }
+}
+
 /* ===== MODELO 4: escuro neon moderno (só aparência) ===== */
 :root:root{
   --bg:#05060b; --fg:#e8f7ff; --card:#0b0f1a; --mut:#6b7a94; --ac:#3b82ff;
