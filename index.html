@@ -1596,7 +1596,7 @@ async function delV(id){
   if(!ok&&linha){linha.getAnimations().forEach(a=>a.cancel());linha.style.opacity='';linha.style.transform='';linha.style.height='';linha.style.overflow='';linha.style.willChange='';linha.style.transition='';linha.style.margin='';linha.style.padding='';linha.style.borderWidth='';linha.classList.remove('removendo');}
   else if(ok){await modal({msg:'Venda apagada com sucesso! '+x.q+' unidade(s) de '+x.nome+' voltaram para o estoque.',ok:'OK'});}
 }async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
-async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;await run(()=>ST.del('produtos',pid))}
+async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;const p=S.p.find(x=>x.id===pid);const nome=p?.nome||'Produto';const ok=await run(()=>ST.del('produtos',pid));if(ok)await modal({msg:'Produto excluído com sucesso! '+nome+' foi removido do estoque.',ok:'OK'});}
 async function removeSab(pid,nome){
   if(!(await confirmar('Remover o sabor '+nome+'?',true)))return;
   const p=S.p.find(x=>x.id===pid);const L=norm(p).filter(f=>f.nome!==nome);
