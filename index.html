@@ -701,6 +701,46 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .hero.amarelo b,.hero.verde b{font-size:21px!important}
 }
 
+
+/* ===== HOME RESUMO CLEAN ===== */
+.home-resumo,.home-invest{margin:0 0 14px}
+.home-resumo{padding:18px 17px 8px;background:linear-gradient(145deg,rgba(15,24,39,.96),rgba(8,12,21,.9));border:1px solid rgba(125,155,205,.14);border-radius:18px}
+.home-eyebrow{font-size:10px;letter-spacing:.16em;color:var(--mut);font-weight:750;margin-bottom:15px}
+.home-principal{padding-bottom:17px;border-bottom:1px solid rgba(125,155,205,.12)}
+.home-label{font-size:12px;color:var(--mut)}
+.home-valor{font-size:32px;font-weight:800;letter-spacing:-.045em;margin:6px 0}
+.home-legenda{font-size:11px;color:var(--mut)}
+.home-metricas{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:18px}
+.home-metrica{padding:13px 0;border-bottom:1px solid rgba(125,155,205,.1);min-width:0}
+.home-metrica:nth-last-child(-n+2){border-bottom:0}
+.home-metrica span{display:block;color:var(--mut);font-size:11px;margin-bottom:5px}
+.home-metrica b{font-size:15px;overflow-wrap:anywhere}
+.home-invest{padding:15px 16px;background:rgba(13,19,32,.62);border:1px solid rgba(125,155,205,.12);border-radius:16px}
+.home-invest-head{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.home-invest-head> b{font-size:20px;color:#65f5ad}
+.home-invest-sub{font-size:12px;margin-top:5px}
+.home-progress{height:5px;background:rgba(125,155,205,.14);border-radius:99px;overflow:hidden;margin:13px 0 8px}
+.home-progress i{display:block;height:100%;background:#65f5ad;border-radius:99px}
+.home-invest-foot{display:flex;justify-content:space-between;gap:8px;font-size:11px;color:var(--mut)}
+.home-invest-foot span:first-child{color:var(--fg);font-weight:650}
+.home-alert{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:12px 14px;margin:0 0 10px;background:rgba(255,90,90,.06);border:1px solid rgba(255,90,90,.17);border-radius:13px;color:var(--fg);cursor:pointer}
+.home-alert>span:first-child{font-size:18px;color:#ff8585}
+.home-alert small{display:block;color:var(--mut);margin-top:3px}
+.home-arrow{margin-left:auto;font-size:24px;color:var(--mut)}
+.home-nota{font-size:12px;color:var(--mut);padding:4px 2px 12px}
+.home-link{display:flex;justify-content:space-between;align-items:center;padding:13px 3px;border-bottom:1px solid rgba(125,155,205,.1);font-size:13px;cursor:pointer}
+.home-link span:last-child{font-size:20px;color:var(--mut)}
+@media(max-width:600px){
+  .painel-periodo{margin:0 0 12px!important}
+  .home-resumo{padding:16px 15px 5px;margin-bottom:12px;border-radius:16px}
+  .home-eyebrow{margin-bottom:12px}
+  .home-valor{font-size:29px}
+  .home-metrica{padding:11px 0}
+  .home-metrica b{font-size:14px}
+  .home-invest{padding:14px 15px;margin-bottom:12px}
+  .home-link{padding:12px 3px}
+}
+
 </style>
 </head>
 <body>
@@ -1107,27 +1147,43 @@ function view_painel(){
   const m=hoje().slice(0,7),f=x=>per==='tudo'||x.data.startsWith(m);
   const V=S.v.filter(f),D=S.d.filter(f);
   const tot=a=>a.reduce((s,x)=>s+x.q*x.preco,0);
-  const vendas=tot(V),cmv=V.reduce((s,x)=>s+x.q*x.custo,0);
+  const vendas=tot(V);
+  const cmv=V.reduce((s,x)=>s+x.q*x.custo,0);
   const recebido=V.reduce((s,x)=>s+recebidoDe(x),0);
   const aRec=S.v.filter(x=>saldoDe(x)>0.005);
   const aRecTot=aRec.reduce((s,x)=>s+saldoDe(x),0);
   const venc=aRec.filter(x=>x.venc&&x.venc<hoje());
   const vencTot=venc.reduce((s,x)=>s+saldoDe(x),0);
-  const desp=D.reduce((s,x)=>s+x.valor,0);
-  const liq=vendas-cmv-desp;
-  const est=S.p.reduce((s,x)=>s+x.est*x.custo,0);
+  const desp=D.reduce((s,x)=>s+(+x.valor||0),0);
+  const lucro=vendas-cmv-desp;
+  const I=investInfo();
+  const pct=I.ok?I.pct:0;
   const baixo=S.p.filter(x=>x.est<=3);
-  const L=(t,val,c,b)=>`<div class="line ${b?'t':''}"><span>${t}</span><span class="${c||''}">${R(val)}</span></div>`;
-  const cats=CATS.map(c=>[c,D.filter(x=>x.cat===c).reduce((s,x)=>s+x.valor,0)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
-  const SUBS=[['res','Resultado'],['rec','Receber'],['gas','Gastos']];
-  let body='';
-  if(sub==='res')body=`<div class="card">${L('Vendas',vendas)}${L('Gastos',desp)}${L('Lucro',liq,liq<0?'neg':'pos',1)}</div>`;
-  if(sub==='rec')body=`<div class="card">${L('Recebido no período',recebido,'pos')}${L('A receber (a prazo)',aRecTot)}${L('Vencido',vencTot,venc.length?'neg':'',1)}</div>
-    ${venc.length?`<div class="card"><b>⚠️ Cobranças vencidas</b>${venc.map(x=>`<div class="line"><span>${esc(cli(x.cid))}<br><span class="mut">${esc(x.nome)} · venc. ${fd(x.venc)}</span></span><b class="neg">${R(saldoDe(x))}</b></div>`).join('')}</div>`:''}`;
-  if(sub==='gas')body=`<div class="card">${cats.map(([c,val])=>`<div class="line"><span>${c}</span><span>${R(val)} <span class="mut">${Math.round(val/desp*100)}%</span></span></div><div class="bar"><i style="width:${Math.round(val/desp*100)}%"></i></div>`).join('')||'<div class="empty">Nenhum gasto no período.</div>'}</div>`;
-  return `${IMPORT_CARD()}<div class="seg painel-periodo"><button class="${per==='mes'?'on':''}" onclick="setPer('mes')">Este mês</button><button class="${per==='tudo'?'on':''}" onclick="setPer('tudo')">Tudo</button></div>
-  ${heroLucro(liq,vendas,aRecTot)}
-  ${investCard()}<div class="seg painel-subnav">${SUBS.map(s=>`<button class="${sub===s[0]?'on':''}" onclick="setSub('${s[0]}')">${s[1]}${s[0]==='rec'&&venc.length?'<i class="dot"></i>':''}</button>`).join('')}</div>${body}`;
+  const dinheiro=(label,valor,classe='')=>`<div class="resumo-item"><span>${label}</span><b class="${classe}">${R(valor)}</b></div>`;
+  return `<div class="seg painel-periodo"><button class="${per==='mes'?'on':''}" onclick="setPer('mes')">Este mês</button><button class="${per==='tudo'?'on':''}" onclick="setPer('tudo')">Tudo</button></div>
+  <section class="home-resumo">
+    <div class="home-eyebrow">VISÃO GERAL</div>
+    <div class="home-principal">
+      <div class="home-label">Lucro estimado</div>
+      <div class="home-valor ${lucro<0?'neg':'pos'}">${R(lucro)}</div>
+      <div class="home-legenda">Vendas − custo dos produtos − gastos</div>
+    </div>
+    <div class="home-metricas">
+      <div class="home-metrica"><span>Vendido</span><b>${R(vendas)}</b></div>
+      <div class="home-metrica"><span>Já recebido</span><b class="pos">${R(recebido)}</b></div>
+      <div class="home-metrica"><span>A receber</span><b>${R(aRecTot)}</b></div>
+      <div class="home-metrica"><span>Gastos</span><b>${R(desp)}</b></div>
+    </div>
+  </section>
+  <section class="home-invest">
+    <div class="home-invest-head"><div><span class="home-label">Recuperação do estoque</span><div class="home-invest-sub">${I.ok?'Investimento recuperado':R(I.rec)+' de '+R(I.inv)+' recuperados'}</div></div><b>${pct}%</b></div>
+    <div class="home-progress"><i style="width:${pct}%"></i></div>
+    ${!I.ok?`<div class="home-invest-foot"><span>Faltam ${R(I.falta)}</span><span>para recuperar</span></div>`:''}
+  </section>
+  ${venc.length?`<button class="home-alert" onclick="setSub('rec')"><span>⚠</span><span><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes</small></span><span class="home-arrow">›</span></button>`:''}
+  ${baixo.length?`<div class="home-nota">${baixo.length} produto${baixo.length===1?'':'s'} com estoque baixo</div>`:''}
+  <div class="home-link" onclick="setView('vendas')"><span>Ver vendas</span><span>›</span></div>
+  <div class="home-link" onclick="setView('produtos')"><span>Ver produtos e estoque</span><span>›</span></div>`;
 }
 
 let PAGAS_OPEN=false;
