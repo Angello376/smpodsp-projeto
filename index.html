@@ -1524,10 +1524,14 @@ function supabaseStore(){
   };
 }
 async function carregarTudo(){
-  for(const [tab,key] of Object.entries(TABELAS)){
+  const entradas=Object.entries(TABELAS);
+  const resultados=await Promise.all(entradas.map(async([tab,key])=>{
     const{data,error}=await sb.from(tab).select('id,dados');
-    if(error){console.error(tab,error);continue}
-    S[key]=(data||[]).map(r=>({id:r.id,...r.dados}));
+    if(error){console.error('Erro ao carregar '+tab,error);return null}
+    return {key,registros:(data||[]).map(r=>({id:r.id,...r.dados}))};
+  }));
+  for(const resultado of resultados){
+    if(resultado)S[resultado.key]=resultado.registros;
   }
 }
 function mostrarLogin(mensagem=''){
@@ -1578,8 +1582,15 @@ async function entrarNoApp(){
   render();
   await carregarTudo();
   READY=true;animarProximo();render();
+  let sincronizacaoPendente=null;
   sb.channel('smpodsp-tempo-real')
-    .on('postgres_changes',{event:'*',schema:'public'},async()=>{await carregarTudo();render()})
+    .on('postgres_changes',{event:'*',schema:'public'},()=>{
+      clearTimeout(sincronizacaoPendente);
+      sincronizacaoPendente=setTimeout(async()=>{
+        await carregarTudo();
+        render();
+      },250);
+    })
     .subscribe();
   const sair=document.createElement('div');
   sair.className='sair';
