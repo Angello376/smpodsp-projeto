@@ -898,7 +898,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @keyframes confettiFall{0%{transform:translateY(-5px) rotate(0);opacity:0}12%{opacity:1}100%{transform:translateY(420px) rotate(520deg);opacity:0}}
 @media(prefers-reduced-motion:reduce){.sale-success-overlay,.sale-success-card,.sale-success-icon,.sale-success-icon circle,.sale-success-icon path,.sale-success-total,.sale-confetti i,.home-score-ring{animation:none!important}.sale-success-icon circle,.sale-success-icon path{stroke-dashoffset:0}}
 
-/* ===== MARCA OFICIAL: símbolo renovado + cabeçalho minimalista ===== */
+
+/* ===== MARCA SMPODSP: raio elétrico ===== */
 .brand{
   display:flex!important;align-items:center!important;gap:11px!important;
   margin:4px 3px 16px!important;padding:0 0 13px!important;
@@ -908,10 +909,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 }
 .logo-mark{
   width:40px;height:40px;flex:0 0 40px;display:grid;place-items:center;
-  border-radius:13px;background:linear-gradient(145deg,rgba(79,140,255,.12),rgba(57,255,136,.07));
-  border:1px solid rgba(125,155,205,.18);box-shadow:0 5px 18px rgba(0,0,0,.12);
+  border-radius:12px;background:linear-gradient(145deg,rgba(79,140,255,.12),rgba(57,255,136,.07));
+  border:1px solid rgba(125,155,205,.18);
+  box-shadow:0 0 16px rgba(79,140,255,.10),0 0 16px rgba(57,255,136,.06);
 }
-.logo-mark svg{display:block;width:100%;height:100%}
+.logo-mark svg{display:block;width:31px;height:31px;filter:drop-shadow(0 0 4px rgba(79,140,255,.25))}
 .brand-copy{display:flex;flex-direction:column;gap:4px;min-width:0}
 .brand-name{font-size:18px;font-weight:850;letter-spacing:.095em;line-height:1;color:var(--fg)}
 .brand-subtitle{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:650;letter-spacing:.14em;line-height:1.2;color:var(--mut)}
@@ -919,6 +921,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @media(max-width:600px){
   .brand{gap:9px!important;margin:2px 3px 13px!important;padding-bottom:11px!important}
   .logo-mark{width:36px;height:36px;flex-basis:36px;border-radius:11px}
+  .logo-mark svg{width:28px;height:28px}
   .brand-name{font-size:16px;letter-spacing:.1em}
   .brand-subtitle{font-size:8px;letter-spacing:.105em;gap:5px}
 }
@@ -930,11 +933,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 <main>
 <h1 class="brand" aria-label="SMPODSP">
   <span class="logo-mark" aria-hidden="true">
-    <svg viewBox="0 0 48 48" role="img">
-      <defs><linearGradient id="brandGradient" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse"><stop stop-color="#4f8cff"/><stop offset="1" stop-color="#39ff88"/></linearGradient></defs>
-      <path d="M24 3.8 42 14v20L24 44.2 6 34V14L24 3.8Z" fill="url(#brandGradient)" fill-opacity=".13" stroke="url(#brandGradient)" stroke-width="1.8"/>
-      <path d="M15 17.5h18M15 24h13M15 30.5h18" stroke="url(#brandGradient)" stroke-width="3.2" stroke-linecap="round"/>
-      <circle cx="32.5" cy="24" r="2.1" fill="#39ff88"/>
+    <svg viewBox="0 0 48 48">
+      <defs><linearGradient id="brandBolt" x1="8" y1="4" x2="39" y2="44" gradientUnits="userSpaceOnUse"><stop stop-color="#4f8cff"/><stop offset="1" stop-color="#39ff88"/></linearGradient></defs>
+      <path d="M27.5 3.5 10 26h11l-1 18.5L38 19H26.5L27.5 3.5Z" fill="url(#brandBolt)" stroke="#8bbcff" stroke-width=".7" stroke-linejoin="round"/>
     </svg>
   </span>
   <span class="brand-copy"><span class="brand-name">SMPODSP</span><span class="brand-subtitle">GESTÃO <i></i> VENDAS <i></i> ESTOQUE</span></span>
