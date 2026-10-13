@@ -1426,15 +1426,12 @@ function textoRelacaoSocios(mes){
   const [ano,numero]=mes.split('-');
   const nomesMes=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
   const nomeMes=nomesMes[Number(numero)-1]+' de '+ano;
-  const linhas=['FECHAMENTO FINANCEIRO - '+nomeMes.toUpperCase(),'','Recebimentos no mês: '+R(recebimentos),'Despesas registradas: '+R(despesas),'Reserva protegida: R$ 1.500,00'];
+  const linhas=['*FECHAMENTO FINANCEIRO — '+nomeMes.toUpperCase()+'*','','Recebimentos: '+R(recebimentos),'Despesas: '+R(despesas),'Disponível para divisão: '+R(disponivel),''];
   if(caixa===null){
-    linhas.push('Saldo inicial: não informado','','META NÃO BATIDA - '+nomeMes.toUpperCase(),'Não foi possível confirmar valor disponível para divisão. Precisamos informar e conferir o saldo inicial do caixa.');
+    linhas.push('Angello: a definir','Michel: a definir','','*Meta do mês: NÃO CONFIRMADA*');
   }else{
-    linhas.push('Caixa estimado: '+R(caixa),'Valor disponível para divisão: '+R(disponivel),'Angello (50%): '+R(disponivel/2),'Michel (50%): '+R(disponivel/2),'');
-    if(disponivel>0)linhas.push('Meta financeira batida em '+nomeMes+'.');
-    else linhas.push('META NÃO BATIDA - '+nomeMes.toUpperCase(),'Neste mês não houve valor acima da reserva protegida para dividir entre os sócios.');
+    linhas.push('Angello: '+R(disponivel/2),'Michel: '+R(disponivel/2),'','*Meta do mês: '+(disponivel>0?'BATIDA':'NÃO BATIDA')+'*');
   }
-  linhas.push('','Valores estimados com base nos recebimentos e despesas cadastrados. Confirmar o caixa real antes de qualquer retirada.');
   return linhas.join('\\n');
 }
 async function copiarRelacaoSocios(){
