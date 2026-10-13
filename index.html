@@ -925,9 +925,25 @@ const cli=id=>(S.c.find(x=>x.id===id)||{}).nome||'Avulso';
 
 // ---- camada de dados: banco compartilhado (remoto) ou local (fallback) ----
 const local={
-  set(c,id,d){const a=S[KEY[c]];const i=a.findIndex(x=>x.id===id);const o={id,...d};i<0?a.push(o):a[i]=o;saveLocal();render()},
-  upd(c,id,d){const x=S[KEY[c]].find(x=>x.id===id);if(x)Object.assign(x,d);saveLocal();render()},
-  del(c,id){S[KEY[c]]=S[KEY[c]].filter(x=>x.id!==id);saveLocal();render()}
+  set(c,id,d){
+    const k=KEY[c],antes=S[k].slice(),a=S[k],i=a.findIndex(x=>x.id===id),o={id,...d};
+    if(i<0)a.push(o);else a[i]=o;
+    if(!saveLocal()){S[k]=antes;return false}
+    render();return true;
+  },
+  upd(c,id,d){
+    const k=KEY[c],antes=S[k].map(x=>({...x})),x=S[k].find(x=>x.id===id);
+    if(!x)return false;
+    Object.assign(x,d);
+    if(!saveLocal()){S[k]=antes;return false}
+    render();return true;
+  },
+  del(c,id){
+    const k=KEY[c],antes=S[k].slice();
+    S[k]=S[k].filter(x=>x.id!==id);
+    if(!saveLocal()){S[k]=antes;return false}
+    render();return true;
+  }
 };
 function saveLocal(){
   try{
