@@ -1516,16 +1516,47 @@ async function carregarTudo(){
     S[key]=(data||[]).map(r=>({id:r.id,...r.dados}));
   }
 }
-function mostrarLogin(){
+function mostrarLogin(mensagem=''){
   $('#app').innerHTML=`<div class="card" style="margin-top:30px"><div class="form">
-    <label class="w">E-mail<input id="le" type="email" autocomplete="username"></label>
-    <label class="w">Senha<input id="ls" type="password" autocomplete="current-password"></label></div>
-    <button class="btn" id="lbtn">Entrar</button></div>`;
+    ${mensagem?`<p class="mut" style="color:#dc6464">${mensagem}</p>`:''}
+    <label class="w">E-mail<input id="le" type="email" autocomplete="username" required></label>
+    <label class="w">Senha<input id="ls" type="password" autocomplete="current-password" required></label></div>
+    <button class="btn" id="lbtn">Entrar</button>
+    <button class="sm" id="esqueci" type="button" style="margin-top:12px">Esqueci minha senha</button>
+    <p id="loginmsg" class="mut" style="margin-top:10px"></p></div>`;
   $('#nav').innerHTML='';
   $('#lbtn').onclick=async()=>{
-    const{error}=await sb.auth.signInWithPassword({email:$('#le').value.trim(),password:$('#ls').value});
+    const email=$('#le').value.trim(), password=$('#ls').value;
+    if(!email||!password)return alert('Informe seu e-mail e sua senha.');
+    const{error}=await sb.auth.signInWithPassword({email,password});
     if(error)return alert('Não foi possível entrar. '+(error.message||'Confira o e-mail e a senha.'));
     location.reload();
+  };
+  $('#esqueci').onclick=async()=>{
+    const email=$('#le').value.trim();
+    if(!email)return alert('Digite seu e-mail no campo acima primeiro.');
+    const msg=$('#loginmsg'); msg.textContent='Enviando e-mail de recuperação…';
+    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+    if(error){msg.textContent='Não foi possível enviar o e-mail: '+error.message;return;}
+    msg.textContent='Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha. Confira também o spam.';
+  };
+}
+function mostrarRedefinirSenha(mensagem=''){
+  $('#app').innerHTML=`<div class="card" style="margin-top:30px"><h2>Redefinir senha</h2><p class="mut">Digite e confirme sua nova senha.</p><div class="form">
+    <label class="w">Nova senha<input id="novaSenha" type="password" autocomplete="new-password" minlength="6"></label>
+    <label class="w">Confirmar nova senha<input id="confirmaSenha" type="password" autocomplete="new-password" minlength="6"></label></div>
+    <button class="btn" id="salvarSenha">Salvar nova senha</button><p id="resetmsg" class="mut" style="margin-top:10px">${mensagem}</p></div>`;
+  $('#nav').innerHTML='';
+  $('#salvarSenha').onclick=async()=>{
+    const senha=$('#novaSenha').value, confirma=$('#confirmaSenha').value, msg=$('#resetmsg');
+    if(senha.length<6){msg.textContent='A senha precisa ter pelo menos 6 caracteres.';return;}
+    if(senha!==confirma){msg.textContent='As senhas não coincidem.';return;}
+    const{error}=await sb.auth.updateUser({password:senha});
+    if(error){msg.textContent='Não foi possível alterar a senha: '+error.message;return;}
+    msg.textContent='Senha alterada com sucesso! Voltando para o login…';
+    await sb.auth.signOut();
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+    setTimeout(()=>mostrarLogin('Senha alterada. Entre com sua nova senha.'),1200);
   };
 }
 async function entrarNoApp(){
@@ -1542,8 +1573,24 @@ async function entrarNoApp(){
   document.querySelector('main').appendChild(sair);
   $('#sairbtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
 }
+sb.auth.onAuthStateChange((event, session)=>{
+  if(event==='PASSWORD_RECOVERY')mostrarRedefinirSenha();
+});
 (async()=>{
-  const{data}=await sb.auth.getSession();
+  const hash=new URLSearchParams(window.location.hash.slice(1));
+  const erro=hash.get('error_description')||hash.get('error_code');
+  if(erro){
+    history.replaceState(null,'',window.location.pathname+window.location.search);
+    mostrarLogin('O link de recuperação é inválido ou expirou. Solicite um novo link.');
+    return;
+  }
+  const{data,error}=await sb.auth.getSession();
+  if(error){mostrarLogin('Não foi possível verificar sua sessão. Tente recarregar a página.');return;}
+  if(hash.get('type')==='recovery' || (hash.has('access_token') && hash.get('type')==='recovery')){
+    if(data&&data.session)mostrarRedefinirSenha();
+    else mostrarLogin('Não foi possível validar o link. Solicite um novo e-mail de recuperação.');
+    return;
+  }
   if(data&&data.session)await entrarNoApp();
   else mostrarLogin();
 })();
