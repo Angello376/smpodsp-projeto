@@ -919,7 +919,7 @@ const hoje=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStri
 const fd=d=>d?d.split('-').reverse().join('/'):'';
 const v=id=>{const el=$('#'+id);return el?el.value:''};
 const n=id=>parseFloat(String(v(id)).replace(',','.'))||0;
-const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
+const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['prazos','☏','Prazos'],['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
 const CATS=['Divulgação','Frete/Envio','Taxas','Aluguel/Contas','Equipamento (investimento)','Outros'];
 const cli=id=>(S.c.find(x=>x.id===id)||{}).nome||'Avulso';
 
@@ -1355,6 +1355,63 @@ function view_clientes(){
       <div class="mut">${contatoCli(c)}</div>
       <div class="cbot">${statusLabel(c.id)}<button class="sm d" onclick="delC('${c.id}')">Excluir</button></div>
     </div>`}).join('')||'<div class="empty">Nenhum cliente ainda.</div>'}</div>`;
+}
+
+function textoRelacaoPrazos(lista){
+  const hojeData=hoje();
+  const atrasados=lista.filter(x=>x.venc&&x.venc<hojeData);
+  const hojeV=lista.filter(x=>x.venc===hojeData);
+  const futuros=lista.filter(x=>x.venc&&x.venc>hojeData);
+  const semData=lista.filter(x=>!x.venc);
+  const linhas=[];
+  linhas.push('📋 *RELAÇÃO DE PRAZOS — SMPODSP*');
+  linhas.push('Data: '+fd(hojeData),'');
+  const adicionar=(titulo,arr,rotulo)=>{
+    if(!arr.length)return;
+    linhas.push(titulo);
+    arr.sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999'));
+    arr.forEach(x=>{
+      const cliente=cli(x.cid);
+      const venc=x.venc?' — '+fd(x.venc):' — sem vencimento cadastrado';
+      const atraso=x.venc&&x.venc<hojeData?' — '+diasEntre(x.venc,hojeData)+' dia(s) em atraso':'';
+      linhas.push('• '+cliente+' — '+x.nome+(x.sabor?' '+x.sabor:'')+' — R$ '+fmtNum(saldoDe(x))+venc+atraso);
+    });
+    linhas.push(rotulo+': R$ '+fmtNum(arr.reduce((s,x)=>s+saldoDe(x),0)),'');
+  };
+  adicionar('🔴 *EM ATRASO*',atrasados,'Subtotal em atraso');
+  adicionar('🟡 *VENCE HOJE*',hojeV,'Subtotal vence hoje');
+  adicionar('🟢 *A VENCER*',futuros,'Subtotal a vencer');
+  adicionar('⚪ *SEM DATA DE VENCIMENTO*',semData,'Subtotal sem vencimento');
+  linhas.push('*TOTAL PENDENTE: R$ '+fmtNum(lista.reduce((s,x)=>s+saldoDe(x),0))+'*');
+  linhas.push('','_Gerado pelo SMPODSP._');
+  return linhas.join('\n');
+}
+async function copiarRelacaoPrazos(){
+  const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
+  if(!abertos.length)return alert('Não há prazos pendentes para incluir na relação.');
+  const ok=await copiarTexto(textoRelacaoPrazos(abertos));
+  if(ok)avisar('Relação de prazos copiada. Agora é só colar no WhatsApp.');
+  else alert('Não consegui copiar automaticamente. Tente novamente.');
+}
+function abrirRelacaoPrazosWhats(){
+  const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
+  if(!abertos.length)return alert('Não há prazos pendentes para incluir na relação.');
+  const url='https://wa.me/?text='+encodeURIComponent(textoRelacaoPrazos(abertos));
+  window.open(url,'_blank','noopener');
+}
+function view_prazos(){
+  const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
+  const dataHoje=hoje();
+  const atrasados=abertos.filter(x=>x.venc&&x.venc<dataHoje);
+  const hojeV=abertos.filter(x=>x.venc===dataHoje);
+  const futuros=abertos.filter(x=>x.venc&&x.venc>dataHoje);
+  const semData=abertos.filter(x=>!x.venc);
+  const bloco=(titulo,lista,classe)=>lista.length?'<div class="card"><h3>'+titulo+' <span class="mut">('+lista.length+')</span></h3>'+lista.slice().sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999')).map(x=>'<div class="crow"><div class="ctop"><div><b class="cnome">'+esc(cli(x.cid))+'</b><span class="ccount">'+esc(x.nome+(x.sabor?' · '+x.sabor:''))+'</span></div><span class="cdeve neg">'+R(saldoDe(x))+'</span></div><div class="cbot"><span class="mut">'+(x.venc?'Vencimento: '+fd(x.venc):'Sem vencimento cadastrado')+(x.venc&&x.venc<dataHoje?' · '+diasEntre(x.venc,dataHoje)+' dia(s) em atraso':'')+'</span></div></div>').join('')+'</div>':'';
+  return '<div class="home-heading"><div><div class="home-eyebrow">WHATSAPP</div><div class="home-heading-title">Relação de prazos</div><div class="home-heading-sub">Todos os valores pendentes, organizados por vencimento</div></div><span class="home-heading-icon">☏</span></div>'+
+  '<div class="home-metricas"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Total pendente</span><b>'+R(abertos.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
+  '<div class="card"><p class="mut">A relação inclui prazos em atraso, vencendo hoje e futuros. Clientes com saldo pendente sem data também aparecem em uma seção separada.</p><div class="form"><button class="btn" onclick="copiarRelacaoPrazos()">Copiar relação para WhatsApp</button><button class="btn sec" onclick="abrirRelacaoPrazosWhats()">Abrir WhatsApp com mensagem</button></div></div>'+
+  bloco('🔴 Em atraso',atrasados,'red')+bloco('🟡 Vence hoje',hojeV,'yellow')+bloco('🟢 A vencer',futuros,'green')+bloco('⚪ Sem data de vencimento',semData,'mut')+
+  (!abertos.length?'<div class="empty">Nenhum prazo pendente no momento.</div>':'');
 }
 
 function view_vendas(){
