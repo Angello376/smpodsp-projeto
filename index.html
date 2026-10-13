@@ -825,7 +825,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .vs-pagamento-btn:active{transform:scale(.985)}
 @media(max-width:380px){.vs-pagamento{gap:7px}.vs-pagamento-btn{padding:11px 9px}}
 /* Microinterações premium */
-.home-resumo{animation:cardReveal .42s cubic-bezier(.2,.7,.2,1) both}.home-invest{animation:cardReveal .48s cubic-bezier(.2,.7,.2,1) both;animation-delay:.06s}.home-progress i{transition:width .9s cubic-bezier(.2,.7,.2,1);box-shadow:0 0 12px rgba(101,245,173,.24)}
+.home-resumo{animation:none}.home-invest{animation:none}.home-progress i{transition:width .9s cubic-bezier(.2,.7,.2,1);box-shadow:0 0 12px rgba(101,245,173,.24)}
 .home-alert{animation:cardReveal .38s ease both;transition:transform .18s,border-color .18s,background .18s}.home-alert:active{transform:scale(.99)}
 .home-quick-sale{transition:transform .18s,border-color .18s,background .18s;animation:cardReveal .5s ease both;animation-delay:.1s}.home-quick-sale:hover{border-color:rgba(101,245,173,.45);background:linear-gradient(110deg,rgba(101,245,173,.16),rgba(101,245,173,.06))}
 .toast{display:flex;align-items:center;justify-content:center;gap:9px;animation:toastIn .32s cubic-bezier(.2,.8,.2,1) both}
@@ -840,11 +840,11 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 /* Medidor semicircular de recuperação do investimento */
 .home-invest{padding:18px;background:linear-gradient(145deg,rgba(13,22,35,.96),rgba(8,13,23,.94));border:1px solid rgba(125,155,205,.18);border-radius:18px}
 .home-score-wrap{display:flex;align-items:center;gap:14px}
-.home-score-ring{flex:0 0 154px;width:154px;height:100px;position:relative;animation:scoreAppear .7s cubic-bezier(.2,.8,.2,1) both;overflow:visible}
+.home-score-ring{flex:0 0 154px;width:154px;height:100px;position:relative;animation:none;overflow:visible}
 .home-score-ring svg{display:block;width:100%;height:100%;overflow:visible}
 .home-score-track{fill:none;stroke:rgba(125,155,205,.13);stroke-width:12;stroke-linecap:round}
-.home-score-progress{fill:none;stroke:url(#scoreGradient);stroke-width:12;stroke-linecap:round;stroke-dasharray:var(--score) 100;transition:stroke-dasharray .9s cubic-bezier(.2,.7,.2,1)}
-.home-score-dot{fill:var(--score-color);stroke:#0b1220;stroke-width:3;filter:drop-shadow(0 0 5px var(--score-color));transition:cx .9s cubic-bezier(.2,.7,.2,1),cy .9s cubic-bezier(.2,.7,.2,1)}
+.home-score-progress{fill:none;stroke:url(#scoreGradient);stroke-width:12;stroke-linecap:round;stroke-dasharray:var(--score) 100;transition:stroke-dasharray 1.15s cubic-bezier(.22,.75,.25,1)}
+.home-score-dot{fill:var(--score-color);stroke:#0b1220;stroke-width:3;filter:drop-shadow(0 0 5px var(--score-color));transition:cx 1.15s cubic-bezier(.22,.75,.25,1),cy 1.15s cubic-bezier(.22,.75,.25,1)}
 .home-score-number{font-size:21px;font-weight:850;letter-spacing:-.04em;fill:var(--score-color);text-anchor:middle}
 .home-score-caption{font-size:7px;letter-spacing:1.1px;fill:var(--mut);font-weight:750;text-anchor:middle}
 .home-score-info{flex:1;min-width:0}
@@ -2025,15 +2025,29 @@ function renderAgora(){
   const html=READY||!REMOTE?window['view_'+tab]():'<div class="empty">Carregando dados…</div>';
   const app=$('#app');
   if(html!==LAST_APP){
+    const medidorAtual=app.querySelector('.home-score-ring');
+    const pctAnterior=medidorAtual?Math.max(0,Math.min(100,parseFloat(medidorAtual.style.getPropertyValue('--score'))||0)):null;
     app.innerHTML=html;
     LAST_APP=html;
     if(ANIMAR)countUps(app);
-    app.querySelectorAll('.pcard,.cl-row,.vr2,.ch-row,.frow').forEach(el=>{
-      el.classList.remove('editado');
-      void el.offsetWidth;
-      el.classList.add('editado');
-      el.addEventListener('animationend',()=>el.classList.remove('editado'),{once:true});
-    });
+    const ring=app.querySelector('.home-score-ring');
+    if(ring){
+      const pctAlvo=Math.max(0,Math.min(100,parseFloat(ring.style.getPropertyValue('--score'))||0));
+      const dot=ring.querySelector('.home-score-dot');
+      const numero=ring.querySelector('.home-score-number');
+      const posicao=p=>({x:(88-72*Math.cos(Math.PI*p/100)).toFixed(2),y:(82-72*Math.sin(Math.PI*p/100)).toFixed(2)});
+      if(pctAnterior!==null&&pctAnterior!==pctAlvo){
+        const inicio=posicao(pctAnterior),fim=posicao(pctAlvo);
+        ring.style.setProperty('--score',pctAnterior);
+        if(dot){dot.setAttribute('cx',inicio.x);dot.setAttribute('cy',inicio.y)}
+        if(numero)numero.textContent=Math.round(pctAnterior)+'%';
+        requestAnimationFrame(()=>{
+          ring.style.setProperty('--score',pctAlvo);
+          if(dot){dot.setAttribute('cx',fim.x);dot.setAttribute('cy',fim.y)}
+          if(numero)numero.textContent=pctAlvo+'%';
+        });
+      }
+    }
   }
   app.classList.toggle('enter',ANIMAR);
 }
