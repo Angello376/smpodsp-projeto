@@ -1159,11 +1159,29 @@ function view_produtos(){
 
 
 async function addC(){
-  const nome=v('cn').trim();if(!nome)return alert('Informe o nome do cliente.');
-  const tel=v('ct').trim();const insta=v('ci').trim().replace(/^@/,'');
-  if(!tel&&!insta)return alert('Informe o telefone ou o Instagram.');
-  const salvou=await run(()=>ST.set('clientes',uid(),{nome,tel,insta}));
-  if(salvou){FORM.cli=false;animarConfirmacao({kicker:'Cadastro concluído',titulo:'Cliente cadastrado!',descricao:nome+' já está na sua lista de clientes.',botao:'Continuar'});}
+  const campoNome=$('#cn');
+  const nome=campoNome?campoNome.value.trim():'';
+  const campoTel=$('#ct');
+  const campoInsta=$('#ci');
+  if(!campoNome){alert('Não consegui localizar o formulário de cliente. Atualize a página e tente novamente.');return;}
+  if(!nome){alert('Informe o nome do cliente.');campoNome.focus();return;}
+  const tel=campoTel?campoTel.value.trim():'';
+  const insta=(campoInsta?campoInsta.value.trim():'').replace(/^@/,'');
+  if(!tel&&!insta){alert('Informe o telefone ou o Instagram.');return;}
+  if(!ST||typeof ST.set!=='function'){alert('O sistema ainda está carregando. Atualize a página e tente novamente.');return;}
+  const botao=document.querySelector('button[onclick="addC()"]');
+  if(botao){botao.disabled=true;botao.textContent='Salvando…';}
+  try{
+    const id=uid();
+    await ST.set('clientes',id,{nome,tel,insta});
+    if(REMOTE)await carregarTudo();
+    FORM.cli=false;
+    render();
+    animarConfirmacao({kicker:'Cadastro concluído',titulo:'Cliente cadastrado!',descricao:nome+' já está na sua lista de clientes.',botao:'Continuar'});
+  }catch(e){
+    alert('Não foi possível cadastrar o cliente. '+(e&&e.message?e.message:'Verifique sua conexão e as permissões do banco.'));
+    if(botao){botao.disabled=false;botao.textContent='Adicionar';}
+  }
 }
 function contatoCli(c){return [c.tel?esc(c.tel):'',c.insta?'@'+esc(c.insta):''].filter(Boolean).join(' · ')||'sem contato'}
 
