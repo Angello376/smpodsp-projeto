@@ -901,6 +901,26 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 @keyframes saleTotalIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
 @keyframes confettiFall{0%{transform:translateY(-5px) rotate(0);opacity:0}12%{opacity:1}100%{transform:translateY(420px) rotate(520deg);opacity:0}}
 @media(prefers-reduced-motion:reduce){.sale-success-overlay,.sale-success-card,.sale-success-icon,.sale-success-icon circle,.sale-success-icon path,.sale-success-total,.sale-confetti i,.home-score-ring{animation:none!important}.sale-success-icon circle,.sale-success-icon path{stroke-dashoffset:0}}
+
+/* Prazos: tela compacta, sem lista de clientes */
+.prazos-resumo{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.prazos-resumo .home-metrica{padding:12px;min-width:0}
+.prazos-resumo .home-metrica span{font-size:11px}
+.prazos-resumo .home-metrica b{font-size:16px;overflow-wrap:anywhere}
+.prazos-copiar-card{padding:14px;margin-top:12px}
+.prazos-copiar-btn{width:100%;min-height:42px;font-size:14px;padding:10px 14px}
+.prazos-copiar-card p{font-size:11px;margin:9px 0 0}
+.prazos-fechamento{margin-top:12px;padding:0 14px}
+.prazos-fechamento summary{font-size:13px;font-weight:600;padding:14px 0;cursor:pointer}
+.prazos-fechamento-conteudo{padding-bottom:14px}
+.prazos-fechamento-conteudo input,.prazos-fechamento-conteudo select{width:100%;box-sizing:border-box}
+.prazos-salvar{width:auto;min-height:36px;padding:8px 12px;font-size:12px}
+.prazos-mini-metricas{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.prazos-mini-metricas .home-metrica{padding:10px;min-width:0}
+.prazos-mini-metricas .home-metrica span{font-size:11px}
+.prazos-mini-metricas .home-metrica b{font-size:14px}
+.prazos-caixa-resumo{margin-top:14px;padding-top:12px;border-top:1px solid var(--bd)}
+@media(max-width:420px){.prazos-resumo .home-metrica{padding:9px 7px}.prazos-resumo .home-metrica b{font-size:13px}.prazos-resumo .home-metrica span{font-size:10px}}
 </style>
 </head>
 <body>
@@ -1410,7 +1430,6 @@ function view_prazos(){
   const atrasados=abertos.filter(x=>x.venc&&x.venc<dataHoje);
   const hojeV=abertos.filter(x=>x.venc===dataHoje);
   const futuros=abertos.filter(x=>x.venc&&x.venc>dataHoje);
-  const semData=abertos.filter(x=>!x.venc);
   const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
   const inicialSalvo=localStorage.getItem(chaveSaldoInicial(mes));
   const inicial=inicialSalvo===null?null:Number(inicialSalvo);
@@ -1426,18 +1445,16 @@ function view_prazos(){
   const meses=[];const base=new Date(hoje()+'T12:00:00');
   for(let i=0;i<18;i++){const d=new Date(base.getFullYear(),base.getMonth()-i,1);meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))}
   const opMes=meses.map(m=>'<option value="'+m+'" '+(m===mes?'selected':'')+'>'+m.slice(5,7)+'/'+m.slice(0,4)+'</option>').join('');
-  const bloco=(titulo,lista,classe)=>lista.length?'<div class="card"><h3>'+titulo+' <span class="mut">('+lista.length+')</span></h3>'+lista.slice().sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999')).map(x=>'<div class="crow"><div class="ctop"><div><b class="cnome">'+esc(cli(x.cid))+'</b><span class="ccount">'+esc(x.nome+(x.sabor?' · '+x.sabor:''))+'</span></div><span class="cdeve neg">'+R(saldoDe(x))+'</span></div><div class="cbot"><span class="mut">'+(x.venc?'Vencimento: '+fd(x.venc):'Sem vencimento cadastrado')+(x.venc&&x.venc<dataHoje?' · '+diasEntre(x.venc,dataHoje)+' dia(s) em atraso':'')+'</span></div></div>').join('')+'</div>':'';
-  const fechamento='<div class="home-heading" style="margin-top:28px"><div><div class="home-eyebrow">FECHAMENTO MENSAL</div><div class="home-heading-title">Caixa e divisão dos sócios</div><div class="home-heading-sub">Só conta o dinheiro recebido de verdade — vendas pendentes ficam fora.</div></div><span class="home-heading-icon">R$</span></div>'+
-  '<div class="card"><label style="display:block;color:var(--mut);font-size:12px;margin-bottom:6px">Mês do fechamento</label><select id="fech-mes" onchange="localStorage.setItem(\'smpodsp_fech_mes\',this.value);trocarMesFechamento()">'+opMes+'</select>'+
-  '<div class="home-metricas" style="margin-top:12px"><div class="home-metrica"><span>Recebido no mês</span><b class="pos">'+moeda(recebimentos)+'</b></div><div class="home-metrica"><span>Despesas registradas</span><b class="neg">'+moeda(despesas)+'</b></div><div class="home-metrica"><span>Vendas ainda a receber</span><b>'+moeda(S.v.filter(x=>saldoDe(x)>0.005).reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
-  '<div style="border-top:1px solid var(--bd);margin-top:12px;padding-top:14px"><label style="display:block;color:var(--mut);font-size:12px;margin-bottom:6px">Dinheiro que já existia no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Informe o saldo inicial" value="'+(inicial===null?'':inicial)+'"><button class="btn" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button><p class="mut" style="margin:8px 0 0">Informe o dinheiro real disponível no início do mês, antes das entradas e saídas deste período. Esse valor fica salvo neste navegador.</p></div></div>'+
-  (caixaCalculado===null?'<div class="alerta amb"><div class="ic">!</div><div><b>Falta informar o saldo inicial</b><small>O sistema não vai inventar quanto existe no caixa nem calcular retiradas sem essa informação.</small></div></div>':
-  '<div class="card"><div class="line"><span>Caixa estimado no fechamento</span><b>'+moeda(caixaCalculado)+'</b></div><div class="line"><span>Reserva protegida</span><b>'+moeda(1500)+'</b></div><div class="line t"><span>Disponível para divisão</span><b class="'+(distribuivel>0?'pos':'')+'">'+moeda(distribuivel)+'</b></div><div class="home-metricas" style="margin-top:12px"><div class="home-metrica"><span>Angello · 50%</span><b>'+moeda(distribuivel/2)+'</b></div><div class="home-metrica"><span>Michel · 50%</span><b>'+moeda(distribuivel/2)+'</b></div></div><p class="mut" style="margin-top:10px">A divisão é uma estimativa com base no saldo inicial informado + recebimentos − gastos cadastrados. Só retire se o caixa físico/bancário confirmar esse saldo e houver dinheiro suficiente para repor o estoque.</p></div>')+
-  '<div class="alerta neu"><div class="ic">i</div><div><b>Importante sobre a sincronização</b><small>O saldo inicial fica salvo neste navegador e não é compartilhado automaticamente com o outro sócio. Registrem o mesmo saldo inicial nos aparelhos ou confirmem o caixa juntos antes de retirar.</small></div></div>';
-  return '<div class="home-heading"><div><div class="home-eyebrow">WHATSAPP</div><div class="home-heading-title">Relação de prazos</div><div class="home-heading-sub">Todos os valores pendentes, organizados por vencimento</div></div><span class="home-heading-icon">☏</span></div>'+
-  '<div class="home-metricas"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Total pendente</span><b>'+R(abertos.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
-  '<div class="card"><p class="mut">A relação inclui prazos em atraso, vencendo hoje e futuros. Clientes com saldo pendente sem data também aparecem em uma seção separada.</p><div class="form"><button class="btn" onclick="copiarRelacaoPrazos()">Copiar relação para WhatsApp</button><button class="btn sec" onclick="abrirRelacaoPrazosWhats()">Abrir WhatsApp com mensagem</button></div></div>'+
-  bloco('🔴 Em atraso',atrasados,'red')+bloco('🟡 Vence hoje',hojeV,'yellow')+bloco('🟢 A vencer',futuros,'green')+bloco('⚪ Sem data de vencimento',semData,'mut')+
+  const fechamento='<details class="card prazos-fechamento"><summary>Fechamento mensal e divisão dos sócios</summary><div class="prazos-fechamento-conteudo">'+
+  '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Mês</label><select id="fech-mes" onchange="localStorage.setItem(\\'smpodsp_fech_mes\\',this.value);trocarMesFechamento()">'+opMes+'</select>'+
+  '<div class="home-metricas prazos-mini-metricas" style="margin-top:10px"><div class="home-metrica"><span>Recebido</span><b class="pos">'+moeda(recebimentos)+'</b></div><div class="home-metrica"><span>Despesas</span><b class="neg">'+moeda(despesas)+'</b></div></div>'+
+  '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Saldo no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Informe o saldo inicial" value="'+(inicial===null?'':inicial)+'"><button class="btn sec prazos-salvar" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button>'+
+  (caixaCalculado===null?'<p class="mut" style="margin-top:10px">Informe o saldo inicial para calcular o caixa. Vendas ainda não recebidas não entram como dinheiro disponível.</p>':
+  '<div class="prazos-caixa-resumo"><div class="line"><span>Caixa estimado</span><b>'+moeda(caixaCalculado)+'</b></div><div class="line"><span>Reserva protegida</span><b>'+moeda(1500)+'</b></div><div class="line t"><span>Disponível para divisão</span><b class="'+(distribuivel>0?'pos':'')+'">'+moeda(distribuivel)+'</b></div><div class="home-metricas prazos-mini-metricas"><div class="home-metrica"><span>Angello · 50%</span><b>'+moeda(distribuivel/2)+'</b></div><div class="home-metrica"><span>Michel · 50%</span><b>'+moeda(distribuivel/2)+'</b></div></div></div>')+
+  '<p class="mut" style="font-size:11px;margin-top:10px">Estimativa baseada no saldo inicial, recebimentos e despesas cadastradas. Confira o dinheiro real e a reposição do estoque antes de retirar. O saldo inicial fica salvo apenas neste navegador.</p></div></details>';
+  return '<div class="home-heading"><div><div class="home-eyebrow">PRAZOS</div><div class="home-heading-title">Cobranças pendentes</div><div class="home-heading-sub">Copie uma mensagem pronta com os prazos para enviar no WhatsApp.</div></div></div>'+
+  '<div class="home-metricas prazos-resumo"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
+  '<div class="card prazos-copiar-card"><button class="btn prazos-copiar-btn" onclick="copiarRelacaoPrazos()">Copiar relação de prazos</button><p class="mut">A lista de clientes não aparece aqui. O texto completo é copiado para você colar onde quiser.</p></div>'+
   (!abertos.length?'<div class="empty">Nenhum prazo pendente no momento.</div>':'')+fechamento;
 }
 
