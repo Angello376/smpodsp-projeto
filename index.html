@@ -573,6 +573,59 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
 }
 
+
+/* ===== ACABAMENTO MOBILE: painel e navegação simples ===== */
+.bnav{
+  background:rgba(5,6,11,.96);
+  border-top:1px solid rgba(125,155,205,.16);
+  box-shadow:0 -8px 28px rgba(0,0,0,.24);
+  backdrop-filter:blur(18px);
+}
+.bnav button{color:#7d8ba5;gap:4px;letter-spacing:.035em;font-weight:650}
+.bnav button span{
+  width:30px;height:26px;display:flex;align-items:center;justify-content:center;
+  font-size:23px;line-height:1;font-family:system-ui,sans-serif;font-weight:500;
+  border-radius:9px;color:inherit;
+}
+.bnav button.on{color:#65f5ad;background:transparent}
+.bnav button.on span{background:rgba(57,255,136,.10);text-shadow:0 0 14px rgba(57,255,136,.35)}
+.painel-periodo{grid-template-columns:repeat(2,minmax(0,1fr));}
+.painel-subnav{grid-template-columns:repeat(3,minmax(0,1fr));}
+.painel-subnav button{font-size:12px;letter-spacing:.04em}
+.ic{padding:16px!important}
+.ic-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.ic-titulo{font-size:13px;color:var(--mut);font-weight:650}
+.ic-pct{font-size:26px;font-weight:800;color:#39ff88}
+.ic-bar{height:7px;margin:10px 0 12px}
+.ic-linha{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:13px;color:var(--mut)}
+.ic-linha b{color:var(--fg)}
+.hero.amarelo{padding:19px 17px;background:linear-gradient(135deg,rgba(255,193,59,.12),rgba(11,15,26,.98) 75%);border:1px solid rgba(255,193,59,.38);box-shadow:none}
+.hero.amarelo small{color:#c6ad73;letter-spacing:.13em}
+.hero.amarelo b{font-size:clamp(21px,5.5vw,28px);line-height:1.22;letter-spacing:-.035em;margin:8px 0;color:#f4f0e6}
+.painel-subnav{margin-top:14px;margin-bottom:10px}
+.painel-subnav button{min-height:42px}
+@media(max-width:600px){
+  main{padding:12px 12px calc(88px + env(safe-area-inset-bottom,0px))}
+  main>h1{margin:3px 4px 12px}
+  .painel-periodo{margin:8px 0 10px}
+  .painel-periodo button{min-height:42px}
+  .hero.amarelo{margin:10px 0;padding:18px 16px;border-radius:16px}
+  .ic{margin:10px 0;padding:15px!important;border-radius:16px}
+  .ic-linha{font-size:12px}
+  .ic-pct{font-size:24px}
+  .painel-subnav{margin:10px 0 12px;padding:4px;border-radius:14px}
+  .painel-subnav button{min-height:42px;font-size:11px;letter-spacing:.025em;padding:8px 3px}
+  .painel-subnav button.on{background:linear-gradient(135deg,rgba(59,130,255,.18),rgba(57,255,136,.10));box-shadow:inset 0 0 0 1px rgba(110,170,255,.22)}
+  .bnav{padding:7px 5px calc(5px + env(safe-area-inset-bottom,0px));gap:2px}
+  .bnav button{min-width:0;padding:4px 1px 3px;font-size:10px;letter-spacing:0;gap:3px}
+  .bnav button span{width:28px;height:24px;font-size:21px;border-radius:8px}
+  .bnav button.on{background:transparent}
+}
+@media(max-width:360px){
+  .bnav button{font-size:9px}
+  .bnav button span{font-size:19px}
+}
+
 </style>
 </head>
 <body>
@@ -595,7 +648,7 @@ const hoje=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStri
 const fd=d=>d?d.split('-').reverse().join('/'):'';
 const v=id=>{const el=$('#'+id);return el?el.value:''};
 const n=id=>parseFloat(String(v(id)).replace(',','.'))||0;
-const TABS=[['painel','📊','Painel'],['vendas','🛒','Vendas'],['produtos','📦','Produtos'],['clientes','👥','Clientes'],['gastos','💸','Gastos']];
+const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
 const CATS=['Divulgação','Frete/Envio','Taxas','Aluguel/Contas','Equipamento (investimento)','Outros'];
 const cli=id=>(S.c.find(x=>x.id===id)||{}).nome||'Avulso';
 
@@ -997,9 +1050,9 @@ function view_painel(){
   if(sub==='rec')body=`<div class="card">${L('Recebido no período',recebido,'pos')}${L('A receber (a prazo)',aRecTot)}${L('Vencido',vencTot,venc.length?'neg':'',1)}</div>
     ${venc.length?`<div class="card"><b>⚠️ Cobranças vencidas</b>${venc.map(x=>`<div class="line"><span>${esc(cli(x.cid))}<br><span class="mut">${esc(x.nome)} · venc. ${fd(x.venc)}</span></span><b class="neg">${R(saldoDe(x))}</b></div>`).join('')}</div>`:''}`;
   if(sub==='gas')body=`<div class="card">${cats.map(([c,val])=>`<div class="line"><span>${c}</span><span>${R(val)} <span class="mut">${Math.round(val/desp*100)}%</span></span></div><div class="bar"><i style="width:${Math.round(val/desp*100)}%"></i></div>`).join('')||'<div class="empty">Nenhum gasto no período.</div>'}</div>`;
-  return `${IMPORT_CARD()}<div class="seg"><button class="${per==='mes'?'on':''}" onclick="setPer('mes')">Este mês</button><button class="${per==='tudo'?'on':''}" onclick="setPer('tudo')">Tudo</button></div>
+  return `${IMPORT_CARD()}<div class="seg painel-periodo"><button class="${per==='mes'?'on':''}" onclick="setPer('mes')">Este mês</button><button class="${per==='tudo'?'on':''}" onclick="setPer('tudo')">Tudo</button></div>
   ${heroLucro(liq,vendas,aRecTot)}
-  ${investCard()}<div class="seg">${SUBS.map(s=>`<button class="${sub===s[0]?'on':''}" onclick="setSub('${s[0]}')">${s[1]}${s[0]==='rec'&&venc.length?'<i class="dot"></i>':''}</button>`).join('')}</div>${body}`;
+  ${investCard()}<div class="seg painel-subnav">${SUBS.map(s=>`<button class="${sub===s[0]?'on':''}" onclick="setSub('${s[0]}')">${s[1]}${s[0]==='rec'&&venc.length?'<i class="dot"></i>':''}</button>`).join('')}</div>${body}`;
 }
 
 let PAGAS_OPEN=false;
