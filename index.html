@@ -1364,15 +1364,14 @@ function view_clientes(){
 function textoRelacaoPrazos(lista){
   const hojeData=hoje();
   const ordenada=lista.slice().sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999'));
-  const linhas=['\u{1F4CB} Prazos pendentes — SMPODSP',''];
+  const linhas=['\u{1F4CB} Prazos pendentes',''];
   ordenada.forEach(x=>{
     linhas.push('\u{1F464} '+cli(x.cid));
-    linhas.push('\u{1F4E6} '+x.nome+(x.sabor?' '+x.sabor:''));
     linhas.push('\u{1F4B0} R$ '+fmtNum(saldoDe(x)));
-    if(x.venc&&x.venc<hojeData)linhas.push('\u{1F534} Atrasado');
-    else if(x.venc===hojeData)linhas.push('\u{1F7E1} Vence hoje');
-    else if(x.venc)linhas.push('\u{1F4C5} Vencimento: '+fd(x.venc));
-    else linhas.push('\u{1F4C5} Sem vencimento definido');
+    if(x.venc&&x.venc<hojeData)linhas.push('\u{1F4C5} Data de pagamento: '+fd(x.venc)+' — atrasado');
+    else if(x.venc===hojeData)linhas.push('\u{1F4C5} Data de pagamento: hoje');
+    else if(x.venc)linhas.push('\u{1F4C5} Data de pagamento: '+fd(x.venc));
+    else linhas.push('\u{1F4C5} Data de pagamento não informada');
     linhas.push('');
   });
   linhas.push('\u{1F4B5} Total pendente: R$ '+fmtNum(ordenada.reduce((s,x)=>s+saldoDe(x),0)));
