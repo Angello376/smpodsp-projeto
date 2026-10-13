@@ -1110,7 +1110,12 @@ function tolerancia(cid){return comprasCli(cid)>3?7:0}
 
 let VLIB=false;
 
-function vcChange(){VLIB=false;atualizaVenda()}
+function vcChange(){
+  VLIB=false;
+  const escolhido=v('vc');
+  $('#venda-detalhes').style.display=escolhido?'block':'none';
+  atualizaVenda();
+}
 function liberarPrazo(){VLIB=!VLIB;atualizaVenda()}
 
 
@@ -1136,7 +1141,8 @@ function vcStatus(cid){
 
 function bloqueadoPrazo(cid){const t=vcStatus(cid).tipo;return t==='atraso'||t==='semcredito'}
 function atualizaVenda(){
-  const cid=v('vc');
+  const valorCliente=v('vc');
+  const cid=valorCliente==='avulso'?'':valorCliente;
   if(!cid)VLIB=false;
   const bloqueado=!!cid&&bloqueadoPrazo(cid);
   const podePrazo=!!cid&&(!bloqueado||VLIB);
@@ -1383,7 +1389,7 @@ async function importLocal(){
 async function addV(){
   const p=S.p.find(x=>x.id===VS.pid);const q=VS.q;
   if(!p||q<=0)return alert('Escolha um produto.');
-  const cid=v('vc');const prazo=v('vf')==='prazo';
+  const valorCliente=v('vc');const cid=valorCliente==='avulso'?'':valorCliente;const prazo=v('vf')==='prazo';
   let liberado=false;
   if(prazo){
     if(!cid)return alert('Venda a prazo precisa de um cliente cadastrado.');
@@ -1717,8 +1723,8 @@ function view_vendas(){
   const oc=S.c.map(c=>`<option value="${c.id}">${esc(c.nome)}</option>`).join('');
   const preco=first?first.preco:0;
   return `<details ${FORM.venda?'open':''} ontoggle="FORM.venda=this.open"><summary>＋ Nova venda</summary><div class="card vs-card">${S.p.length?'':'<p class="mut">Cadastre um produto primeiro.</p>'}
-  <div class="vs-field"><div class="vs-label">Cliente</div><select id="vc" onchange="vcChange()"><option value="">Avulso</option>${oc}</select></div>
-  <div id="vstat">${alertaHTML('')}</div>
+  <div class="vs-field"><div class="vs-label">Cliente</div><select id="vc" onchange="vcChange()"><option value="" selected disabled>Selecione um cliente</option><option value="avulso">Venda avulsa (sem cliente)</option>${oc}</select></div>
+  <div id="venda-detalhes" style="display:none"><div id="vstat">${alertaHTML('')}</div>
   <div class="vs-field"><div class="vs-label">Produto</div><select id="vp" onchange="vsProd(this.value)">${op}</select></div>
   <div class="vs-field" id="vsw" style="display:${first&&norm(first).length?'':'none'}"><div class="vs-label">Sabor</div><div id="vsabs" class="vs-sabores">${sabsHTML(first)}</div></div>
   <div class="vs-row">
@@ -1729,7 +1735,7 @@ function view_vendas(){
   <div class="vs-field" id="vdw" style="display:none"><div class="vs-label">Vencimento do restante</div><input id="vd" type="date" value="${hoje()}"></div>
   <div class="vs-field" id="vpw" style="display:none"><div class="vs-label">Já pago agora</div><div class="vs-moeda"><span>R$</span><input id="vpg" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
   <div class="vs-total"><small>Total da venda</small><b id="vtotal">${R(VS.q*preco)}</b></div>
-  <button class="btn vs-btn" onclick="addV()">Registrar venda</button></div></details>
+  <button class="btn vs-btn" onclick="addV()">Registrar venda</button></div></div></details>
   <div class="lista-col">${listaVendas()}</div>`;
 }
 
