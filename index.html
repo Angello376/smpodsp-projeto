@@ -831,6 +831,49 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .toast{display:flex;align-items:center;justify-content:center;gap:9px;animation:toastIn .32s cubic-bezier(.2,.8,.2,1) both}.toast::before{content:'✓';display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:2px solid rgba(255,255,255,.8);border-radius:50%;font-size:14px;animation:checkPop .35s .08s cubic-bezier(.2,.8,.2,1) both}.toast.saindo{animation:toastOut .2s ease both}
 .ov{animation:overlayIn .18s ease both}.md{animation:modalIn .22s cubic-bezier(.2,.8,.2,1) both}
 @keyframes cardReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes toastIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}@keyframes checkPop{from{opacity:0;transform:scale(.4) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(0)}}@keyframes overlayIn{from{opacity:0}to{opacity:1}}@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
+
+/* Score de recuperação do investimento */
+.home-invest{padding:18px;background:linear-gradient(145deg,rgba(13,22,35,.96),rgba(8,13,23,.94));border:1px solid rgba(101,245,173,.15);border-radius:18px}
+.home-score-wrap{display:flex;align-items:center;gap:18px}
+.home-score-ring{--score:0;flex:0 0 112px;width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#65f5ad calc(var(--score)*1%),rgba(125,155,205,.13) 0);position:relative;animation:scoreAppear .7s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 0 24px rgba(101,245,173,.07)}
+.home-score-ring:before{content:'';position:absolute;inset:7px;border-radius:50%;background:#0b1220;border:1px solid rgba(125,155,205,.12)}
+.home-score-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
+.home-score-core strong{font-size:25px;line-height:1;font-weight:850;letter-spacing:-.04em;color:#65f5ad}
+.home-score-core span{font-size:8px;letter-spacing:.1em;color:var(--mut);font-weight:750}
+.home-score-info{flex:1;min-width:0}
+.home-score-amount{margin-top:9px;overflow-wrap:anywhere}
+.home-score-amount b{font-size:18px;color:var(--fg)}
+.home-score-amount span{font-size:11px;color:var(--mut)}
+.home-score-missing{font-size:11px;color:var(--mut);margin-top:6px}
+.home-score-missing b{color:#ffd166}
+.home-score-done{font-size:11px;color:#65f5ad;margin-top:7px;font-weight:700}
+@keyframes scoreAppear{from{opacity:.3;transform:scale(.82) rotate(-35deg)}to{opacity:1;transform:scale(1) rotate(0)}}
+@media(max-width:380px){.home-score-wrap{gap:12px}.home-score-ring{flex-basis:94px;width:94px;height:94px}.home-score-core strong{font-size:22px}.home-score-amount b{font-size:16px}}
+
+/* Confirmação de venda em tela cheia, com check animado */
+.sale-success-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(3,8,16,.84);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);animation:saleOverlayIn .22s ease both}
+.sale-success-card{width:min(100%,370px);padding:32px 24px 25px;text-align:center;border-radius:26px;background:linear-gradient(155deg,#111e2e,#09111d);border:1px solid rgba(101,245,173,.22);box-shadow:0 25px 90px rgba(0,0,0,.42);animation:saleCardIn .45s cubic-bezier(.18,.85,.25,1.2) both;position:relative;overflow:hidden}
+.sale-success-card:before{content:'';position:absolute;left:-30%;right:-30%;top:-85px;height:170px;background:radial-gradient(ellipse,rgba(101,245,173,.17),transparent 68%);pointer-events:none}
+.sale-success-icon{width:100px;height:100px;margin:0 auto 20px;border-radius:50%;display:grid;place-items:center;background:rgba(101,245,173,.1);border:1px solid rgba(101,245,173,.22);position:relative;animation:saleIconPop .48s .08s cubic-bezier(.18,.85,.25,1.3) both}
+.sale-success-icon svg{width:54px;height:54px;overflow:visible}
+.sale-success-icon circle{stroke:#65f5ad;stroke-width:2;stroke-dasharray:157;stroke-dashoffset:157;animation:saleCircle .55s .22s ease-out forwards}
+.sale-success-icon path{fill:none;stroke:#65f5ad;stroke-width:4;stroke-linecap:round;stroke-linejoin:round;stroke-dasharray:40;stroke-dashoffset:40;animation:saleCheck .35s .62s ease-out forwards}
+.sale-success-kicker{font-size:10px;font-weight:800;letter-spacing:.18em;color:#65f5ad;text-transform:uppercase}
+.sale-success-title{font-size:25px;font-weight:850;letter-spacing:-.04em;margin:8px 0 7px;color:#f5f8ff}
+.sale-success-desc{font-size:13px;line-height:1.5;color:#aab7ca;margin:0 auto;max-width:260px}
+.sale-success-total{font-size:27px;font-weight:850;letter-spacing:-.04em;color:#65f5ad;margin:18px 0 20px;animation:saleTotalIn .4s .35s both}
+.sale-success-close{width:100%;border:0;border-radius:13px;padding:13px 16px;background:#65f5ad;color:#07140e;font-size:13px;font-weight:850;cursor:pointer;transition:transform .15s,filter .15s}
+.sale-success-close:active{transform:scale(.98);filter:brightness(.94)}
+.sale-confetti{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sale-confetti i{position:absolute;top:-12px;width:6px;height:10px;border-radius:2px;background:#65f5ad;animation:confettiFall 1.6s ease-in forwards}
+.sale-confetti i:nth-child(3n){background:#f6cb68}.sale-confetti i:nth-child(3n + 1){background:#7fb5ff}.sale-confetti i:nth-child(1){left:8%;animation-delay:.08s}.sale-confetti i:nth-child(2){left:19%;animation-delay:.24s}.sale-confetti i:nth-child(3){left:31%;animation-delay:.02s}.sale-confetti i:nth-child(4){left:43%;animation-delay:.18s}.sale-confetti i:nth-child(5){left:57%;animation-delay:.1s}.sale-confetti i:nth-child(6){left:69%;animation-delay:.28s}.sale-confetti i:nth-child(7){left:81%;animation-delay:.04s}.sale-confetti i:nth-child(8){left:92%;animation-delay:.2s}
+@keyframes saleOverlayIn{from{opacity:0}to{opacity:1}}
+@keyframes saleCardIn{from{opacity:0;transform:translateY(18px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes saleIconPop{from{opacity:0;transform:scale(.55)}to{opacity:1;transform:scale(1)}}
+@keyframes saleCircle{to{stroke-dashoffset:0}}@keyframes saleCheck{to{stroke-dashoffset:0}}
+@keyframes saleTotalIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes confettiFall{0%{transform:translateY(-5px) rotate(0);opacity:0}12%{opacity:1}100%{transform:translateY(420px) rotate(520deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.sale-success-overlay,.sale-success-card,.sale-success-icon,.sale-success-icon circle,.sale-success-icon path,.sale-success-total,.sale-confetti i,.home-score-ring{animation:none!important}.sale-success-icon circle,.sale-success-icon path{stroke-dashoffset:0}}
 </style>
 </head>
 <body>
@@ -895,6 +938,16 @@ function setTab(t){tab=t;render();scrollTo(0,0)}
 function setPer(p){per=p;render()}
 function setSub(s){sub=s;render()}
 
+
+function animarVendaSucesso(dados){
+  const anterior=document.querySelector('.sale-success-overlay');if(anterior)anterior.remove();
+  const overlay=document.createElement('div');overlay.className='sale-success-overlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Venda registrada com sucesso');
+  const total=R(dados.total);const item=(dados.q===1?'1 unidade':dados.q+' unidades')+' de '+dados.nome;
+  overlay.innerHTML=`<div class="sale-success-card"><div class="sale-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="sale-success-icon" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none"></circle><path d="M15 29l9 9 18-20"></path></svg></div><div class="sale-success-kicker">Tudo certo!</div><div class="sale-success-title">Venda registrada</div><p class="sale-success-desc">${item}<br>foi registrada com sucesso.</p><div class="sale-success-total">${total}</div><button class="sale-success-close" type="button" onclick="this.closest('.sale-success-overlay').remove()">Continuar</button></div>`;
+  const fecharFora=e=>{if(e.target===overlay)overlay.remove()};overlay.addEventListener('click',fecharFora);
+  const tecla=e=>{if(e.key==='Escape'){overlay.remove();document.removeEventListener('keydown',tecla)}};document.addEventListener('keydown',tecla);
+  document.body.appendChild(overlay);const btn=overlay.querySelector('.sale-success-close');if(btn)btn.focus();
+}
 
 function avisar(msg){
   try{if('Notification' in window&&Notification.permission==='granted')new Notification('SMPODSP',{body:msg})}catch(e){}
@@ -1278,9 +1331,17 @@ function view_painel(){
     </div>
   </section>
   <section class="home-invest">
-    <div class="home-invest-head"><div><span class="home-label">Recuperação do estoque</span><div class="home-invest-sub">${I.ok?'Investimento recuperado':R(I.rec)+' de '+R(I.inv)+' recuperados'}</div></div><b>${pct}%</b></div>
-    <div class="home-progress"><i style="width:${pct}%"></i></div>
-    ${!I.ok?`<div class="home-invest-foot"><span>Faltam ${R(I.falta)}</span><span>para recuperar</span></div>`:''}
+    <div class="home-score-wrap">
+      <div class="home-score-ring" style="--score:${pct}" role="img" aria-label="${pct}% do investimento recuperado">
+        <div class="home-score-core"><strong>${pct}%</strong><span>RECUPERADO</span></div>
+      </div>
+      <div class="home-score-info">
+        <span class="home-label">Recuperação do estoque</span>
+        <div class="home-invest-sub">${I.ok?'Investimento recuperado!':'Veja quanto do investimento já voltou pelas vendas.'}</div>
+        <div class="home-score-amount"><b>${R(I.rec)}</b><span> de ${R(I.inv)}</span></div>
+        ${!I.ok?`<div class="home-score-missing">Faltam <b>${R(I.falta)}</b> para recuperar</div>`: '<div class="home-score-done">✓ Você recuperou seu investimento</div>'}
+      </div>
+    </div>
   </section>
   ${venc.length? `<button class="home-alert" onclick="setTab('vendas')"><span class="home-alert-icon">!</span><span class="home-alert-text"><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes · toque para conferir</small></span><span class="home-arrow">›</span></button>` : ''}
   ${baixo.length? `<button class="home-alert home-alert-stock" onclick="setTab('produtos')"><span class="home-alert-icon">↓</span><span class="home-alert-text"><b>${baixo.length} produto${baixo.length===1?' com estoque baixo':'s com estoque baixo'}</b><small>Confira seu estoque · toque para abrir</small></span><span class="home-arrow">›</span></button>` : ''}
@@ -1421,7 +1482,7 @@ async function addV(){
     const upd={est:p.est-q};if(novos){upd.sabores=novos;upd.est=novos.reduce((s,f)=>s+f.est,0)}
     await ST.upd('produtos',p.id,upd);
   });
-  if(salvou){VS.q=1;VLIB=false;FORM.venda=false;avisar('Venda registrada com sucesso! Estoque atualizado.');}
+  if(salvou){VS.q=1;VLIB=false;FORM.venda=false;animarVendaSucesso({total,q,nome:p.nome});}
 }
 
 
