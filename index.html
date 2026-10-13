@@ -1432,7 +1432,7 @@ function textoRelacaoSocios(mes){
   }else{
     linhas.push('Angello: '+R(disponivel/2),'Michel: '+R(disponivel/2),'','*Meta do mês: '+(disponivel>0?'BATIDA':'NÃO BATIDA')+'*');
   }
-  return linhas.join(String.fromCharCode(10));
+  return linhas.join('\\n');
 }
 async function copiarRelacaoSocios(){
   const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
