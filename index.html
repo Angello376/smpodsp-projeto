@@ -457,6 +457,10 @@ select option:disabled{color:#6b7a94}
 .md .mdb .mdok{min-height:44px;min-width:0;padding:0 22px;border-radius:999px;font-size:14px;font-weight:700;letter-spacing:.02em;box-shadow:0 0 22px -8px rgba(59,130,255,.6)}
 .md .mdb .mdok.mdperigo{background:linear-gradient(135deg,#ff3d6e,#ff7a99);color:#fff;box-shadow:0 0 22px -8px rgba(255,61,110,.75)}
 .md .mdm{font-size:15px;line-height:1.5;margin-bottom:18px}
+.md-excluido{border-color:rgba(255,61,110,.65)!important;box-shadow:0 0 40px -12px rgba(255,61,110,.55)!important;text-align:center}
+.md-excluido .mdx-icone{display:grid;place-items:center;width:54px;height:54px;margin:2px auto 16px;border-radius:50%;background:rgba(255,61,110,.14);border:2px solid #ff3d6e;color:#ff557b;font-size:30px;font-weight:800;line-height:1;box-shadow:0 0 24px -8px rgba(255,61,110,.8)}
+.md-excluido .mdm{font-weight:650}
+.md-excluido .mdok{background:linear-gradient(135deg,#ff3d6e,#ff7a99)!important;color:#fff!important;box-shadow:0 0 22px -8px rgba(255,61,110,.75)!important}
 button{transition:transform .12s ease,background-color .2s ease,box-shadow .2s ease,color .2s ease,opacity .2s ease}
 button:active{transform:scale(.96)}
 .seg button{transition:background-color .25s ease,color .25s ease}
@@ -1503,7 +1507,7 @@ function modal(opts){
     const ov=document.createElement('div');
     ov.className='ov';
     const temInput=!!opts.input;
-    ov.innerHTML=`<div class="md" role="dialog"><p class="mdm">${esc(opts.msg||'')}</p>${temInput?`<input class="mdi" id="mdi" value="${esc(opts.valor||'')}" inputmode="${opts.inputmode||'text'}" autocomplete="off">`:''}<div class="mdb">${opts.cancel?`<button type="button" class="sm" id="mdc">${esc(opts.cancel)}</button>`:''}<button type="button" class="btn mdok ${opts.danger?'mdperigo':''}" id="mdo">${esc(opts.ok||'OK')}</button></div></div>`;
+    ov.innerHTML=`<div class="md ${opts.excluido?'md-excluido':''}" role="dialog">${opts.excluido?'<div class="mdx-icone" aria-hidden="true">×</div>':''}<p class="mdm">${esc(opts.msg||'')}</p>${temInput?`<input class="mdi" id="mdi" value="${esc(opts.valor||'')}" inputmode="${opts.inputmode||'text'}" autocomplete="off">`:''}<div class="mdb">${opts.cancel?`<button type="button" class="sm" id="mdc">${esc(opts.cancel)}</button>`:''}<button type="button" class="btn mdok ${opts.danger?'mdperigo':''}" id="mdo">${esc(opts.ok||'OK')}</button></div></div>`;
     document.body.appendChild(ov);
     const fechar=val=>{ov.remove();res(val)};
     ov.querySelector('#mdo').onclick=()=>fechar(temInput?ov.querySelector('#mdi').value:true);
@@ -1596,7 +1600,7 @@ async function delV(id){
   if(!ok&&linha){linha.getAnimations().forEach(a=>a.cancel());linha.style.opacity='';linha.style.transform='';linha.style.height='';linha.style.overflow='';linha.style.willChange='';linha.style.transition='';linha.style.margin='';linha.style.padding='';linha.style.borderWidth='';linha.classList.remove('removendo');}
   else if(ok){await modal({msg:'Venda apagada com sucesso! '+x.q+' unidade(s) de '+x.nome+' voltaram para o estoque.',ok:'OK'});}
 }async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
-async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;const p=S.p.find(x=>x.id===pid);const nome=p?.nome||'Produto';const ok=await run(()=>ST.del('produtos',pid));if(ok)await modal({msg:'Produto excluído com sucesso! '+nome+' foi removido do estoque.',ok:'OK'});}
+async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;const p=S.p.find(x=>x.id===pid);const nome=p?.nome||'Produto';const ok=await run(()=>ST.del('produtos',pid));if(ok)await modal({msg:'Produto excluído com sucesso! '+nome+' foi removido do estoque.',ok:'OK',excluido:true});}
 async function removeSab(pid,nome){
   if(!(await confirmar('Remover o sabor '+nome+'?',true)))return;
   const p=S.p.find(x=>x.id===pid);const L=norm(p).filter(f=>f.nome!==nome);
