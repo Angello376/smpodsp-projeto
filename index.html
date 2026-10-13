@@ -939,14 +939,21 @@ function setPer(p){per=p;render()}
 function setSub(s){sub=s;render()}
 
 
-function animarVendaSucesso(dados){
+function animarConfirmacao(dados){
   const anterior=document.querySelector('.sale-success-overlay');if(anterior)anterior.remove();
-  const overlay=document.createElement('div');overlay.className='sale-success-overlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label','Venda registrada com sucesso');
-  const total=R(dados.total);const item=(dados.q===1?'1 unidade':dados.q+' unidades')+' de '+dados.nome;
-  overlay.innerHTML=`<div class="sale-success-card"><div class="sale-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div><div class="sale-success-icon" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none"></circle><path d="M15 29l9 9 18-20"></path></svg></div><div class="sale-success-kicker">Tudo certo!</div><div class="sale-success-title">Venda registrada</div><p class="sale-success-desc">${item}<br>foi registrada com sucesso.</p><div class="sale-success-total">${total}</div><button class="sale-success-close" type="button" onclick="this.closest('.sale-success-overlay').remove()">Continuar</button></div>`;
-  const fecharFora=e=>{if(e.target===overlay)overlay.remove()};overlay.addEventListener('click',fecharFora);
-  const tecla=e=>{if(e.key==='Escape'){overlay.remove();document.removeEventListener('keydown',tecla)}};document.addEventListener('keydown',tecla);
+  const overlay=document.createElement('div');overlay.className='sale-success-overlay';overlay.setAttribute('role','dialog');overlay.setAttribute('aria-modal','true');overlay.setAttribute('aria-label',dados.titulo||'Operação concluída');
+  const confete=dados.confete===false?'': '<div class="sale-confetti" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>';
+  const total=dados.valor?'<div class="sale-success-total">'+esc(dados.valor)+'</div>':'';
+  overlay.innerHTML=`<div class="sale-success-card">${confete}<div class="sale-success-icon" aria-hidden="true"><svg viewBox="0 0 56 56"><circle cx="28" cy="28" r="25" fill="none"></circle><path d="M15 29l9 9 18-20"></path></svg></div><div class="sale-success-kicker">${esc(dados.kicker||'Tudo certo!')}</div><div class="sale-success-title">${esc(dados.titulo||'Concluído!')}</div><p class="sale-success-desc">${esc(dados.descricao||'A operação foi concluída com sucesso.')}</p>${total}<button class="sale-success-close" type="button">${esc(dados.botao||'Continuar')}</button></div>`;
+  const fechar=()=>{overlay.remove();document.removeEventListener('keydown',tecla)};
+  const fecharFora=e=>{if(e.target===overlay)fechar()};overlay.addEventListener('click',fecharFora);
+  const tecla=e=>{if(e.key==='Escape')fechar()};document.addEventListener('keydown',tecla);
+  overlay.querySelector('.sale-success-close').addEventListener('click',fechar);
   document.body.appendChild(overlay);const btn=overlay.querySelector('.sale-success-close');if(btn)btn.focus();
+}
+function animarVendaSucesso(dados){
+  const item=(dados.q===1?'1 unidade':dados.q+' unidades')+' de '+dados.nome;
+  animarConfirmacao({kicker:'Tudo certo!',titulo:'Venda registrada',descricao:item+' foi registrada com sucesso.',valor:R(dados.total),botao:'Continuar'});
 }
 
 function avisar(msg){
@@ -1152,10 +1159,12 @@ function view_produtos(){
 
 
 async function addC(){
-  const nome=v('cn').trim();if(!nome)return;
+  const nome=v('cn').trim();if(!nome)return alert('Informe o nome do cliente.');
   const tel=v('ct').trim();const insta=v('ci').trim().replace(/^@/,'');
   if(!tel&&!insta)return alert('Informe o telefone ou o Instagram.');
-  await run(()=>ST.set('clientes',uid(),{nome,tel,insta}))}
+  const salvou=await run(()=>ST.set('clientes',uid(),{nome,tel,insta}));
+  if(salvou){FORM.cli=false;animarConfirmacao({kicker:'Cadastro concluído',titulo:'Cliente cadastrado!',descricao:nome+' já está na sua lista de clientes.',botao:'Continuar'});}
+}
 function contatoCli(c){return [c.tel?esc(c.tel):'',c.insta?'@'+esc(c.insta):''].filter(Boolean).join(' · ')||'sem contato'}
 
 
@@ -1587,7 +1596,10 @@ function cobrarWhats(id){
   };
   const abrir=ov.querySelector('#cbopen');
   abrir.href='https://web.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(msg);
-  abrir.onclick=()=>{abrir.href='https://web.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(ov.querySelector('#cbmsg').value)};
+  abrir.onclick=()=>{
+    abrir.href='https://web.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(ov.querySelector('#cbmsg').value);
+    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Mensagem preparada!',descricao:'O WhatsApp vai abrir com a mensagem preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
+  };
 }
 
 function planoRecuperar(falta){
