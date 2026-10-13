@@ -929,7 +929,15 @@ const local={
   upd(c,id,d){const x=S[KEY[c]].find(x=>x.id===id);if(x)Object.assign(x,d);saveLocal();render()},
   del(c,id){S[KEY[c]]=S[KEY[c]].filter(x=>x.id!==id);saveLocal();render()}
 };
-function saveLocal(){try{localStorage.setItem('pods',JSON.stringify(S))}catch(e){}}
+function saveLocal(){
+  try{
+    localStorage.setItem('pods',JSON.stringify(S));
+    return true;
+  }catch(e){
+    console.warn('Não foi possível salvar os dados neste aparelho. Verifique o espaço disponível e as permissões do navegador.',e);
+    return false;
+  }
+}
 function remoteStore(db){return{
   set:(c,id,d)=>db.collection(c).doc(id).set(d),
   upd:(c,id,d)=>db.collection(c).doc(id).update(d),
@@ -2217,7 +2225,10 @@ async function entrarNoApp(){
       sincronizacaoPendente=setTimeout(async()=>{
         const tabela=payload&&payload.table;
         if(TABELAS[tabela]){
-          if(await sincronizarTabela(tabela))render();
+          // Centraliza a leitura para evitar concorrência com a sincronização completa.
+          // Se já houver uma leitura em andamento, o polling de segurança
+          // fará nova conferência em até 5 segundos.
+          await sincronizarTudoSilencioso();
         }else{
           await sincronizarTudoSilencioso();
         }
