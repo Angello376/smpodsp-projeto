@@ -918,6 +918,9 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .brand-name{font-size:18px;font-weight:850;letter-spacing:.095em;line-height:1;color:var(--fg)}
 .brand-subtitle{display:flex;align-items:center;gap:6px;font-size:9px;font-weight:650;letter-spacing:.14em;line-height:1.2;color:var(--mut)}
 .brand-subtitle i{width:3px;height:3px;display:inline-block;border-radius:50%;background:var(--ac);opacity:.9}
+.brand-subtitle{gap:6px!important;letter-spacing:.12em!important}
+.online-dot{width:6px;height:6px;flex:0 0 6px;border-radius:50%;background:#39ff88;box-shadow:0 0 7px rgba(57,255,136,.65)}
+#onlineCount{font-size:10px;letter-spacing:0;color:var(--fg);font-weight:800}
 @media(max-width:600px){
   .brand{gap:9px!important;margin:2px 3px 13px!important;padding-bottom:11px!important}
   .logo-mark{width:36px;height:36px;flex-basis:36px;border-radius:11px}
@@ -938,7 +941,7 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
       <path d="M27.5 3.5 10 26h11l-1 18.5L38 19H26.5L27.5 3.5Z" fill="url(#brandBolt)" stroke="#8bbcff" stroke-width=".7" stroke-linejoin="round"/>
     </svg>
   </span>
-  <span class="brand-copy"><span class="brand-name">SMPODSP</span><span class="brand-subtitle">GESTÃO <i></i> VENDAS <i></i> ESTOQUE</span></span>
+  <span class="brand-copy"><span class="brand-name">SMPODSP</span><span class="brand-subtitle"><span class="online-dot"></span> ONLINE <span id="onlineCount">1</span></span></span>
 </h1>
 <div id="app"></div>
 <p class="mut">Os dados ficam salvos neste aparelho/navegador.</p>
@@ -2222,6 +2225,32 @@ function mostrarRedefinirSenha(mensagem=''){
 }
 async function entrarNoApp(){
   REMOTE=true;ST=supabaseStore();READY=false;
+  // Presença em tempo real: conta navegadores/dispositivos conectados na mesma conta.
+  try{
+    const{data:{user}}=await sb.auth.getUser();
+    if(user){
+      let deviceId=localStorage.getItem('smpodsp-device-id');
+      if(!deviceId){deviceId=(crypto.randomUUID?crypto.randomUUID():String(Date.now())+'-'+Math.random().toString(36).slice(2));localStorage.setItem('smpodsp-device-id',deviceId);}
+      const onlineLabel=$('#onlineCount');
+      const presence=sb.channel('smpodsp-online-'+user.id,{config:{presence:{key:deviceId}}});
+      const atualizarOnline=()=>{
+        const estado=presence.presenceState();
+        const total=Object.keys(estado).length;
+        if(onlineLabel)onlineLabel.textContent=String(Math.max(1,total));
+      };
+      presence.on('presence',{event:'sync'},atualizarOnline)
+        .on('presence',{event:'join'},atualizarOnline)
+        .on('presence',{event:'leave'},atualizarOnline)
+        .subscribe(async status=>{
+          if(status==='SUBSCRIBED'){
+            await presence.track({deviceId,onlineAt:new Date().toISOString()});
+            atualizarOnline();
+          }
+        });
+      window.addEventListener('beforeunload',()=>{presence.untrack();sb.removeChannel(presence);});
+    }
+  }catch(e){console.warn('Não foi possível atualizar o contador de dispositivos online.',e);}
+
   render();
   await carregarTudo();
   READY=true;animarProximo();render();
