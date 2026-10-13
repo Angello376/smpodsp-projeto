@@ -1595,8 +1595,9 @@ function cobrarWhats(id){
       <button type="button" class="cob-btn" id="cbcopy">Copiar mensagem</button>
       <button type="button" class="cob-btn" id="cbcopy2">Copiar Pix</button>
     </div>
-    <a class="cob-open" id="cbopen" href="#" target="_blank" rel="noopener">💬 Abrir conversa no WhatsApp</a>
-    <p class="cob-foot">A chave Pix já vem preenchida. Se trocar, ela fica salva neste aparelho.</p>
+    <a class="cob-open" id="cbopen" href="#">💬 Abrir no aplicativo WhatsApp</a>
+    <a class="cob-web" id="cbweb" href="#" target="_blank" rel="noopener">Não abriu? Usar WhatsApp Web</a>
+    <p class="cob-foot">O botão principal tenta abrir o aplicativo instalado neste dispositivo. A chave Pix já vem preenchida e fica salva neste aparelho.</p>
   </div>`;
   document.body.appendChild(ov);
   const fechar=()=>ov.remove();
@@ -1613,10 +1614,21 @@ function cobrarWhats(id){
     ov.querySelector('#cbcopy2').textContent=ok?'Pix copiado ✓':'Não consegui copiar';
   };
   const abrir=ov.querySelector('#cbopen');
-  abrir.href='https://web.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(msg);
+  const web=ov.querySelector('#cbweb');
+  const atualizarLinks=()=>{
+    const texto=encodeURIComponent(ov.querySelector('#cbmsg').value);
+    abrir.href='whatsapp://send?phone='+num+'&text='+texto;
+    web.href='https://web.whatsapp.com/send?phone='+num+'&text='+texto;
+  };
+  atualizarLinks();
+  ov.querySelector('#cbmsg').addEventListener('input',atualizarLinks);
   abrir.onclick=()=>{
-    abrir.href='https://web.whatsapp.com/send?phone='+num+'&text='+encodeURIComponent(ov.querySelector('#cbmsg').value);
-    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Mensagem preparada!',descricao:'O WhatsApp vai abrir com a mensagem preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
+    atualizarLinks();
+    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Abrindo o WhatsApp',descricao:'Se o aplicativo estiver instalado neste dispositivo, ele será aberto com a mensagem preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
+  };
+  web.onclick=()=>{
+    atualizarLinks();
+    animarConfirmacao({kicker:'Pronto para enviar',titulo:'Mensagem preparada!',descricao:'O WhatsApp Web vai abrir com a mensagem preenchida. Confira o texto e toque em Enviar por lá.',botao:'Entendi',confete:false});
   };
 }
 
