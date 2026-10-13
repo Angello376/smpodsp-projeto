@@ -467,6 +467,112 @@ button:active{transform:scale(.96)}
 .enter{animation:slideIn .38s cubic-bezier(.2,.7,.2,1) both}
 .enter .hero b{will-change:transform}
 .sair{text-align:center;margin:18px 0 6px}
+
+/* ===== RESPONSIVIDADE GERAL: celular, tablet e desktop ===== */
+img,svg,video,canvas{max-width:100%}
+button,input,select,textarea{font:inherit}
+button{touch-action:manipulation}
+.card,.hero,.invok,.alerta,.vs-card,.cob{min-width:0}
+.form>*{min-width:0}
+input,select,textarea{max-width:100%}
+.vs-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.vs-field{min-width:0}
+.vs-stepper{max-width:100%}
+.vs-stepper button,.stepper button{touch-action:manipulation}
+.pcard,.cl-row,.vr2,.vrow,.frow,.ch-row{min-width:0}
+.ptop>*,.phead>*,.cl-top>*,.vr2-main>*{min-width:0}
+.pact>*{min-width:0}
+.pact .sm{flex:1}
+.frow>span{min-width:0;overflow-wrap:anywhere}
+.frow .stepper{flex-shrink:0}
+.sab input{min-width:0}
+.vr2-main{flex-wrap:wrap}
+.vr2-foot{flex-wrap:wrap}
+.vr2-acts{flex-wrap:wrap}
+.cl-sub,.ch-p,.ch-d{overflow-wrap:anywhere}
+.ch-row{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ch-row>div:first-child{min-width:0;flex:1}
+.ch-v{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
+.mdb{flex-wrap:wrap}
+.mdb>*{flex:1 1 auto}
+button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--ac);outline-offset:2px}
+@media(min-width:700px){
+  main{max-width:900px;padding-left:24px;padding-right:24px}
+  .form{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .vs-sabores{grid-template-columns:repeat(4,minmax(0,1fr))}
+  .card{padding-left:20px;padding-right:20px}
+  .bnav{left:50%;right:auto;bottom:16px;transform:translateX(-50%);width:min(620px,calc(100% - 32px));border:1px solid var(--bd);border-radius:18px;padding:5px 8px env(safe-area-inset-bottom,0px);box-shadow:0 10px 35px rgba(0,0,0,.35);backdrop-filter:blur(18px);background:color-mix(in srgb,var(--card) 88%,transparent)}
+  .bnav button{border-radius:12px;padding:8px 4px;font-size:12px}
+  .bnav button.on{background:rgba(59,130,255,.12)}
+  .vs-card{padding:20px}
+}
+@media(max-width:600px){
+  main{padding:14px 12px calc(100px + env(safe-area-inset-bottom,0px))}
+  h1{font-size:18px;gap:8px}
+  .logo{width:38px;height:38px}
+  .card{padding:12px;margin:9px 0;border-radius:14px}
+  .hero{padding:18px 16px}
+  .hero b{font-size:clamp(25px,7vw,36px)}
+  .big{font-size:24px}
+  .form{grid-template-columns:minmax(0,1fr);gap:9px}
+  .form .w{grid-column:auto}
+  .seg{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .seg button{min-height:40px;padding:9px 5px}
+  .vs-row{grid-template-columns:minmax(0,1fr)}
+  .vs-sabores{grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+  .vs-sabores .schip{min-height:78px;padding:9px 6px}
+  .pact{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .pact .sm{width:100%;min-height:40px}
+  .ptop{gap:8px}
+  .ptot{font-size:14px}
+  .frow{align-items:center;gap:8px;flex-wrap:wrap}
+  .frow>span{flex:1 1 100%}
+  .frow .stepper{margin-left:auto}
+  .stepper{gap:5px;padding:3px}
+  .stepper button{min-width:40px;min-height:40px}
+  .stepper b{min-width:28px}
+  .act{justify-content:flex-start;flex-wrap:wrap}
+  .act input{width:74px}
+  .vrow{padding:10px 11px;gap:8px}
+  .vact{justify-content:flex-start;flex:1 1 100%}
+  .vact .sm{flex:1 1 auto;min-height:38px;padding:0 10px}
+  .vr2{padding:11px}
+  .vr2-main{gap:6px}
+  .vr2-val{font-size:14px}
+  .vr2-foot{align-items:flex-start}
+  .vr2-acts{width:100%}
+  .vr2-acts .sm{flex:1;min-height:38px}
+  .cl-top{gap:8px}
+  .cl-right{gap:4px;flex-wrap:wrap;justify-content:flex-end}
+  .cl-deve{font-size:12px}
+  .cl-nome{overflow-wrap:anywhere}
+  .ch-row{gap:8px}
+  .ch-v b{font-size:13px}
+  .mes{align-items:flex-start;font-size:11px;gap:6px}
+  .mes .mmeta{white-space:normal;text-align:right;font-size:11px}
+  .mdb{justify-content:stretch}
+  .mdb .btn,.mdok{min-width:0}
+  .cob{padding:14px;border-radius:16px}
+  .cob-acts{grid-template-columns:minmax(0,1fr)}
+  .bnav button{padding:7px 1px 6px;font-size:10px;min-width:0}
+  .bnav button span{font-size:19px}
+}
+@media(max-width:360px){
+  main{padding-left:8px;padding-right:8px}
+  .vs-sabores{grid-template-columns:minmax(0,1fr)}
+  .vs-sabores .schip{min-height:62px;flex-direction:row;justify-content:flex-start;padding:10px 14px}
+  .schip-ico{width:24px;height:24px}
+  .bnav button{font-size:9px}
+  .bnav button span{font-size:17px}
+  .cl-top{flex-direction:column}
+  .cl-right{width:100%;justify-content:space-between}
+  .ptop{flex-direction:column}
+  .ptot{white-space:normal}
+}
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
 </style>
 </head>
 <body>
