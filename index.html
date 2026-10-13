@@ -1453,12 +1453,12 @@ function historicoCli(c){
 }
 
 let ANIMAR=false,T_ANIM=null,RAF=false;
+let LAST_APP='',LAST_NAV='';
 function animarProximo(){ANIMAR=true;clearTimeout(T_ANIM);T_ANIM=setTimeout(()=>{ANIMAR=false},900)}
 function setTab(t){animarProximo();tab=t;render();scrollTo(0,0)}
 function setSub(s){animarProximo();sub=s;render()}
 function setPer(p){animarProximo();per=p;render()}
 
-let LAST_APP='',LAST_NAV='';
 function countUps(root){
   root.querySelectorAll('[data-val]').forEach(el=>{
     const alvo=parseFloat(el.getAttribute('data-val'))||0;
@@ -1479,29 +1479,18 @@ function renderAgora(){
   if(nav!==LAST_NAV){$('#nav').innerHTML=nav;LAST_NAV=nav}
   const html=READY||!REMOTE?window['view_'+tab]():'<div class="empty">Carregando dados…</div>';
   const app=$('#app');
-  if(html!==LAST_APP){app.innerHTML=html;LAST_APP=html;if(ANIMAR)countUps(app)}
+  if(html!==LAST_APP){
+    app.innerHTML=html;
+    LAST_APP=html;
+    if(ANIMAR)countUps(app);
+  }
   app.classList.toggle('enter',ANIMAR);
 }
-
-function segProd(){return ''}
 function render(){
-  if(!$('#nav'))return;
-  if(RAF)return;
+  if(!$('#nav')||RAF)return;
   RAF=true;
   requestAnimationFrame(()=>{RAF=false;renderAgora()});
 }
-function renderAgora(){
-  $('#nav').innerHTML=TABS.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="setTab('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('');
-  const app=$('#app');
-  app.innerHTML=READY||!REMOTE?window['view_'+tab]():'<div class="empty">Carregando dados…</div>';
-  app.classList.toggle('enter',ANIMAR);
-}
-function render(){
-  if(!$('#nav'))return;
-  $('#nav').innerHTML=TABS.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="setTab('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('');
-  $('#app').innerHTML=READY||!REMOTE?window['view_'+tab]():'<div class="empty">Carregando dados…</div>';
-}
-
 
 /* ===== CONFIGURAÇÃO DO SUPABASE ===== */
 
