@@ -2127,21 +2127,54 @@ async function entrarNoApp(){
   await carregarTudo();
   READY=true;animarProximo();render();
   let sincronizacaoPendente=null;
+  let sincronizacaoEmAndamento=false;
+  async function sincronizarTabela(tabela){
+    const key=TABELAS[tabela];
+    if(!key)return false;
+    const{data,error}=await sb.from(tabela).select('id,dados');
+    if(error){console.warn('Falha ao sincronizar '+tabela,error.message);return false;}
+    const novos=(data||[]).map(r=>({id:r.id,...r.dados}));
+    if(JSON.stringify(S[key])===JSON.stringify(novos))return false;
+    S[key]=novos;
+    return true;
+  }
+  async function sincronizarTudoSilencioso(){
+    if(sincronizacaoEmAndamento||document.visibilityState==='hidden')return;
+    sincronizacaoEmAndamento=true;
+    try{
+      let mudou=false;
+      for(const tabela of Object.keys(TABELAS)){
+        if(await sincronizarTabela(tabela))mudou=true;
+      }
+      if(mudou)render();
+    }catch(e){console.warn('Falha na sincronização automática',e);}
+    finally{sincronizacaoEmAndamento=false;}
+  }
   sb.channel('smpodsp-tempo-real')
     .on('postgres_changes',{event:'*',schema:'public'},(payload)=>{
       clearTimeout(sincronizacaoPendente);
       sincronizacaoPendente=setTimeout(async()=>{
         const tabela=payload&&payload.table;
-        const key=TABELAS[tabela];
-        if(key){
-          const{data,error}=await sb.from(tabela).select('id,dados');
-          if(!error){S[key]=(data||[]).map(r=>({id:r.id,...r.dados}));render();}
+        if(TABELAS[tabela]){
+          if(await sincronizarTabela(tabela))render();
         }else{
-          await carregarTudo();render();
+          await sincronizarTudoSilencioso();
         }
       },180);
     })
-    .subscribe();
+    .subscribe((status,error)=>{
+      console.log('Status da sincronização em tempo real:',status,error||'');
+      if(status==='CHANNEL_ERROR'||status==='TIMED_OUT'){
+        console.warn('Realtime indisponível; a verificação automática continuará ativa.');
+      }
+    });
+  // Rede de segurança: se o Realtime não estiver habilitado no Supabase,
+  // confere o banco periodicamente para não deixar os aparelhos dessincronizados.
+  setInterval(sincronizarTudoSilencioso,5000);
+  window.addEventListener('focus',sincronizarTudoSilencioso);
+  document.addEventListener('visibilitychange',()=>{
+    if(document.visibilityState==='visible')sincronizarTudoSilencioso();
+  });
   const sair=document.createElement('div');
   sair.className='sair';
   sair.innerHTML='<button class="sm" id="sairbtn">Sair</button>';
