@@ -1180,10 +1180,10 @@ function view_painel(){
     <div class="home-progress"><i style="width:${pct}%"></i></div>
     ${!I.ok?`<div class="home-invest-foot"><span>Faltam ${R(I.falta)}</span><span>para recuperar</span></div>`:''}
   </section>
-  ${venc.length?`<button class="home-alert" onclick="setSub('rec')"><span>⚠</span><span><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes</small></span><span class="home-arrow">›</span></button>`:''}
+  ${venc.length?`<button class="home-alert" onclick="setTab('vendas')"><span>⚠</span><span><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes</small></span><span class="home-arrow">›</span></button>`:''}
   ${baixo.length?`<div class="home-nota">${baixo.length} produto${baixo.length===1?'':'s'} com estoque baixo</div>`:''}
-  <div class="home-link" onclick="setView('vendas')"><span>Ver vendas</span><span>›</span></div>
-  <div class="home-link" onclick="setView('produtos')"><span>Ver produtos e estoque</span><span>›</span></div>`;
+  <div class="home-link" onclick="setTab('vendas')"><span>Ver vendas</span><span>›</span></div>
+  <div class="home-link" onclick="setTab('produtos')"><span>Ver produtos e estoque</span><span>›</span></div>`;
 }
 
 let PAGAS_OPEN=false;
@@ -1513,40 +1513,7 @@ function investCard(){
   </div>`;
 }
 
-function view_painel(){
-  const m=hoje().slice(0,7),f=x=>per==='tudo'||x.data.startsWith(m);
-  const V=S.v.filter(f),D=S.d.filter(f);
-  const tot=a=>a.reduce((s,x)=>s+x.q*x.preco,0);
-  const vendas=tot(V),cmv=V.reduce((s,x)=>s+x.q*x.custo,0);
-  const recebido=V.reduce((s,x)=>s+recebidoDe(x),0);
-  const aRec=S.v.filter(x=>saldoDe(x)>0.005);
-  const aRecTot=aRec.reduce((s,x)=>s+saldoDe(x),0);
-  const venc=aRec.filter(x=>x.venc&&x.venc<hoje());
-  const vencTot=venc.reduce((s,x)=>s+saldoDe(x),0);
-  const desp=D.reduce((s,x)=>s+x.valor,0);
-  const est=S.p.reduce((s,x)=>s+x.est*x.custo,0);
-  const baixo=S.p.filter(x=>x.est<=3);
-  const L=(t,val,c,b)=>`<div class="line ${b?'t':''}"><span>${t}</span><span class="${c||''}">${R(val)}</span></div>`;
-  const cats=CATS.map(c=>[c,D.filter(x=>x.cat===c).reduce((s,x)=>s+x.valor,0)]).filter(x=>x[1]>0).sort((a,b)=>b[1]-a[1]);
-  const SUBS=[['res','Resultado'],['rec','Receber'],['gas','Gastos']];
-  const I=investInfo();
-  const gastosTudo=S.d.reduce((s,x)=>s+(+x.valor||0),0);
-  let body='';
-  if(sub==='res'){
-    const linhaLucro=I.ok
-      ? L('Lucro',I.rec-I.inv-gastosTudo,(I.rec-I.inv-gastosTudo)<0?'neg':'pos',1)
-      : `<div class="line t"><span>Lucro</span><span class="mut">ainda não está no lucro</span></div>`;
-    body=`<div class="card">${L('Recebido (total)',I.rec,'pos')}${L('Investido em produtos',I.inv)}${L('Gastos (total)',gastosTudo)}${linhaLucro}</div>
-    <p class="mut" style="font-size:12px;margin:8px 4px 0">O lucro só aparece depois de recuperar o investimento em produtos. Este resumo considera tudo desde o início.</p>`;
-  }
-  if(sub==='rec')body=`<div class="card">${L('Recebido no período',recebido,'pos')}${L('A receber (a prazo)',aRecTot)}${L('Vencido',vencTot,venc.length?'neg':'',1)}</div>
-    ${venc.length?`<div class="card"><b>⚠️ Cobranças vencidas</b>${venc.map(x=>`<div class="line"><span>${esc(cli(x.cid))}<br><span class="mut">${esc(x.nome)} · venc. ${fd(x.venc)}</span></span><b class="neg">${R(saldoDe(x))}</b></div>`).join('')}</div>`:''}`;
-  if(sub==='gas')body=`<div class="card">${cats.map(([c,val])=>`<div class="line"><span>${c}</span><span>${R(val)} <span class="mut">${desp?Math.round(val/desp*100):0}%</span></span></div><div class="bar"><i style="width:${desp?Math.round(val/desp*100):0}%"></i></div>`).join('')||'<div class="empty">Nenhum gasto no período.</div>'}</div>`;
-  const liq=vendas-cmv-desp;
-  return `${IMPORT_CARD()}<div class="seg"><button class="${per==='mes'?'on':''}" onclick="setPer('mes')">Este mês</button><button class="${per==='tudo'?'on':''}" onclick="setPer('tudo')">Tudo</button></div>
-  ${heroLucro(liq,vendas,aRecTot)}
-  ${investCard()}<div class="seg">${SUBS.map(s=>`<button class="${sub===s[0]?'on':''}" onclick="setSub('${s[0]}')">${s[1]}${s[0]==='rec'&&venc.length?'<i class="dot"></i>':''}</button>`).join('')}</div>${body}`;
-}
+// A versão antiga de view_painel foi removida para não sobrescrever o painel novo.
 
 function heroLucro(){
   const I=investInfo();
