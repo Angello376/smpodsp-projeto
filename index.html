@@ -1549,7 +1549,10 @@ async function importLocal(){
     localStorage.removeItem('pods');alert('Dados importados!');
   }catch(e){alert('Não foi possível importar. Tente de novo.')}
 }
+let vendaEmProcessamento=false;
 async function addV(){
+  // Trava local contra clique duplo; libera somente após a operação terminar.
+  if(vendaEmProcessamento)return;
   const p=S.p.find(x=>x.id===VS.pid);const q=VS.q;
   if(!p||q<=0)return alert('Escolha um produto.');
   const valorCliente=v('vc');const cid=valorCliente==='avulso'?'':valorCliente;const prazo=v('vf')==='prazo';
@@ -1571,16 +1574,38 @@ async function addV(){
   const pagamentos=jaPago>0?[{valor:jaPago,data:hoje()}]:[];
   const quitado=jaPago>=total-0.005;
   const novos=it?L.map(x=>x.nome===sab?{nome:x.nome,est:x.est-q}:x):null;
-  const salvou=await run(async()=>{
-    await ST.set('vendas',uid(),{data:hoje(),cid,pid:p.id,nome:p.nome,sabor:sab,q,preco:n('vv'),custo:p.custo,prazo,venc:prazo?v('vd'):'',pago:quitado,dpag:quitado?hoje():'',pagamentos,liberado});
+  const vendaId=uid();
+  const estoqueAnterior={est:p.est,sabores:p.sabores};
+  vendaEmProcessamento=true;
+  const botao=document.querySelector('[onclick="addV()"]');
+  if(botao)botao.disabled=true;
+  let vendaGravada=false;
+  try{
+    await ST.set('vendas',vendaId,{data:hoje(),cid,pid:p.id,nome:p.nome,sabor:sab,q,preco:n('vv'),custo:p.custo,prazo,venc:prazo?v('vd'):'',pago:quitado,dpag:quitado?hoje():'',pagamentos,liberado});
+    vendaGravada=true;
     const upd={est:p.est-q};if(novos){upd.sabores=novos;upd.est=novos.reduce((s,f)=>s+f.est,0)}
     await ST.upd('produtos',p.id,upd);
-  });
-  if(salvou){VS.q=1;VLIB=false;FORM.venda=false;animarVendaSucesso({total,q,nome:p.nome});}
+    VS.q=1;VLIB=false;FORM.venda=false;animarVendaSucesso({total,q,nome:p.nome});
+  }catch(e){
+    // Se o estoque falhar depois de gravar a venda, tenta desfazer o registro
+    // para não deixar uma venda incompleta contabilizada.
+    if(vendaGravada){
+      try{await ST.del('vendas',vendaId)}
+      catch(rollbackError){
+        console.error('Falha ao reverter venda incompleta; confira a venda e o estoque manualmente.',rollbackError);
+        alert('A venda foi registrada, mas não foi possível atualizar o estoque nem desfazer o registro. Confira a venda e o estoque antes de tentar novamente.');
+      }
+    }
+    if(!vendaGravada)alert('Não foi possível registrar a venda. Nenhuma venda foi confirmada. '+(e&&e.message?e.message:'Verifique a conexão e tente novamente.'));
+    else if(!S.v.some(x=>x.id===vendaId))alert('Não foi possível atualizar o estoque. A venda foi desfeita; confira o estoque antes de tentar novamente.');
+    await carregarTudo().catch(err=>console.warn('Falha ao recarregar dados após erro',err));
+    render();
+  }finally{
+    vendaEmProcessamento=false;
+    const atual=document.querySelector('[onclick="addV()"]');
+    if(atual)atual.disabled=false;
+  }
 }
-
-
-
 
 
 
