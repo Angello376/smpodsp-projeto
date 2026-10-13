@@ -828,7 +828,12 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .home-resumo{animation:cardReveal .42s cubic-bezier(.2,.7,.2,1) both}.home-invest{animation:cardReveal .48s cubic-bezier(.2,.7,.2,1) both;animation-delay:.06s}.home-progress i{transition:width .9s cubic-bezier(.2,.7,.2,1);box-shadow:0 0 12px rgba(101,245,173,.24)}
 .home-alert{animation:cardReveal .38s ease both;transition:transform .18s,border-color .18s,background .18s}.home-alert:active{transform:scale(.99)}
 .home-quick-sale{transition:transform .18s,border-color .18s,background .18s;animation:cardReveal .5s ease both;animation-delay:.1s}.home-quick-sale:hover{border-color:rgba(101,245,173,.45);background:linear-gradient(110deg,rgba(101,245,173,.16),rgba(101,245,173,.06))}
-.toast{display:flex;align-items:center;justify-content:center;gap:9px;animation:toastIn .32s cubic-bezier(.2,.8,.2,1) both}.toast::before{content:'✓';display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:2px solid rgba(255,255,255,.8);border-radius:50%;font-size:14px;animation:checkPop .35s .08s cubic-bezier(.2,.8,.2,1) both}.toast.saindo{animation:toastOut .2s ease both}
+.toast{display:flex;align-items:center;justify-content:center;gap:9px;animation:toastIn .32s cubic-bezier(.2,.8,.2,1) both}
+  .pcard,.cl-row,.vr2,.ch-row,.frow{transition:opacity .2s ease,transform .2s ease,filter .2s ease}
+  .pcard.editado,.cl-row.editado,.vr2.editado,.ch-row.editado,.frow.editado{animation:registroEditado .42s ease}
+  @keyframes registroEditado{0%{filter:brightness(1)}35%{filter:brightness(1.35);transform:translateY(-2px)}100%{filter:brightness(1);transform:translateY(0)}}
+  .removendo{opacity:0!important;transform:translateX(14px) scale(.98)!important;filter:blur(2px);pointer-events:none!important}
+  .toast::before{content:'✓';display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:2px solid rgba(255,255,255,.8);border-radius:50%;font-size:14px;animation:checkPop .35s .08s cubic-bezier(.2,.8,.2,1) both}.toast.saindo{animation:toastOut .2s ease both}
 .ov{animation:overlayIn .18s ease both}.md{animation:modalIn .22s cubic-bezier(.2,.8,.2,1) both}
 @keyframes cardReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes toastIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}@keyframes checkPop{from{opacity:0;transform:scale(.4) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(0)}}@keyframes overlayIn{from{opacity:0}to{opacity:1}}@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 
@@ -2023,13 +2028,30 @@ const TABELAS={produtos:'p',clientes:'c',vendas:'v',gastos:'d'};
 
 function supabaseStore(){
   return{
-    set:async(c,id,d)=>{const{error}=await sb.from(c).upsert({id,dados:d});if(error)throw error},
-    upd:async(c,id,d)=>{
-      const cur=S[KEY[c]].find(x=>x.id===id)||{};
-      const{id:_,...limpo}={...cur,...d};
-      const{error}=await sb.from(c).upsert({id,dados:limpo});if(error)throw error;
+    set:async(c,id,d)=>{
+      const k=KEY[c],antes=S[k].slice(),i=S[k].findIndex(x=>x.id===id);
+      const novo={id,...d};
+      if(i<0)S[k].push(novo);else S[k][i]=novo;
+      render();
+      try{const{error}=await sb.from(c).upsert({id,dados:d});if(error)throw error}
+      catch(e){S[k]=antes;render();throw e}
     },
-    del:async(c,id)=>{const{error}=await sb.from(c).delete().eq('id',id);if(error)throw error}
+    upd:async(c,id,d)=>{
+      const k=KEY[c],antes=S[k].map(x=>({...x})),i=S[k].findIndex(x=>x.id===id);
+      const cur=i>=0?S[k][i]:{id};
+      const{id:_,...limpo}={...cur,...d};
+      if(i>=0)S[k][i]={...cur,...d};
+      render();
+      try{const{error}=await sb.from(c).upsert({id,dados:limpo});if(error)throw error}
+      catch(e){S[k]=antes;render();throw e}
+    },
+    del:async(c,id)=>{
+      const k=KEY[c],antes=S[k].slice();
+      S[k]=S[k].filter(x=>x.id!==id);
+      render();
+      try{const{error}=await sb.from(c).delete().eq('id',id);if(error)throw error}
+      catch(e){S[k]=antes;render();throw e}
+    }
   };
 }
 async function carregarTudo(){
@@ -2093,12 +2115,18 @@ async function entrarNoApp(){
   READY=true;animarProximo();render();
   let sincronizacaoPendente=null;
   sb.channel('smpodsp-tempo-real')
-    .on('postgres_changes',{event:'*',schema:'public'},()=>{
+    .on('postgres_changes',{event:'*',schema:'public'},(payload)=>{
       clearTimeout(sincronizacaoPendente);
       sincronizacaoPendente=setTimeout(async()=>{
-        await carregarTudo();
-        render();
-      },250);
+        const tabela=payload&&payload.table;
+        const key=TABELAS[tabela];
+        if(key){
+          const{data,error}=await sb.from(tabela).select('id,dados');
+          if(!error){S[key]=(data||[]).map(r=>({id:r.id,...r.dados}));render();}
+        }else{
+          await carregarTudo();render();
+        }
+      },180);
     })
     .subscribe();
   const sair=document.createElement('div');
