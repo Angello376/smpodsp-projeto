@@ -824,6 +824,13 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .vs-pagamento-btn.active>span:nth-child(2){color:#65f5ad}
 .vs-pagamento-btn:active{transform:scale(.985)}
 @media(max-width:380px){.vs-pagamento{gap:7px}.vs-pagamento-btn{padding:11px 9px}}
+/* Microinterações premium */
+.home-resumo{animation:cardReveal .42s cubic-bezier(.2,.7,.2,1) both}.home-invest{animation:cardReveal .48s cubic-bezier(.2,.7,.2,1) both;animation-delay:.06s}.home-progress i{transition:width .9s cubic-bezier(.2,.7,.2,1);box-shadow:0 0 12px rgba(101,245,173,.24)}
+.home-alert{animation:cardReveal .38s ease both;transition:transform .18s,border-color .18s,background .18s}.home-alert:active{transform:scale(.99)}
+.home-quick-sale{transition:transform .18s,border-color .18s,background .18s;animation:cardReveal .5s ease both;animation-delay:.1s}.home-quick-sale:hover{border-color:rgba(101,245,173,.45);background:linear-gradient(110deg,rgba(101,245,173,.16),rgba(101,245,173,.06))}
+.toast{display:flex;align-items:center;justify-content:center;gap:9px;animation:toastIn .32s cubic-bezier(.2,.8,.2,1) both}.toast::before{content:'✓';display:grid;place-items:center;flex:0 0 24px;width:24px;height:24px;border:2px solid rgba(255,255,255,.8);border-radius:50%;font-size:14px;animation:checkPop .35s .08s cubic-bezier(.2,.8,.2,1) both}.toast.saindo{animation:toastOut .2s ease both}
+.ov{animation:overlayIn .18s ease both}.md{animation:modalIn .22s cubic-bezier(.2,.8,.2,1) both}
+@keyframes cardReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes toastIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}@keyframes checkPop{from{opacity:0;transform:scale(.4) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(0)}}@keyframes overlayIn{from{opacity:0}to{opacity:1}}@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 </style>
 </head>
 <body>
@@ -861,7 +868,7 @@ function remoteStore(db){return{
   set:(c,id,d)=>db.collection(c).doc(id).set(d),
   upd:(c,id,d)=>db.collection(c).doc(id).update(d),
   del:(c,id)=>db.collection(c).doc(id).delete()}}
-async function run(fn){try{await fn()}catch(e){alert('Não foi possível salvar. '+(e&&e.message?e.message:'Tente de novo.'))}}
+async function run(fn){try{await fn();return true}catch(e){alert('Não foi possível salvar. '+(e&&e.message?e.message:'Tente de novo.'));return false}}
 
 
 async function delP(id){if(!confirm('Excluir produto?'))return;await run(()=>ST.del('produtos',id))}
@@ -892,7 +899,8 @@ function setSub(s){sub=s;render()}
 function avisar(msg){
   try{if('Notification' in window&&Notification.permission==='granted')new Notification('SMPODSP',{body:msg})}catch(e){}
   const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);
-  setTimeout(()=>t.remove(),7000);
+  const fechar=()=>{if(!t.isConnected)return;t.classList.add('saindo');setTimeout(()=>t.remove(),220)};
+  setTimeout(fechar,4200);t.addEventListener('click',fechar,{once:true});
 }
 function checkInvest(I){
   const K='smp_inv_ok';const prev=localStorage.getItem(K);
@@ -1259,14 +1267,14 @@ function view_painel(){
   <section class="home-resumo">
     <div class="home-principal">
       <div class="home-label">Lucro estimado</div>
-      <div class="home-valor ${lucro<0?'neg':'pos'}">${R(lucro)}</div>
+      <div class="home-valor ${lucro<0?'neg':'pos'}" data-val="${lucro}">${R(lucro)}</div>
       <div class="home-legenda">Vendas − custo dos produtos − gastos</div>
     </div>
     <div class="home-metricas">
-      <div class="home-metrica"><span>Vendido</span><b>${R(vendas)}</b></div>
-      <div class="home-metrica"><span>Já recebido</span><b class="pos">${R(recebido)}</b></div>
-      <div class="home-metrica"><span>A receber</span><b>${R(aRecTot)}</b></div>
-      <div class="home-metrica"><span>Gastos</span><b>${R(desp)}</b></div>
+      <div class="home-metrica"><span>Vendido</span><b data-val="${vendas}">${R(vendas)}</b></div>
+      <div class="home-metrica"><span>Já recebido</span><b class="pos" data-val="${recebido}">${R(recebido)}</b></div>
+      <div class="home-metrica"><span>A receber</span><b data-val="${aRecTot}">${R(aRecTot)}</b></div>
+      <div class="home-metrica"><span>Gastos</span><b data-val="${desp}">${R(desp)}</b></div>
     </div>
   </section>
   <section class="home-invest">
@@ -1408,12 +1416,12 @@ async function addV(){
   const pagamentos=jaPago>0?[{valor:jaPago,data:hoje()}]:[];
   const quitado=jaPago>=total-0.005;
   const novos=it?L.map(x=>x.nome===sab?{nome:x.nome,est:x.est-q}:x):null;
-  await run(async()=>{
+  const salvou=await run(async()=>{
     await ST.set('vendas',uid(),{data:hoje(),cid,pid:p.id,nome:p.nome,sabor:sab,q,preco:n('vv'),custo:p.custo,prazo,venc:prazo?v('vd'):'',pago:quitado,dpag:quitado?hoje():'',pagamentos,liberado});
     const upd={est:p.est-q};if(novos){upd.sabores=novos;upd.est=novos.reduce((s,f)=>s+f.est,0)}
     await ST.upd('produtos',p.id,upd);
   });
-  VS.q=1;VLIB=false;
+  if(salvou){VS.q=1;VLIB=false;FORM.venda=false;avisar('Venda registrada com sucesso! Estoque atualizado.');}
 }
 
 
