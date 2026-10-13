@@ -1468,16 +1468,31 @@ async function pagarVenda(id){
 }
 async function delV(id){
   if(!(await confirmar('Excluir venda? O estoque será devolvido.',true)))return;
-  const linha=Array.from(document.querySelectorAll('.vr2')).find(el=>el.getAttribute('onclick')?.includes(id)||el.innerHTML.includes("delV('"+id+"'"));
-  if(linha){linha.classList.add('removendo');await new Promise(resolve=>setTimeout(resolve,230));}
-  const x=S.v.find(a=>a.id===id);
-  if(!x){if(linha)linha.classList.remove('removendo');return;}
+  const linha=document.querySelector(`.vr2[data-venda-id="${CSS.escape(String(id))}"]`);
+  const x=S.v.find(a=>String(a.id)===String(id));
+  if(!x)return;
+  if(linha){
+    const altura=linha.getBoundingClientRect().height;
+    linha.style.height=altura+'px';
+    linha.style.overflow='hidden';
+    linha.style.boxSizing='border-box';
+    linha.style.transition='opacity .24s ease, transform .24s ease, height .28s ease, margin .28s ease, padding .28s ease';
+    linha.classList.add('removendo');
+    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
+    linha.style.height='0px';
+    linha.style.marginTop='0px';
+    linha.style.marginBottom='0px';
+    linha.style.paddingTop='0px';
+    linha.style.paddingBottom='0px';
+    linha.style.borderWidth='0px';
+    await new Promise(resolve=>setTimeout(resolve,290));
+  }
   const p=S.p.find(a=>a.id===x.pid);
   const ok=await run(async()=>{
     if(p){const upd={est:p.est+x.q};const L=norm(p);if(x.sabor&&L.length)upd.sabores=L.map(f=>f.nome===x.sabor?{nome:f.nome,est:f.est+x.q}:f);await ST.upd('produtos',p.id,upd)}
     await ST.del('vendas',id)
   });
-  if(!ok&&linha)linha.classList.remove('removendo');
+  if(!ok&&linha){linha.classList.remove('removendo');linha.style.height='';linha.style.overflow='';linha.style.transition='';linha.style.marginTop='';linha.style.marginBottom='';linha.style.paddingTop='';linha.style.paddingBottom='';linha.style.borderWidth='';}
 }
 async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
 async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;await run(()=>ST.del('produtos',pid))}
@@ -1804,7 +1819,7 @@ function rowVenda(x){
   const zapTel=(()=>{const c=S.c.find(a=>a.id===x.cid);return !!waNumero(c&&c.tel)})();
   const cobrar=(!x.pago&&zapTel)?`<button class="sm wa" onclick="cobrarWhats('${x.id}')">Cobrar</button>`:'';
   const receber=x.pago?'':`<button class="sm g" onclick="pagarVenda('${x.id}')">${parcial?'Pagar resto':'Receber'}</button>`;
-  return `<div class="vr2 ${cls}">
+  return `<div class="vr2 ${cls}" data-venda-id="${esc(x.id)}">
     <div class="vr2-main">
       <div><div class="vr2-cli">${esc(cli(x.cid))}</div><div class="vr2-sub">${x.q}× ${esc(x.nome)}${sab}${lib}</div></div>
       <div class="vr2-val">${R(x.q*x.preco)}</div>
