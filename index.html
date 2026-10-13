@@ -1392,6 +1392,18 @@ function abrirRelacaoPrazosWhats(){
   const url='https://wa.me/?text='+encodeURIComponent(textoRelacaoPrazos(abertos));
   window.open(url,'_blank','noopener');
 }
+function mesFechamentoAtual(){return hoje().slice(0,7)}
+function chaveSaldoInicial(mes){return 'smpodsp_caixa_inicial_'+mes}
+function salvarSaldoInicialFechamento(){
+  const mes=document.getElementById('fech-mes')?.value||mesFechamentoAtual();
+  const campo=document.getElementById('fech-inicial');
+  const valor=campo&&campo.value.trim()!==''?Number(campo.value):null;
+  if(valor!==null&&(!Number.isFinite(valor)||valor<0)){alert('Informe um saldo inicial válido, igual ou maior que zero.');return}
+  if(valor===null)localStorage.removeItem(chaveSaldoInicial(mes));
+  else localStorage.setItem(chaveSaldoInicial(mes),String(valor));
+  render();
+}
+function trocarMesFechamento(){render()}
 function view_prazos(){
   const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
   const dataHoje=hoje();
@@ -1399,12 +1411,34 @@ function view_prazos(){
   const hojeV=abertos.filter(x=>x.venc===dataHoje);
   const futuros=abertos.filter(x=>x.venc&&x.venc>dataHoje);
   const semData=abertos.filter(x=>!x.venc);
+  const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
+  const inicialSalvo=localStorage.getItem(chaveSaldoInicial(mes));
+  const inicial=inicialSalvo===null?null:Number(inicialSalvo);
+  const dentroMes=d=>String(d||'').slice(0,7)===mes;
+  const recebimentos=S.v.reduce((total,x)=>{
+    if(x.pagamentos&&x.pagamentos.length)return total+x.pagamentos.filter(p=>dentroMes(p.data)).reduce((s,p)=>s+(+p.valor||0),0);
+    return total+(x.pago&&dentroMes(x.dpag||x.data)?x.q*x.preco:0);
+  },0);
+  const despesas=S.d.filter(x=>dentroMes(x.data)).reduce((s,x)=>s+(+x.valor||0),0);
+  const caixaCalculado=inicial===null?null:inicial+recebimentos-despesas;
+  const distribuivel=caixaCalculado===null?null:Math.max(0,caixaCalculado-1500);
+  const moeda=v=>R(v);
+  const meses=[];const base=new Date(hoje()+'T12:00:00');
+  for(let i=0;i<18;i++){const d=new Date(base.getFullYear(),base.getMonth()-i,1);meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))}
+  const opMes=meses.map(m=>'<option value="'+m+'" '+(m===mes?'selected':'')+'>'+m.slice(5,7)+'/'+m.slice(0,4)+'</option>').join('');
   const bloco=(titulo,lista,classe)=>lista.length?'<div class="card"><h3>'+titulo+' <span class="mut">('+lista.length+')</span></h3>'+lista.slice().sort((a,b)=>(a.venc||'9999').localeCompare(b.venc||'9999')).map(x=>'<div class="crow"><div class="ctop"><div><b class="cnome">'+esc(cli(x.cid))+'</b><span class="ccount">'+esc(x.nome+(x.sabor?' · '+x.sabor:''))+'</span></div><span class="cdeve neg">'+R(saldoDe(x))+'</span></div><div class="cbot"><span class="mut">'+(x.venc?'Vencimento: '+fd(x.venc):'Sem vencimento cadastrado')+(x.venc&&x.venc<dataHoje?' · '+diasEntre(x.venc,dataHoje)+' dia(s) em atraso':'')+'</span></div></div>').join('')+'</div>':'';
+  const fechamento='<div class="home-heading" style="margin-top:28px"><div><div class="home-eyebrow">FECHAMENTO MENSAL</div><div class="home-heading-title">Caixa e divisão dos sócios</div><div class="home-heading-sub">Só conta o dinheiro recebido de verdade — vendas pendentes ficam fora.</div></div><span class="home-heading-icon">R$</span></div>'+
+  '<div class="card"><label style="display:block;color:var(--mut);font-size:12px;margin-bottom:6px">Mês do fechamento</label><select id="fech-mes" onchange="localStorage.setItem(\'smpodsp_fech_mes\',this.value);trocarMesFechamento()">'+opMes+'</select>'+
+  '<div class="home-metricas" style="margin-top:12px"><div class="home-metrica"><span>Recebido no mês</span><b class="pos">'+moeda(recebimentos)+'</b></div><div class="home-metrica"><span>Despesas registradas</span><b class="neg">'+moeda(despesas)+'</b></div><div class="home-metrica"><span>Vendas ainda a receber</span><b>'+moeda(S.v.filter(x=>saldoDe(x)>0.005).reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
+  '<div style="border-top:1px solid var(--bd);margin-top:12px;padding-top:14px"><label style="display:block;color:var(--mut);font-size:12px;margin-bottom:6px">Dinheiro que já existia no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Informe o saldo inicial" value="'+(inicial===null?'':inicial)+'"><button class="btn" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button><p class="mut" style="margin:8px 0 0">Informe o dinheiro real disponível no início do mês, antes das entradas e saídas deste período. Esse valor fica salvo neste navegador.</p></div></div>'+
+  (caixaCalculado===null?'<div class="alerta amb"><div class="ic">!</div><div><b>Falta informar o saldo inicial</b><small>O sistema não vai inventar quanto existe no caixa nem calcular retiradas sem essa informação.</small></div></div>':
+  '<div class="card"><div class="line"><span>Caixa estimado no fechamento</span><b>'+moeda(caixaCalculado)+'</b></div><div class="line"><span>Reserva protegida</span><b>'+moeda(1500)+'</b></div><div class="line t"><span>Disponível para divisão</span><b class="'+(distribuivel>0?'pos':'')+'">'+moeda(distribuivel)+'</b></div><div class="home-metricas" style="margin-top:12px"><div class="home-metrica"><span>Angello · 50%</span><b>'+moeda(distribuivel/2)+'</b></div><div class="home-metrica"><span>Michel · 50%</span><b>'+moeda(distribuivel/2)+'</b></div></div><p class="mut" style="margin-top:10px">A divisão é uma estimativa com base no saldo inicial informado + recebimentos − gastos cadastrados. Só retire se o caixa físico/bancário confirmar esse saldo e houver dinheiro suficiente para repor o estoque.</p></div>')+
+  '<div class="alerta neu"><div class="ic">i</div><div><b>Importante sobre a sincronização</b><small>O saldo inicial fica salvo neste navegador e não é compartilhado automaticamente com o outro sócio. Registrem o mesmo saldo inicial nos aparelhos ou confirmem o caixa juntos antes de retirar.</small></div></div>';
   return '<div class="home-heading"><div><div class="home-eyebrow">WHATSAPP</div><div class="home-heading-title">Relação de prazos</div><div class="home-heading-sub">Todos os valores pendentes, organizados por vencimento</div></div><span class="home-heading-icon">☏</span></div>'+
   '<div class="home-metricas"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Total pendente</span><b>'+R(abertos.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
   '<div class="card"><p class="mut">A relação inclui prazos em atraso, vencendo hoje e futuros. Clientes com saldo pendente sem data também aparecem em uma seção separada.</p><div class="form"><button class="btn" onclick="copiarRelacaoPrazos()">Copiar relação para WhatsApp</button><button class="btn sec" onclick="abrirRelacaoPrazosWhats()">Abrir WhatsApp com mensagem</button></div></div>'+
   bloco('🔴 Em atraso',atrasados,'red')+bloco('🟡 Vence hoje',hojeV,'yellow')+bloco('🟢 A vencer',futuros,'green')+bloco('⚪ Sem data de vencimento',semData,'mut')+
-  (!abertos.length?'<div class="empty">Nenhum prazo pendente no momento.</div>':'');
+  (!abertos.length?'<div class="empty">Nenhum prazo pendente no momento.</div>':'')+fechamento;
 }
 
 function view_vendas(){
