@@ -943,7 +943,7 @@ const hoje=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStri
 const fd=d=>d?d.split('-').reverse().join('/'):'';
 const v=id=>{const el=$('#'+id);return el?el.value:''};
 const n=id=>parseFloat(String(v(id)).replace(',','.'))||0;
-const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['prazos','☏','Prazos'],['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
+const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['prazos','☏','Financeiro'],['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
 const CATS=['Divulgação','Frete/Envio','Taxas','Aluguel/Contas','Equipamento (investimento)','Outros'];
 const cli=id=>(S.c.find(x=>x.id===id)||{}).nome||'Avulso';
 
@@ -1412,6 +1412,37 @@ function abrirRelacaoPrazosWhats(){
   const url='https://wa.me/?text='+encodeURIComponent(textoRelacaoPrazos(abertos));
   window.open(url,'_blank','noopener');
 }
+function textoRelacaoSocios(mes){
+  const inicialSalvo=localStorage.getItem(chaveSaldoInicial(mes));
+  const inicial=inicialSalvo===null?null:Number(inicialSalvo);
+  const dentroMes=d=>String(d||'').slice(0,7)===mes;
+  const recebimentos=S.v.reduce((total,x)=>{
+    if(x.pagamentos&&x.pagamentos.length)return total+x.pagamentos.filter(p=>dentroMes(p.data)).reduce((s,p)=>s+(+p.valor||0),0);
+    return total+(x.pago&&dentroMes(x.dpag||x.data)?x.q*x.preco:0);
+  },0);
+  const despesas=S.d.filter(x=>dentroMes(x.data)).reduce((s,x)=>s+(+x.valor||0),0);
+  const caixa=inicial===null?null:inicial+recebimentos-despesas;
+  const disponivel=caixa===null?0:Math.max(0,caixa-1500);
+  const [ano,numero]=mes.split('-');
+  const nomesMes=['janeiro','fevereiro','março','abril','maio','junho','julho','agosto','setembro','outubro','novembro','dezembro'];
+  const nomeMes=nomesMes[Number(numero)-1]+' de '+ano;
+  const linhas=['FECHAMENTO FINANCEIRO - '+nomeMes.toUpperCase(),'','Recebimentos no mês: '+R(recebimentos),'Despesas registradas: '+R(despesas),'Reserva protegida: R$ 1.500,00'];
+  if(caixa===null){
+    linhas.push('Saldo inicial: não informado','','META NÃO BATIDA - '+nomeMes.toUpperCase(),'Não foi possível confirmar valor disponível para divisão. Precisamos informar e conferir o saldo inicial do caixa.');
+  }else{
+    linhas.push('Caixa estimado: '+R(caixa),'Valor disponível para divisão: '+R(disponivel),'Angello (50%): '+R(disponivel/2),'Michel (50%): '+R(disponivel/2),'');
+    if(disponivel>0)linhas.push('Meta financeira batida em '+nomeMes+'.');
+    else linhas.push('META NÃO BATIDA - '+nomeMes.toUpperCase(),'Neste mês não houve valor acima da reserva protegida para dividir entre os sócios.');
+  }
+  linhas.push('','Valores estimados com base nos recebimentos e despesas cadastrados. Confirmar o caixa real antes de qualquer retirada.');
+  return linhas.join('\\n');
+}
+async function copiarRelacaoSocios(){
+  const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
+  const ok=await copiarTexto(textoRelacaoSocios(mes));
+  if(ok)avisar('Relação financeira dos sócios copiada. Agora é só colar no WhatsApp.');
+  else alert('Não consegui copiar automaticamente. Tente novamente.');
+}
 function mesFechamentoAtual(){return hoje().slice(0,7)}
 function chaveSaldoInicial(mes){return 'smpodsp_caixa_inicial_'+mes}
 function salvarSaldoInicialFechamento(){
@@ -1454,7 +1485,7 @@ function view_prazos(){
   '<p class="mut" style="font-size:11px;margin-top:10px">Estimativa baseada no saldo inicial, recebimentos e despesas cadastradas. Confira o dinheiro real e a reposição do estoque antes de retirar. O saldo inicial fica salvo apenas neste navegador.</p></div></details>';
   return '<div class="home-heading"><div><div class="home-eyebrow">PRAZOS</div><div class="home-heading-title">Cobranças pendentes</div><div class="home-heading-sub">Copie uma mensagem pronta com os prazos para enviar no WhatsApp.</div></div></div>'+
   '<div class="home-metricas prazos-resumo"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
-  '<div class="card prazos-copiar-card"><button class="btn prazos-copiar-btn" onclick="copiarRelacaoPrazos()">Copiar relação de prazos</button><p class="mut">A lista de clientes não aparece aqui. O texto completo é copiado para você colar onde quiser.</p></div>'+
+  '<div class="card prazos-copiar-card"><button class="btn prazos-copiar-btn" onclick="copiarRelacaoPrazos()">Copiar relação de prazos</button><button class="btn sec prazos-copiar-btn" style="margin-top:8px" onclick="copiarRelacaoSocios()">Copiar relação financeira dos sócios</button><p class="mut">A lista de clientes não aparece aqui. O texto completo é copiado para você colar onde quiser.</p></div>'+
   (!abertos.length?'<div class="empty">Nenhum prazo pendente no momento.</div>':'')+fechamento;
 }
 
