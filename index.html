@@ -812,6 +812,18 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .home-quick-arrow{font-size:23px;color:#65f5ad}
 .home-quick-sale:active{transform:scale(.99)}
 @media(max-width:480px){.home-quick-sale{padding:12px;margin-top:12px}}
+
+/* Seleção de pagamento em botões responsivos */
+.vs-pagamento{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:2px}
+.vs-pagamento-btn{display:flex;flex-direction:column;align-items:flex-start;gap:5px;min-width:0;padding:13px 12px;border:1px solid var(--line,rgba(125,155,205,.18));border-radius:13px;background:rgba(125,155,205,.035);color:var(--fg);text-align:left;cursor:pointer;transition:border-color .16s,background .16s,transform .16s}
+.vs-pagamento-btn>span:nth-child(2){font-size:13px;font-weight:750}
+.vs-pagamento-btn small{font-size:10px;color:var(--mut);line-height:1.35}
+.vs-pagamento-icone{display:grid;place-items:center;width:27px;height:27px;border-radius:9px;background:rgba(125,155,205,.10);font-size:16px;color:var(--mut)}
+.vs-pagamento-btn.active{border-color:rgba(101,245,173,.58);background:rgba(101,245,173,.085);box-shadow:inset 0 0 0 1px rgba(101,245,173,.08)}
+.vs-pagamento-btn.active .vs-pagamento-icone{background:#65f5ad;color:#10251b}
+.vs-pagamento-btn.active>span:nth-child(2){color:#65f5ad}
+.vs-pagamento-btn:active{transform:scale(.985)}
+@media(max-width:380px){.vs-pagamento{gap:7px}.vs-pagamento-btn{padding:11px 9px}}
 </style>
 </head>
 <body>
@@ -1151,6 +1163,14 @@ function saldoDe(x){return Math.max(0,x.q*x.preco-recebidoDe(x))}
 function fmtNum(n){return n.toFixed(2).replace('.',',')}
 
 function receber(id){return pagarVenda(id)}
+function escolherPagamento(tipo){
+  $('#vf').value=tipo;
+  $('#vf-vista').classList.toggle('active',tipo==='vista');
+  $('#vf-prazo').classList.toggle('active',tipo==='prazo');
+  $('#vf-vista').setAttribute('aria-pressed',tipo==='vista'?'true':'false');
+  $('#vf-prazo').setAttribute('aria-pressed',tipo==='prazo'?'true':'false');
+  togPrazo();
+}
 function togPrazo(){
   const pz=v('vf')==='prazo';
   $('#vdw').style.display=pz?'flex':'none';
@@ -1705,7 +1725,7 @@ function view_vendas(){
     <div class="vs-field"><div class="vs-label">Quantidade</div><div class="vs-stepper"><button type="button" onclick="vsQ(-1)">−</button><b id="vqtd">${VS.q}</b><button type="button" onclick="vsQ(1)">+</button></div></div>
     <div class="vs-field"><div class="vs-label">Valor unitário</div><div class="vs-moeda"><span>R$</span><input id="vv" type="number" step="0.01" inputmode="decimal" value="${preco}" oninput="vsFill()"></div></div>
   </div>
-  <div class="vs-field"><div class="vs-label">Pagamento</div><select id="vf" onchange="togPrazo()"><option value="vista">À vista</option><option value="prazo">A prazo</option></select></div>
+  <div class="vs-field"><div class="vs-label">Método de pagamento</div><div class="vs-pagamento" role="group" aria-label="Método de pagamento"><button type="button" id="vf-vista" class="vs-pagamento-btn active" aria-pressed="true" onclick="escolherPagamento('vista')"><span class="vs-pagamento-icone">✓</span><span>À vista</span><small>Pagamento completo</small></button><button type="button" id="vf-prazo" class="vs-pagamento-btn" aria-pressed="false" onclick="escolherPagamento('prazo')"><span class="vs-pagamento-icone">◷</span><span>A prazo</span><small>Receber depois</small></button></div><select id="vf" onchange="togPrazo()" style="display:none" aria-hidden="true" tabindex="-1"><option value="vista" selected>À vista</option><option value="prazo">A prazo</option></select></div>
   <div class="vs-field" id="vdw" style="display:none"><div class="vs-label">Vencimento do restante</div><input id="vd" type="date" value="${hoje()}"></div>
   <div class="vs-field" id="vpw" style="display:none"><div class="vs-label">Já pago agora</div><div class="vs-moeda"><span>R$</span><input id="vpg" type="number" step="0.01" inputmode="decimal" placeholder="0,00"></div></div>
   <div class="vs-total"><small>Total da venda</small><b id="vtotal">${R(VS.q*preco)}</b></div>
