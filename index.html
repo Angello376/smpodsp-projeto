@@ -802,6 +802,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .home-alert{padding:12px}
 }
 
+
+/* Ação principal do painel */
+.home-quick-sale{display:flex;align-items:center;gap:12px;width:100%;margin:15px 0 7px;padding:14px;text-align:left;border:1px solid rgba(101,245,173,.22);border-radius:15px;background:linear-gradient(110deg,rgba(101,245,173,.12),rgba(101,245,173,.045));color:var(--fg);cursor:pointer}
+.home-quick-icon{flex:0 0 36px;width:36px;height:36px;display:grid;place-items:center;border-radius:12px;background:#65f5ad;color:#10251b;font-size:25px;font-weight:500}
+.home-quick-sale>span:nth-child(2){display:flex;flex:1;min-width:0;flex-direction:column;gap:4px}
+.home-quick-sale b{font-size:13px;font-weight:750}
+.home-quick-sale small{font-size:11px;color:var(--mut);line-height:1.4}
+.home-quick-arrow{font-size:23px;color:#65f5ad}
+.home-quick-sale:active{transform:scale(.99)}
+@media(max-width:480px){.home-quick-sale{padding:12px;margin-top:12px}}
 </style>
 </head>
 <body>
@@ -1240,7 +1250,8 @@ function view_painel(){
   </section>
   ${venc.length? `<button class="home-alert" onclick="setTab('vendas')"><span class="home-alert-icon">!</span><span class="home-alert-text"><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes · toque para conferir</small></span><span class="home-arrow">›</span></button>` : ''}
   ${baixo.length? `<button class="home-alert home-alert-stock" onclick="setTab('produtos')"><span class="home-alert-icon">↓</span><span class="home-alert-text"><b>${baixo.length} produto${baixo.length===1?' com estoque baixo':'s com estoque baixo'}</b><small>Confira seu estoque · toque para abrir</small></span><span class="home-arrow">›</span></button>` : ''}
-  <div class="home-link" onclick="setTab('vendas')"><span>Ver vendas</span><span>›</span></div>
+  <button class="home-quick-sale" onclick="FORM.venda=true;setTab('vendas')"><span class="home-quick-icon">＋</span><span><b>Registrar nova venda</b><small>Adicionar uma venda ao seu controle</small></span><span class="home-quick-arrow">›</span></button>
+  <div class="home-link" onclick="setTab('vendas')"><span>Ver vendas e recebimentos</span><span>›</span></div>
   <div class="home-link" onclick="setTab('produtos')"><span>Ver produtos e estoque</span><span>›</span></div>`;
 }
 
