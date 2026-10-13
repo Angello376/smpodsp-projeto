@@ -741,6 +741,40 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
   .home-link{padding:12px 3px}
 }
 
+
+/* Painel: visão geral mais limpa, sem seletor de período */
+.home-heading{display:flex;align-items:center;justify-content:space-between;gap:14px;margin:4px 0 16px;padding:0 2px}
+.home-heading .home-eyebrow{margin:0 0 5px;font-size:10px;letter-spacing:.13em;font-weight:800}
+.home-heading-title{font-size:22px;font-weight:800;letter-spacing:-.04em}
+.home-heading-sub{font-size:12px;color:var(--mut);margin-top:4px}
+.home-heading-icon{width:40px;height:40px;display:grid;place-items:center;border-radius:14px;background:rgba(101,245,173,.10);color:#65f5ad;font-size:22px}
+.home-resumo{padding:18px 18px 7px;margin-bottom:13px;border-radius:18px;background:linear-gradient(145deg,rgba(26,37,56,.78),rgba(13,19,32,.55));border:1px solid rgba(125,155,205,.10)}
+.home-resumo .home-eyebrow{display:none}
+.home-principal{padding-bottom:18px}
+.home-label{font-size:12px}
+.home-valor{font-size:35px;line-height:1.15;margin:8px 0}
+.home-legenda{font-size:11px;line-height:1.5}
+.home-metricas{column-gap:22px}
+.home-metrica{padding:14px 0}
+.home-metrica span{font-size:11px}
+.home-metrica b{font-size:15px}
+.home-invest{margin-bottom:13px;background:rgba(13,19,32,.42);border-color:rgba(125,155,205,.10)}
+.home-link{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:14px 4px;border-bottom:1px solid rgba(125,155,205,.10);font-size:13px;font-weight:650;cursor:pointer}
+.home-link:last-child{border-bottom:0}
+.home-link span:last-child{font-size:20px;color:var(--mut)}
+.home-alert{width:100%;margin:0 0 12px}
+@media(max-width:480px){
+ .home-heading{margin-top:2px;margin-bottom:13px}
+ .home-heading-title{font-size:20px}
+ .home-heading-icon{width:36px;height:36px}
+ .home-resumo{padding:16px 15px 5px}
+ .home-valor{font-size:30px}
+ .home-metricas{column-gap:14px}
+ .home-metrica{padding:12px 0}
+ .home-metrica b{font-size:14px}
+ .home-invest{padding:14px 15px}
+}
+
 </style>
 </head>
 <body>
@@ -1144,8 +1178,7 @@ function view_vendas(){
   <div class="lista-col">${listaVendas()}</div>`;
 }
 function view_painel(){
-  const m=hoje().slice(0,7),f=x=>per==='tudo'||x.data.startsWith(m);
-  const V=S.v.filter(f),D=S.d.filter(f);
+  const V=S.v,D=S.d;
   const tot=a=>a.reduce((s,x)=>s+x.q*x.preco,0);
   const vendas=tot(V);
   const cmv=V.reduce((s,x)=>s+x.q*x.custo,0);
@@ -1159,8 +1192,7 @@ function view_painel(){
   const I=investInfo();
   const pct=I.ok?I.pct:0;
   const baixo=S.p.filter(x=>x.est<=3);
-  const dinheiro=(label,valor,classe='')=>`<div class="resumo-item"><span>${label}</span><b class="${classe}">${R(valor)}</b></div>`;
-  return `<div class="seg painel-periodo"><button class="${per==='mes'?'on':''}" onclick="setPer('mes')">Este mês</button><button class="${per==='tudo'?'on':''}" onclick="setPer('tudo')">Tudo</button></div>
+  return `<div class="home-heading"><div><div class="home-eyebrow">SEU NEGÓCIO</div><div class="home-heading-title">Resumo financeiro</div><div class="home-heading-sub">Visão geral de todas as movimentações</div></div><span class="home-heading-icon">↗</span></div>
   <section class="home-resumo">
     <div class="home-eyebrow">VISÃO GERAL</div>
     <div class="home-principal">
