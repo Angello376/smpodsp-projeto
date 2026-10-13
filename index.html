@@ -1423,7 +1423,7 @@ function salvarSaldoInicialFechamento(){
   else localStorage.setItem(chaveSaldoInicial(mes),String(valor));
   render();
 }
-function trocarMesFechamento(){render()}
+function trocarMesFechamento(mes){if(mes)localStorage.setItem('smpodsp_fech_mes',mes);render()}
 function view_prazos(){
   const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
   const dataHoje=hoje();
@@ -1446,7 +1446,7 @@ function view_prazos(){
   for(let i=0;i<18;i++){const d=new Date(base.getFullYear(),base.getMonth()-i,1);meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))}
   const opMes=meses.map(m=>'<option value="'+m+'" '+(m===mes?'selected':'')+'>'+m.slice(5,7)+'/'+m.slice(0,4)+'</option>').join('');
   const fechamento='<details class="card prazos-fechamento"><summary>Fechamento mensal e divisão dos sócios</summary><div class="prazos-fechamento-conteudo">'+
-  '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Mês</label><select id="fech-mes" onchange="localStorage.setItem(\\'smpodsp_fech_mes\\',this.value);trocarMesFechamento()">'+opMes+'</select>'+
+  '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Mês</label><select id="fech-mes" onchange="trocarMesFechamento(this.value)">'+opMes+'</select>'+
   '<div class="home-metricas prazos-mini-metricas" style="margin-top:10px"><div class="home-metrica"><span>Recebido</span><b class="pos">'+moeda(recebimentos)+'</b></div><div class="home-metrica"><span>Despesas</span><b class="neg">'+moeda(despesas)+'</b></div></div>'+
   '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Saldo no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Informe o saldo inicial" value="'+(inicial===null?'':inicial)+'"><button class="btn sec prazos-salvar" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button>'+
   (caixaCalculado===null?'<p class="mut" style="margin-top:10px">Informe o saldo inicial para calcular o caixa. Vendas ainda não recebidas não entram como dinheiro disponível.</p>':
