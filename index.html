@@ -775,6 +775,33 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
  .home-invest{padding:14px 15px}
 }
 
+
+/* Refinos de hierarquia e ações do painel */
+.home-resumo{box-shadow:0 10px 28px rgba(0,0,0,.08)}
+.home-metricas{gap:0 14px}
+.home-metrica{position:relative;padding:13px 12px 13px 0}
+.home-metrica:nth-child(odd){padding-right:12px}
+.home-metrica:nth-child(even){padding-left:12px;border-left:1px solid rgba(125,155,205,.08)}
+.home-metrica span{letter-spacing:.01em}
+.home-metrica b{display:block;margin-top:2px;font-variant-numeric:tabular-nums}
+.home-alert{display:flex;align-items:center;gap:12px;text-align:left;padding:13px 14px;border-radius:14px;border:1px solid rgba(255,184,77,.18);background:rgba(255,184,77,.07);color:inherit;cursor:pointer}
+.home-alert-stock{border-color:rgba(101,245,173,.15);background:rgba(101,245,173,.055)}
+.home-alert-icon{flex:0 0 30px;width:30px;height:30px;border-radius:10px;display:grid;place-items:center;background:rgba(255,184,77,.13);color:#ffbf66;font-size:17px;font-weight:800}
+.home-alert-stock .home-alert-icon{background:rgba(101,245,173,.12);color:#65f5ad}
+.home-alert-text{display:flex;flex:1;min-width:0;flex-direction:column;gap:3px}
+.home-alert-text b{font-size:12px}
+.home-alert-text small{font-size:11px;color:var(--mut);line-height:1.4}
+.home-arrow{font-size:22px;color:var(--mut)}
+.home-link{transition:background .15s ease;padding-left:9px;padding-right:9px;border-radius:10px}
+.home-link:active{background:rgba(125,155,205,.08)}
+@media(max-width:480px){
+ .home-metricas{column-gap:0}
+ .home-metrica{padding-top:12px;padding-bottom:12px}
+ .home-metrica:nth-child(odd){padding-right:8px}
+ .home-metrica:nth-child(even){padding-left:10px}
+ .home-alert{padding:12px}
+}
+
 </style>
 </head>
 <body>
@@ -1194,7 +1221,6 @@ function view_painel(){
   const baixo=S.p.filter(x=>x.est<=3);
   return `<div class="home-heading"><div><div class="home-eyebrow">SEU NEGÓCIO</div><div class="home-heading-title">Resumo financeiro</div><div class="home-heading-sub">Visão geral de todas as movimentações</div></div><span class="home-heading-icon">↗</span></div>
   <section class="home-resumo">
-    <div class="home-eyebrow">VISÃO GERAL</div>
     <div class="home-principal">
       <div class="home-label">Lucro estimado</div>
       <div class="home-valor ${lucro<0?'neg':'pos'}">${R(lucro)}</div>
@@ -1212,8 +1238,8 @@ function view_painel(){
     <div class="home-progress"><i style="width:${pct}%"></i></div>
     ${!I.ok?`<div class="home-invest-foot"><span>Faltam ${R(I.falta)}</span><span>para recuperar</span></div>`:''}
   </section>
-  ${venc.length?`<button class="home-alert" onclick="setTab('vendas')"><span>⚠</span><span><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes</small></span><span class="home-arrow">›</span></button>`:''}
-  ${baixo.length?`<div class="home-nota">${baixo.length} produto${baixo.length===1?'':'s'} com estoque baixo</div>`:''}
+  ${venc.length? `<button class="home-alert" onclick="setTab('vendas')"><span class="home-alert-icon">!</span><span class="home-alert-text"><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes · toque para conferir</small></span><span class="home-arrow">›</span></button>` : ''}
+  ${baixo.length? `<button class="home-alert home-alert-stock" onclick="setTab('produtos')"><span class="home-alert-icon">↓</span><span class="home-alert-text"><b>${baixo.length} produto${baixo.length===1?' com estoque baixo':'s com estoque baixo'}</b><small>Confira seu estoque · toque para abrir</small></span><span class="home-arrow">›</span></button>` : ''}
   <div class="home-link" onclick="setTab('vendas')"><span>Ver vendas</span><span>›</span></div>
   <div class="home-link" onclick="setTab('produtos')"><span>Ver produtos e estoque</span><span>›</span></div>`;
 }
