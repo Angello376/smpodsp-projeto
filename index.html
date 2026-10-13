@@ -1468,33 +1468,36 @@ async function pagarVenda(id){
 }
 async function delV(id){
   if(!(await confirmar('Excluir venda? O estoque será devolvido.',true)))return;
-  const linha=document.querySelector(`.vr2[data-venda-id="${CSS.escape(String(id))}"]`);
+  const botao=Array.from(document.querySelectorAll('.vr2-del')).find(el=>(el.getAttribute('onclick')||'').includes(String(id)));
+  const linha=botao?botao.closest('.vr2'):document.querySelector('.vr2[data-venda-id="'+String(id).replace(/["\\\\]/g,'')+'"]');
   const x=S.v.find(a=>String(a.id)===String(id));
   if(!x)return;
   if(linha){
     const altura=linha.getBoundingClientRect().height;
-    linha.style.height=altura+'px';
     linha.style.overflow='hidden';
-    linha.style.boxSizing='border-box';
-    linha.style.transition='opacity .24s ease, transform .24s ease, height .28s ease, margin .28s ease, padding .28s ease';
-    linha.classList.add('removendo');
-    await new Promise(resolve=>requestAnimationFrame(()=>requestAnimationFrame(resolve)));
-    linha.style.height='0px';
-    linha.style.marginTop='0px';
-    linha.style.marginBottom='0px';
-    linha.style.paddingTop='0px';
-    linha.style.paddingBottom='0px';
-    linha.style.borderWidth='0px';
-    await new Promise(resolve=>setTimeout(resolve,290));
+    linha.style.willChange='opacity, transform, height, margin, padding';
+    if(typeof linha.animate==='function'){
+      const anim=linha.animate([
+        {opacity:1,transform:'translateX(0) scale(1)',height:altura+'px',marginTop:'6px',marginBottom:'6px',paddingTop:'12px',paddingBottom:'12px',borderWidth:'1px'},
+        {opacity:0,transform:'translateX(28px) scale(.96)',height:'0px',marginTop:'0px',marginBottom:'0px',paddingTop:'0px',paddingBottom:'0px',borderWidth:'0px'}
+      ],{duration:420,easing:'cubic-bezier(.22,.75,.25,1)',fill:'forwards'});
+      try{await anim.finished}catch(e){}
+    }else{
+      linha.style.transition='opacity .42s ease, transform .42s ease, height .42s ease, margin .42s ease, padding .42s ease';
+      linha.style.height=altura+'px';
+      void linha.offsetHeight;
+      linha.classList.add('removendo');
+      linha.style.height='0px';linha.style.margin='0';linha.style.padding='0';linha.style.borderWidth='0';
+      await new Promise(resolve=>setTimeout(resolve,450));
+    }
   }
   const p=S.p.find(a=>a.id===x.pid);
   const ok=await run(async()=>{
     if(p){const upd={est:p.est+x.q};const L=norm(p);if(x.sabor&&L.length)upd.sabores=L.map(f=>f.nome===x.sabor?{nome:f.nome,est:f.est+x.q}:f);await ST.upd('produtos',p.id,upd)}
     await ST.del('vendas',id)
   });
-  if(!ok&&linha){linha.classList.remove('removendo');linha.style.height='';linha.style.overflow='';linha.style.transition='';linha.style.marginTop='';linha.style.marginBottom='';linha.style.paddingTop='';linha.style.paddingBottom='';linha.style.borderWidth='';}
-}
-async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
+  if(!ok&&linha){linha.getAnimations().forEach(a=>a.cancel());linha.style.opacity='';linha.style.transform='';linha.style.height='';linha.style.overflow='';linha.style.willChange='';linha.style.transition='';linha.style.margin='';linha.style.padding='';linha.style.borderWidth='';linha.classList.remove('removendo');}
+}async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
 async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;await run(()=>ST.del('produtos',pid))}
 async function removeSab(pid,nome){
   if(!(await confirmar('Remover o sabor '+nome+'?',true)))return;
