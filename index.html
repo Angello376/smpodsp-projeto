@@ -1292,7 +1292,7 @@ function modal(opts){
     const ov=document.createElement('div');
     ov.className='ov';
     const temInput=!!opts.input;
-    ov.innerHTML=`<div class="md" role="dialog"><p class="mdm">${esc(opts.msg||'')}</p>${temInput?`<input class="mdi" id="mdi" value="${esc(opts.valor||'')}" inputmode="decimal">`:''}<div class="mdb">${opts.cancel?`<button type="button" class="sm" id="mdc">${esc(opts.cancel)}</button>`:''}<button type="button" class="btn mdok ${opts.danger?'mdperigo':''}" id="mdo">${esc(opts.ok||'OK')}</button></div></div>`;
+    ov.innerHTML=`<div class="md" role="dialog"><p class="mdm">${esc(opts.msg||'')}</p>${temInput?`<input class="mdi" id="mdi" value="${esc(opts.valor||'')}" inputmode="${opts.inputmode||'text'}" autocomplete="off">`:''}<div class="mdb">${opts.cancel?`<button type="button" class="sm" id="mdc">${esc(opts.cancel)}</button>`:''}<button type="button" class="btn mdok ${opts.danger?'mdperigo':''}" id="mdo">${esc(opts.ok||'OK')}</button></div></div>`;
     document.body.appendChild(ov);
     const fechar=val=>{ov.remove();res(val)};
     ov.querySelector('#mdo').onclick=()=>fechar(temInput?ov.querySelector('#mdi').value:true);
@@ -1302,7 +1302,7 @@ function modal(opts){
   });
 }
 function confirmar(msg,perigo){return modal({msg,ok:perigo?'Excluir':'Confirmar',cancel:'Cancelar',danger:!!perigo}).then(r=>r===true)}
-function pedirValor(msg,def){return modal({msg,input:true,valor:def,ok:'Confirmar',cancel:'Cancelar'})}
+function pedirValor(msg,def){return modal({msg,input:true,valor:def,ok:'Confirmar',cancel:'Cancelar',inputmode:msg.startsWith('Quanto foi pago')?'decimal':'text'})}
 window.alert=function(msg){modal({msg:String(msg),ok:'OK'})};
 
 function diasVencidos(cid){
