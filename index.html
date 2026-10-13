@@ -350,9 +350,26 @@ select option:disabled{color:#6b7a94}
 .vs-label{font-size:12px;color:#b4c0d6;font-weight:600;letter-spacing:.02em;margin:0 0 6px}
 .vs-info{font-size:12.5px;color:#8b98b0;margin:-4px 2px 14px}
 .vs-field select{width:100%}
-.vs-sabores{display:grid;grid-template-columns:repeat(auto-fill,minmax(104px,1fr));gap:8px}
-.vs-sabores .schip{margin:0;text-align:center;min-height:46px;display:flex;flex-direction:column;justify-content:center;gap:1px;font-size:13px}
-.vs-sabores .schip small{font-size:11px}
+.vs-sabores{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.vs-sabores .schip{position:relative;margin:0;text-align:left;min-width:0;min-height:88px;padding:10px 9px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border-radius:14px;background:rgba(255,255,255,.018);border:1px solid rgba(80,160,255,.22);color:#bcd6ff;transition:border-color .18s,background .18s,transform .18s;white-space:normal;line-height:1.2}
+.vs-sabores .schip:hover{border-color:rgba(59,130,255,.7);background:rgba(59,130,255,.08);transform:translateY(-1px)}
+.vs-sabores .schip.on{background:rgba(57,255,136,.09);border-color:#39ffb0;color:#e8fff7;box-shadow:inset 0 0 0 1px rgba(57,255,176,.12),0 0 16px -10px #39ffb0}
+.schip-ico{width:28px;height:28px;display:block;flex:none;color:#86cfff;filter:drop-shadow(0 0 5px rgba(59,180,255,.15))}
+.schip.on .schip-ico{color:#39ffb0}
+.schip-name{font-size:11px;font-weight:750;letter-spacing:.025em;text-transform:uppercase;overflow-wrap:anywhere;text-align:center}
+.vs-sabores .schip small{font-size:11px;color:#7f91ad;font-weight:500}
+.vs-sabores .schip.on small{color:#8debd0}
+.schip-check{position:absolute;right:7px;top:6px;font-size:11px;color:#39ffb0;opacity:0}
+.schip.on .schip-check{opacity:1}
+@media(max-width:480px){
+  .vs-sabores{grid-template-columns:1fr;gap:6px}
+  .vs-sabores .schip{min-height:58px;padding:9px 12px;display:grid;grid-template-columns:34px minmax(0,1fr) auto;grid-template-rows:auto;justify-content:stretch;align-items:center;gap:10px;text-align:left;border-radius:12px}
+  .vs-sabores .schip-ico{width:30px;height:30px}
+  .vs-sabores .schip-name{text-align:left;font-size:12px}
+  .vs-sabores .schip small{font-size:11px;white-space:nowrap}
+  .vs-sabores .schip-check{position:static;grid-column:3;grid-row:1;display:none}
+  .vs-sabores .schip.on .schip-check{display:block;opacity:1}
+}
 .vs-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;align-items:end;margin-bottom:14px}
 .vs-row .vs-field{margin-bottom:0}
 .vs-stepper{display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:12px;padding:4px;height:50px}
@@ -618,10 +635,23 @@ function viewSabor(){
 
 const FORM={venda:false,prod:false,cli:false,gas:false};
 let VS={pid:'',sab:'',q:1};
+function iconeSabor(nome){
+  const s=String(nome||'').toLowerCase();
+  let desenho='';
+  if(/watermelon|melancia/.test(s)) desenho='<path d="M4 17a14 14 0 0 0 16 0L12 4 4 17Z"/><path d="M4 17h16"/><path d="M10 12l-1 2m5-1-1 2m-3-7-1 2"/>';
+  else if(/strawberry|morango/.test(s)) desenho='<path d="M12 21s-7-5-7-11a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 6-7 11-7 11Z"/><path d="M8 5 6 2m10 3 2-3M9 10h.01M14 12h.01M11 16h.01"/>';
+  else if(/kiwi/.test(s)) desenho='<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/><path d="m12 3 0 2m6 0-2 3m5 4-3 0m-1 7-2-3m-7 3 2-3m-7-7 3 0m0-6 2 3"/>';
+  else if(/apple|maçã|maca/.test(s)) desenho='<path d="M12 8c-3-5-8-2-8 3 0 5 4 10 8 10s8-5 8-10c0-5-5-8-8-3Z"/><path d="M12 8c0-4 2-6 5-6-1 3-2 5-5 6Z"/><path d="M9 3 7 2"/>';
+  else if(/grape|uva/.test(s)) desenho='<circle cx="9" cy="8" r="2.2"/><circle cx="15" cy="8" r="2.2"/><circle cx="6.5" cy="12" r="2.2"/><circle cx="12" cy="12" r="2.2"/><circle cx="17.5" cy="12" r="2.2"/><circle cx="9" cy="16" r="2.2"/><circle cx="15" cy="16" r="2.2"/><path d="M12 6c0-3 2-4 4-4"/>';
+  else if(/banana/.test(s)) desenho='<path d="M4 5c3 8 9 13 15 12 1 0 2-1 2-2-1 5-5 7-9 5C7 18 3 12 3 7Z"/><path d="m4 4 2 1m14 11 2-1"/>';
+  else if(/orange|laranja|citrus|limão|limao/.test(s)) desenho='<circle cx="12" cy="13" r="8"/><path d="M12 5c0-3 2-4 5-3-1 3-3 4-5 3Zm0 8 0 8m-8-8h16m-14-5 12 10m0-10L6 18"/>';
+  else desenho='<path d="M12 20s-7-4.5-7-10a4 4 0 0 1 7-2 4 4 0 0 1 7 2c0 5.5-7 10-7 10Z"/><path d="M12 8c0-3 2-5 5-5"/>';
+  return '<svg class="schip-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">'+desenho+'</svg>';
+}
 function sabsHTML(p){
   const L=p?norm(p):[];
   if(!L.length)return '';
-  return L.map(f=>`<button type="button" class="schip ${f.nome===VS.sab?'on':''}" data-s="${esc(f.nome)}" onclick="vsSab(this.dataset.s)">${esc(f.nome)} <small>${f.est} un.</small></button>`).join('');
+  return L.map(f=>`<button type="button" class="schip ${f.nome===VS.sab?'on':''}" data-s="${esc(f.nome)}" onclick="vsSab(this.dataset.s)">${iconeSabor(f.nome)}<span class="schip-name">${esc(f.nome)}</span><small>${f.est} un.</small><span class="schip-check" aria-hidden="true">✓</span></button>`).join('');
 }
 function vsFill(){
   const p=S.p.find(x=>x.id===VS.pid);
