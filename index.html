@@ -1455,10 +1455,17 @@ async function pagarVenda(id){
 }
 async function delV(id){
   if(!(await confirmar('Excluir venda? O estoque será devolvido.',true)))return;
-  const x=S.v.find(a=>a.id===id);const p=S.p.find(a=>a.id===x.pid);
-  await run(async()=>{
+  const linha=Array.from(document.querySelectorAll('.vr2')).find(el=>el.getAttribute('onclick')?.includes(id)||el.innerHTML.includes("delV('"+id+"'"));
+  if(linha){linha.classList.add('removendo');await new Promise(resolve=>setTimeout(resolve,230));}
+  const x=S.v.find(a=>a.id===id);
+  if(!x){if(linha)linha.classList.remove('removendo');return;}
+  const p=S.p.find(a=>a.id===x.pid);
+  const ok=await run(async()=>{
     if(p){const upd={est:p.est+x.q};const L=norm(p);if(x.sabor&&L.length)upd.sabores=L.map(f=>f.nome===x.sabor?{nome:f.nome,est:f.est+x.q}:f);await ST.upd('produtos',p.id,upd)}
-    await ST.del('vendas',id)})}
+    await ST.del('vendas',id)
+  });
+  if(!ok&&linha)linha.classList.remove('removendo');
+}
 async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
 async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;await run(()=>ST.del('produtos',pid))}
 async function removeSab(pid,nome){
