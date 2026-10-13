@@ -837,14 +837,16 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .ov{animation:overlayIn .18s ease both}.md{animation:modalIn .22s cubic-bezier(.2,.8,.2,1) both}
 @keyframes cardReveal{from{opacity:0;transform:translateY(9px)}to{opacity:1;transform:translateY(0)}}@keyframes toastIn{from{opacity:0;transform:translateY(18px) scale(.98)}to{opacity:1;transform:none}}@keyframes toastOut{to{opacity:0;transform:translateY(10px)}}@keyframes checkPop{from{opacity:0;transform:scale(.4) rotate(-30deg)}to{opacity:1;transform:scale(1) rotate(0)}}@keyframes overlayIn{from{opacity:0}to{opacity:1}}@keyframes modalIn{from{opacity:0;transform:translateY(8px) scale(.98)}to{opacity:1;transform:translateY(0) scale(1)}}
 
-/* Score de recuperação do investimento */
-.home-invest{padding:18px;background:linear-gradient(145deg,rgba(13,22,35,.96),rgba(8,13,23,.94));border:1px solid rgba(101,245,173,.15);border-radius:18px}
-.home-score-wrap{display:flex;align-items:center;gap:18px}
-.home-score-ring{--score:0;flex:0 0 112px;width:112px;height:112px;border-radius:50%;display:grid;place-items:center;background:conic-gradient(#65f5ad calc(var(--score)*1%),rgba(125,155,205,.13) 0);position:relative;animation:scoreAppear .7s cubic-bezier(.2,.8,.2,1) both;box-shadow:0 0 24px rgba(101,245,173,.07)}
-.home-score-ring:before{content:'';position:absolute;inset:7px;border-radius:50%;background:#0b1220;border:1px solid rgba(125,155,205,.12)}
-.home-score-core{position:relative;display:flex;flex-direction:column;align-items:center;gap:3px}
-.home-score-core strong{font-size:25px;line-height:1;font-weight:850;letter-spacing:-.04em;color:#65f5ad}
-.home-score-core span{font-size:8px;letter-spacing:.1em;color:var(--mut);font-weight:750}
+/* Medidor semicircular de recuperação do investimento */
+.home-invest{padding:18px;background:linear-gradient(145deg,rgba(13,22,35,.96),rgba(8,13,23,.94));border:1px solid rgba(125,155,205,.18);border-radius:18px}
+.home-score-wrap{display:flex;align-items:center;gap:14px}
+.home-score-ring{flex:0 0 154px;width:154px;height:100px;position:relative;animation:scoreAppear .7s cubic-bezier(.2,.8,.2,1) both;overflow:visible}
+.home-score-ring svg{display:block;width:100%;height:100%;overflow:visible}
+.home-score-track{fill:none;stroke:rgba(125,155,205,.13);stroke-width:12;stroke-linecap:round}
+.home-score-progress{fill:none;stroke:url(#scoreGradient);stroke-width:12;stroke-linecap:round;stroke-dasharray:var(--score) 100;transition:stroke-dasharray .9s cubic-bezier(.2,.7,.2,1)}
+.home-score-dot{fill:var(--score-color);stroke:#0b1220;stroke-width:3;filter:drop-shadow(0 0 5px var(--score-color));transition:cx .9s cubic-bezier(.2,.7,.2,1),cy .9s cubic-bezier(.2,.7,.2,1)}
+.home-score-number{font-size:21px;font-weight:850;letter-spacing:-.04em;fill:var(--score-color);text-anchor:middle}
+.home-score-caption{font-size:7px;letter-spacing:1.1px;fill:var(--mut);font-weight:750;text-anchor:middle}
 .home-score-info{flex:1;min-width:0}
 .home-score-amount{margin-top:9px;overflow-wrap:anywhere}
 .home-score-amount b{font-size:18px;color:var(--fg)}
@@ -852,8 +854,8 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 .home-score-missing{font-size:11px;color:var(--mut);margin-top:6px}
 .home-score-missing b{color:#ffd166}
 .home-score-done{font-size:11px;color:#65f5ad;margin-top:7px;font-weight:700}
-@keyframes scoreAppear{from{opacity:.3;transform:scale(.82) rotate(-35deg)}to{opacity:1;transform:scale(1) rotate(0)}}
-@media(max-width:380px){.home-score-wrap{gap:12px}.home-score-ring{flex-basis:94px;width:94px;height:94px}.home-score-core strong{font-size:22px}.home-score-amount b{font-size:16px}}
+@keyframes scoreAppear{from{opacity:.25;transform:translateY(5px) scale(.94)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:420px){.home-invest{padding:14px}.home-score-wrap{gap:8px}.home-score-ring{flex-basis:138px;width:138px;height:94px}.home-score-number{font-size:19px}.home-score-amount b{font-size:16px}}
 
 /* Confirmação de venda em tela cheia, com check animado */
 .sale-success-overlay{position:fixed;inset:0;z-index:99999;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(3,8,16,.84);backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);animation:saleOverlayIn .22s ease both}
@@ -1346,7 +1348,11 @@ function view_painel(){
   const desp=D.reduce((s,x)=>s+(+x.valor||0),0);
   const lucro=vendas-cmv-desp;
   const I=investInfo();
-  const pct=I.ok?I.pct:0;
+  const pct=Math.max(0,Math.min(100,I.pct||0));
+  const scoreAngle=Math.PI*pct/100;
+  const scoreX=(88-72*Math.cos(scoreAngle)).toFixed(2);
+  const scoreY=(82-72*Math.sin(scoreAngle)).toFixed(2);
+  const scoreColor=pct<25?'#ef4444':pct<50?'#f97316':pct<75?'#facc15':'#22c55e';
   const baixo=S.p.filter(x=>x.est<=3);
   return `<div class="home-heading"><div><div class="home-eyebrow">SEU NEGÓCIO</div><div class="home-heading-title">Resumo financeiro</div><div class="home-heading-sub">Visão geral de todas as movimentações</div></div><span class="home-heading-icon">↗</span></div>
   <section class="home-resumo">
@@ -1364,8 +1370,15 @@ function view_painel(){
   </section>
   <section class="home-invest">
     <div class="home-score-wrap">
-      <div class="home-score-ring" style="--score:${pct}" role="img" aria-label="${pct}% do investimento recuperado">
-        <div class="home-score-core"><strong>${pct}%</strong><span>RECUPERADO</span></div>
+      <div class="home-score-ring" style="--score:${pct};--score-color:${scoreColor}" role="img" aria-label="${pct}% do investimento recuperado">
+        <svg viewBox="0 0 176 100" aria-hidden="true">
+          <defs><linearGradient id="scoreGradient" x1="16" y1="82" x2="160" y2="82" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#ef4444"/><stop offset="33.33%" stop-color="#f97316"/><stop offset="66.66%" stop-color="#facc15"/><stop offset="100%" stop-color="#22c55e"/></linearGradient></defs>
+          <path class="home-score-track" d="M16 82 A72 72 0 0 1 160 82" pathLength="100"/>
+          <path class="home-score-progress" d="M16 82 A72 72 0 0 1 160 82" pathLength="100"/>
+          <circle class="home-score-dot" cx="${scoreX}" cy="${scoreY}" r="6"/>
+          <text class="home-score-number" x="88" y="69">${pct}%</text>
+          <text class="home-score-caption" x="88" y="80">RECUPERADO</text>
+        </svg>
       </div>
       <div class="home-score-info">
         <span class="home-label">Recuperação do estoque</span>
