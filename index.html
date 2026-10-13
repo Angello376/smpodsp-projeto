@@ -943,7 +943,7 @@ const hoje=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOStri
 const fd=d=>d?d.split('-').reverse().join('/'):'';
 const v=id=>{const el=$('#'+id);return el?el.value:''};
 const n=id=>parseFloat(String(v(id)).replace(',','.'))||0;
-const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['prazos','R,['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
+const TABS=[['painel','⌂','Painel'],['vendas','↗','Vendas'],['prazos','◷','Prazos'],['financeiro','R$','Financeiro'],['produtos','▦','Produtos'],['clientes','♙','Clientes'],['gastos','−','Gastos']];
 const CATS=['Divulgação','Frete/Envio','Taxas','Aluguel/Contas','Equipamento (investimento)','Outros'];
 const cli=id=>(S.c.find(x=>x.id===id)||{}).nome||'Avulso';
 
@@ -1432,7 +1432,7 @@ function textoRelacaoSocios(mes){
   }else{
     linhas.push('Angello: '+R(disponivel/2),'Michel: '+R(disponivel/2),'','*Meta do mês: '+(disponivel>0?'BATIDA':'NÃO BATIDA')+'*');
   }
-  return linhas.join('\\n');
+  return linhas.join('\n');
 }
 async function copiarRelacaoSocios(){
   const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
@@ -2232,6 +2232,7 @@ function countUps(root){
     requestAnimationFrame(passo);
   });
 }
+function view_financeiro(){return view_painel();}
 function renderAgora(){
   const nav=TABS.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="setTab('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('');
   if(nav!==LAST_NAV){$('#nav').innerHTML=nav;LAST_NAV=nav}
