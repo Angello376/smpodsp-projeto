@@ -2008,6 +2008,12 @@ function renderAgora(){
     app.innerHTML=html;
     LAST_APP=html;
     if(ANIMAR)countUps(app);
+    app.querySelectorAll('.pcard,.cl-row,.vr2,.ch-row,.frow').forEach(el=>{
+      el.classList.remove('editado');
+      void el.offsetWidth;
+      el.classList.add('editado');
+      el.addEventListener('animationend',()=>el.classList.remove('editado'),{once:true});
+    });
   }
   app.classList.toggle('enter',ANIMAR);
 }
