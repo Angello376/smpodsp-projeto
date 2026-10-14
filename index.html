@@ -1052,6 +1052,47 @@ input,select,textarea{min-width:0}
   .prod-stat small{font-size:8px}
   .prod-stat b{font-size:11px}
 }
+
+/* Produtos: visual mais limpo e menos carregado */
+.prod-intro{padding:4px 0 12px;margin:4px 0 12px;border:0;border-bottom:1px solid var(--bd);border-radius:0;background:none;box-shadow:none}
+.prod-intro h2{font-size:21px;letter-spacing:-.02em}
+.prod-intro p{margin-top:4px;max-width:none}
+.prod-kicker{font-size:9px;letter-spacing:.13em;color:#8ca5c4;margin-bottom:4px}
+.prod-count{min-width:0;min-height:0;padding:6px 10px;border-radius:9px;background:rgba(255,255,255,.035);border:1px solid var(--bd)}
+.prod-count b{font-size:17px;color:var(--fg)}
+.prod-count span{font-size:10px;margin-top:1px}
+.prod-overview{gap:0;margin:0 0 12px;padding:9px 0;border:1px solid var(--bd);border-radius:10px;background:rgba(255,255,255,.018)}
+.prod-stat{display:flex;flex-direction:column;align-items:flex-start;gap:3px;padding:0 13px;border:0;border-radius:0;background:none;box-shadow:none}
+.prod-stat+.prod-stat{border-left:1px solid var(--bd)}
+.prod-stat small{font-size:10px;color:var(--mut);line-height:1.3}
+.prod-stat b{font-size:15px;font-weight:700;color:var(--fg)}
+.prod-novo>summary{min-height:40px;margin:0 0 12px;border:1px solid rgba(57,255,136,.22);border-radius:10px;background:rgba(57,255,136,.045);color:#8eeeb5;box-shadow:none;letter-spacing:0}
+.seg{box-shadow:none}
+.seg button.on{box-shadow:inset 0 0 0 1px rgba(120,220,255,.2);background:rgba(59,130,255,.13)}
+.prod-list{gap:10px}
+.prod-card{padding:12px;border-radius:13px;background:rgba(10,15,26,.88);box-shadow:none;transition:border-color .18s}
+.prod-card:before{width:2px;opacity:.6}
+.prod-card.is-open{box-shadow:none}
+.prod-name{font-size:14px}
+.prod-stock{padding:4px 6px;border-radius:7px}
+.prod-price-row{padding-top:11px}
+.prod-price b{font-size:20px;text-shadow:none}
+.prod-price small{font-size:9px;letter-spacing:.06em}
+.prod-detail{padding-left:9px}
+.prod-card .pact .prod-edit{background:rgba(59,130,255,.08);border-color:var(--bd);color:#a9c9ff}
+@media(max-width:600px){
+ .prod-overview{gap:0}
+ .prod-stat{display:flex;padding:0 8px}
+ .prod-stat small{font-size:9px}
+ .prod-stat b{font-size:13px}
+ .prod-stat-icon{display:none}
+ .prod-intro{padding-top:2px}
+}
+@media(max-width:380px){
+ .prod-stat{padding:0 6px}
+ .prod-stat small{font-size:8px}
+ .prod-stat b{font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -1338,7 +1379,7 @@ function view_produtos(){
   const estoqueBaixo=S.p.filter(p=>(Number(p.est)||0)<=5).length;
   const valorCustoEstoque=S.p.reduce((total,p)=>total+((Number(p.custo)||0)*(Number(p.est)||0)),0);
   return `<div class="prod-intro"><div><span class="prod-kicker">GESTÃO DE ESTOQUE</span><h2>Seus produtos</h2><p>Preços, estoque e sabores organizados em um só lugar.</p></div><div class="prod-count"><b>${S.p.length}</b><span>${S.p.length===1?'produto':'produtos'}</span></div></div>
-  <div class="prod-overview"><div class="prod-stat"><span class="prod-stat-icon">▦</span><div><small>Unidades em estoque</small><b>${totalUnidades}</b></div></div><div class="prod-stat"><span class="prod-stat-icon warning">!</span><div><small>Produtos com estoque baixo</small><b>${estoqueBaixo}</b></div></div><div class="prod-stat"><span class="prod-stat-icon blue">R$</span><div><small>Valor de custo em estoque</small><b>${R(valorCustoEstoque)}</b></div></div></div>
+  <div class="prod-overview"><div class="prod-stat"><small>Unidades em estoque</small><b>${totalUnidades}</b></div><div class="prod-stat"><small>Estoque baixo</small><b>${estoqueBaixo}</b></div><div class="prod-stat"><small>Valor em estoque</small><b>${R(valorCustoEstoque)}</b></div></div>
   ${segProd()}
   <details class="prod-novo" ${FORM.prod?'open':''} ontoggle="FORM.prod=this.open"><summary>＋ Cadastrar produto</summary><div class="card"><div class="form">
   <label class="w">Nome do produto<input id="pn" placeholder="Ex.: Pod Ignite 5000"></label>
