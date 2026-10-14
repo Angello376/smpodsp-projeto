@@ -2027,8 +2027,6 @@ function view_painel(){
   const recebido=V.reduce((s,x)=>s+recebidoDe(x),0);
   const aRec=S.v.filter(x=>saldoDe(x)>0.005);
   const aRecTot=aRec.reduce((s,x)=>s+saldoDe(x),0);
-  const venc=aRec.filter(x=>x.venc&&x.venc<hoje());
-  const vencTot=venc.reduce((s,x)=>s+saldoDe(x),0);
   const desp=D.reduce((s,x)=>s+(+x.valor||0),0);
   const lucro=vendas-cmv-desp;
   const I=investInfo();
@@ -2072,11 +2070,8 @@ function view_painel(){
       </div>
     </div>
   </section>
-  ${venc.length? `<button class="home-alert" onclick="setTab('vendas')"><span class="home-alert-icon">!</span><span class="home-alert-text"><b>${venc.length} cobrança${venc.length===1?' vencida':'s vencidas'}</b><small>${R(vencTot)} pendentes · toque para conferir</small></span><span class="home-arrow">›</span></button>` : ''}
-  ${baixo.length? `<button class="home-alert home-alert-stock" onclick="setTab('produtos')"><span class="home-alert-icon">↓</span><span class="home-alert-text"><b>${baixo.length} produto${baixo.length===1?' com estoque baixo':'s com estoque baixo'}</b><small>Confira seu estoque · toque para abrir</small></span><span class="home-arrow">›</span></button>` : ''}
   <button class="home-quick-sale" onclick="FORM.venda=true;setTab('vendas')"><span class="home-quick-icon">＋</span><span><b>Registrar nova venda</b><small>Adicionar uma venda ao seu controle</small></span><span class="home-quick-arrow">›</span></button>
-  <div class="home-link" onclick="setTab('vendas')"><span>Ver vendas e recebimentos</span><span>›</span></div>
-  <div class="home-link" onclick="setTab('produtos')"><span>Ver produtos e estoque</span><span>›</span></div>`;
+`;
 }
 
 let PAGAS_OPEN=false;
