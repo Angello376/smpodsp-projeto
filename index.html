@@ -1448,6 +1448,39 @@ main{padding-bottom:calc(108px + var(--app-safe-bottom))}
  .floatnav-shell{background:rgba(8,12,21,.98)}
 }
 
+
+/* Toolbar flutuante em formato pill, inspirada na referência enviada */
+.bnav{position:fixed;left:50%;right:auto;bottom:calc(12px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);width:min(560px,calc(100vw - 30px));display:block;padding:0;background:transparent;border:0;z-index:100}
+.floatnav-shell{padding:7px;border:1px solid rgba(130,145,170,.2);border-radius:999px;background:rgba(9,12,21,.96);box-shadow:0 12px 36px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.035);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.floatnav-track{display:flex;align-items:center;justify-content:space-between;gap:3px;width:100%}
+.bnav .floatnav-item{position:relative;flex:1 1 0;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:58px;padding:7px 2px;border:1px solid transparent;border-radius:999px;background:transparent;color:#828796;font-size:10px;font-weight:600;line-height:1.1;cursor:pointer;transition:flex .24s ease,color .2s ease,background .2s ease,border-color .2s ease,transform .2s ease;overflow:visible}
+.bnav .floatnav-icon{display:grid;place-items:center;width:29px;height:27px;flex:none;font-size:23px;line-height:1;transition:transform .25s cubic-bezier(.2,.8,.2,1),color .2s ease;white-space:nowrap}
+.bnav .floatnav-label{display:block;max-width:100%;padding:0 2px;overflow:visible;text-overflow:clip;white-space:nowrap;font-size:9px;line-height:1.1;letter-spacing:0;color:inherit;opacity:.86}
+.bnav .floatnav-item:hover{color:#e5edf9;background:rgba(255,255,255,.045)}
+.bnav .floatnav-item.on{flex-grow:1.22;color:#69f0b0;background:rgba(45,226,151,.09);border-color:rgba(101,245,173,.22);box-shadow:0 0 20px rgba(48,220,146,.06)}
+.bnav .floatnav-item.on .floatnav-icon{transform:translateY(-1px) scale(1.07);filter:drop-shadow(0 0 6px rgba(101,245,173,.24))}
+.bnav .floatnav-item.on .floatnav-label{opacity:1;font-weight:750}
+.bnav .floatnav-item:active{transform:scale(.96)}
+.bnav .floatnav-item:focus-visible{outline:2px solid #65f5ad;outline-offset:2px}
+main{padding-bottom:calc(106px + env(safe-area-inset-bottom,0px))}
+@media(max-width:520px){
+ .bnav{width:calc(100vw - 24px);bottom:calc(8px + env(safe-area-inset-bottom,0px))}
+ .floatnav-shell{padding:5px}
+ .floatnav-track{gap:2px}
+ .bnav .floatnav-item{min-height:54px;padding:6px 1px;gap:3px}
+ .bnav .floatnav-icon{width:26px;height:25px;font-size:21px}
+ .bnav .floatnav-label{font-size:8px}
+ main{padding-bottom:calc(98px + env(safe-area-inset-bottom,0px))}
+}
+@media(max-width:370px){
+ .bnav{width:calc(100vw - 16px)}
+ .floatnav-shell{padding:4px}
+ .bnav .floatnav-item{min-height:50px}
+ .bnav .floatnav-icon{font-size:19px;width:23px}
+ .bnav .floatnav-label{font-size:7px}
+}
+@media(prefers-reduced-motion:reduce){.bnav .floatnav-item,.bnav .floatnav-icon{transition:none}}
+
 </style>
 </head>
 <body>
