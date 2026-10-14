@@ -1338,6 +1338,67 @@ input,select,textarea{min-width:0}
 @media(max-width:480px){.md{padding:20px;border-radius:17px}.mdb button{flex:1}}
 @media(prefers-reduced-motion:reduce){.ov,.md{animation:none}}
 
+
+/* Financeiro clean: reduzir volume visual e priorizar os dados essenciais */
+.fin-page{gap:14px;max-width:1080px;padding-bottom:18px}
+.fin-header{padding:4px 2px 12px}
+.fin-header h1{font-size:25px;letter-spacing:-.025em;margin:4px 0}
+.fin-header p,.fin-section-heading p{font-size:11px}
+.fin-cash-card{padding:18px;border-radius:13px;box-shadow:none;background:linear-gradient(125deg,rgba(12,25,31,.62),rgba(10,15,26,.82))}
+.fin-cash-value{font-size:32px;letter-spacing:-.025em;margin-top:3px}
+.fin-cash-top p{font-size:10px}
+.fin-cash-symbol{width:38px;height:38px;border-radius:10px;font-size:12px}
+.fin-cash-input{margin-top:14px;padding-top:12px}
+.fin-cash-input label{font-size:12px;margin-bottom:7px}
+.fin-cash-input>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px}
+.fin-cash-input input{min-height:44px;padding:10px 12px;font-size:16px;font-weight:650;border-radius:9px}
+.fin-cash-input .btn{min-height:44px;padding:0 17px;font-size:11px;border-radius:9px}
+.fin-cash-input small{font-size:10px;margin-top:7px}
+.fin-metrics-grid{gap:9px}
+.fin-metric{padding:11px 13px;border-radius:10px;background:rgba(10,15,26,.42)}
+.fin-metric span{font-size:10px}
+.fin-metric b{font-size:16px;margin-top:4px}
+.fin-section{padding:16px;border-radius:12px;background:rgba(10,15,26,.4)}
+.fin-section-heading{margin-bottom:11px}
+.fin-section-heading h2{font-size:17px;margin:3px 0}
+.fin-dues-grid{gap:8px}
+.fin-dues-grid>div{padding:10px 12px;border-radius:9px}
+.fin-dues-grid span,.fin-dues-grid small{font-size:10px}
+.fin-dues-grid b{font-size:19px;margin:4px 0 1px}
+.fin-actions{margin-top:9px}
+.fin-actions .btn,.fin-copy-close{min-height:38px;padding:0 14px;font-size:11px;border-radius:9px}
+.fin-month-select{font-size:10px}
+.fin-month-select select{min-height:38px;padding:7px 10px;border-radius:9px}
+.fin-calc{margin-top:10px;padding:2px 12px;border-radius:9px}
+.fin-calc>div{padding:10px 0}
+.fin-calc span{font-size:11px}
+.fin-calc b{font-size:12px}
+.fin-distribution{padding:11px 0!important}
+.fin-distribution b{font-size:18px}
+.fin-partners{gap:8px;margin-top:9px}
+.fin-partners>div{padding:11px 13px;border-radius:9px}
+.fin-partners span{font-size:10px}
+.fin-partners b{font-size:17px;margin-top:4px}
+.fin-note{font-size:10px;line-height:1.5;margin:10px 0}
+@media(max-width:720px){
+ .fin-page{gap:11px}
+ .fin-cash-card,.fin-section{padding:13px}
+ .fin-metric{padding:10px}
+ .fin-metric b{font-size:15px}
+}
+@media(max-width:480px){
+ .fin-header h1{font-size:23px}
+ .fin-cash-value{font-size:29px}
+ .fin-cash-input>div{grid-template-columns:minmax(0,1fr)}
+ .fin-cash-input input{min-height:46px;font-size:16px}
+ .fin-cash-input .btn{width:100%;min-height:42px}
+ .fin-dues-grid{gap:6px}
+ .fin-dues-grid>div{padding:9px 7px}
+ .fin-dues-grid b{font-size:17px}
+ .fin-calc{padding:2px 9px}
+ .fin-partners>div{padding:10px}
+}
+
 </style>
 </head>
 <body>
