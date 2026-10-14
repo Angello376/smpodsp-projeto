@@ -1093,6 +1093,41 @@ input,select,textarea{min-width:0}
  .prod-stat small{font-size:8px}
  .prod-stat b{font-size:11px}
 }
+
+/* Nova organização da lista: mantém o cabeçalho e os indicadores, simplifica o restante */
+.prod-list{display:flex;flex-direction:column;gap:0;margin:8px 0 20px;border-top:1px solid var(--bd)}
+.prod-card{display:grid;grid-template-columns:minmax(0,1fr) minmax(230px,.85fr);align-items:center;column-gap:20px;padding:14px 10px;margin:0;border:0;border-bottom:1px solid var(--bd);border-radius:0;background:transparent;box-shadow:none;overflow:visible}
+.prod-card:before{display:none}
+.prod-card.is-open{background:rgba(255,255,255,.018);border-color:var(--bd);box-shadow:none}
+.prod-head{align-self:center;padding:0;border:0;min-width:0}
+.prod-name{font-size:14px;font-weight:700;color:var(--fg)}
+.prod-sub{font-size:11px;color:var(--mut)}
+.prod-head-right{gap:9px}
+.prod-stock{background:rgba(57,255,136,.07);border:1px solid rgba(57,255,136,.16);color:#80dca7}
+.prod-stock.low{background:rgba(255,193,59,.08);border-color:rgba(255,193,59,.2);color:#e8c36e}
+.prod-price-row{padding:0;grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr) minmax(0,.65fr);gap:12px}
+.prod-price,.prod-detail{gap:4px}
+.prod-price small{font-size:9px;color:var(--mut);letter-spacing:.04em}
+.prod-price b{font-size:17px;color:var(--fg);letter-spacing:-.02em}
+.prod-detail{padding-left:12px;border-left:1px solid var(--bd)}
+.prod-detail span{font-size:10px}
+.prod-detail b{font-size:12px;font-weight:650}
+.prod-card .prod-expanded{grid-column:1/-1;margin-top:12px;padding-top:10px;border-top:1px solid var(--bd)}
+.prod-card .prod-expanded-title{color:var(--mut);font-size:10px;letter-spacing:.07em}
+.prod-card .pact .prod-edit{background:rgba(59,130,255,.07);border-color:var(--bd);color:#a9c9ff}
+.prod-card .pact .sm{box-shadow:none}
+.prod-novo>summary{justify-content:flex-start;padding:0 13px;min-height:42px;background:transparent;border:1px dashed rgba(57,255,136,.28);color:#8eeeb5;font-size:12px}
+.prod-novo>summary:hover{background:rgba(57,255,136,.04)}
+.prod-novo[open]>summary{margin-bottom:10px}
+.prod-empty{background:transparent;border-color:var(--bd);box-shadow:none}
+@media(max-width:600px){
+ .prod-card{grid-template-columns:minmax(0,1fr);row-gap:12px;padding:13px 4px}
+ .prod-price-row{grid-template-columns:minmax(0,1.3fr) minmax(0,.8fr) minmax(0,.65fr);gap:8px}
+ .prod-price b{font-size:17px}
+ .prod-detail{padding-left:8px}
+ .prod-card .prod-expanded{margin-top:2px}
+}
+
 </style>
 </head>
 <body>
