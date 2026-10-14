@@ -1646,6 +1646,66 @@ main{position:relative;z-index:1;background:transparent}
 @media(max-width:600px){#ambient-bg .ambient-glow{width:115vw;height:115vw;filter:blur(64px)}#ambient-bg .ambient-blue{top:-10%;right:-62%}#ambient-bg .ambient-green{top:35%;left:-68%}}
 @media(prefers-reduced-motion:reduce){#ambient-bg .ambient-glow{animation:none!important;will-change:auto}}
 
+
+/* Login tech SMPODSP: composição própria, centralizada e responsiva */
+body.login-screen main{width:100%;max-width:none;min-height:100svh;margin:0;padding:22px 16px 36px;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden}
+body.login-screen main>.brand{position:relative;z-index:1;margin:0 0 18px;font-size:17px;letter-spacing:.2em;color:#eaf4ff;display:flex;align-items:center;justify-content:center;gap:10px}
+body.login-screen main>.brand .logo{width:34px;height:34px;object-fit:contain}
+body.login-screen #app{position:relative;width:100%;max-width:440px;isolation:isolate}
+body.login-screen #nav{display:none!important}
+body.login-screen main>p.mut{margin:18px 0 0;color:#718096;font-size:11px;text-align:center}
+.login-shell{position:relative;width:100%;isolation:isolate;animation:loginRise .65s cubic-bezier(.2,.75,.25,1) both}
+.login-orbit{position:absolute;z-index:-1;pointer-events:none;border:1px solid rgba(55,255,166,.13);border-radius:50%;animation:loginOrbit 16s linear infinite}
+.login-orbit-a{width:330px;height:330px;right:-115px;top:-130px}
+.login-orbit-b{width:230px;height:230px;left:-100px;bottom:-70px;border-color:rgba(57,133,255,.16);animation-direction:reverse;animation-duration:22s}
+.login-panel{position:relative;overflow:hidden;padding:32px 30px 23px;border:1px solid rgba(126,159,195,.2);border-radius:24px;background:linear-gradient(150deg,rgba(17,25,38,.94),rgba(7,12,21,.96));box-shadow:0 28px 90px rgba(0,0,0,.38),inset 0 1px 0 rgba(255,255,255,.055);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px)}
+.login-panel:before{content:"";position:absolute;top:0;left:18%;right:18%;height:1px;background:linear-gradient(90deg,transparent,#35f5a0,#3b8bff,transparent);opacity:.8}
+.login-emblem{position:relative;width:54px;height:54px;margin:0 auto 20px;display:grid;place-items:center;border-radius:17px;border:1px solid rgba(54,245,160,.38);background:linear-gradient(145deg,rgba(40,255,156,.13),rgba(47,128,255,.13));box-shadow:0 0 30px rgba(38,255,150,.1),inset 0 0 18px rgba(54,245,160,.05)}
+.login-emblem-core{font-size:27px;font-weight:900;line-height:1;color:#eafff5;text-shadow:0 0 18px rgba(54,245,160,.5)}
+.login-emblem i{position:absolute;width:7px;height:7px;right:-3px;top:-3px;border-radius:50%;background:#39f5a0;box-shadow:0 0 12px #39f5a0}
+.login-eyebrow{display:flex;align-items:center;justify-content:center;gap:8px;margin:0 0 10px;color:#6ee9b2;font-size:10px;font-weight:800;letter-spacing:.19em}
+.login-status-dot{width:6px;height:6px;border-radius:50%;background:#39f5a0;box-shadow:0 0 9px #39f5a0;animation:loginBlink 2.4s ease-in-out infinite}
+.login-title{margin:0;text-align:center;color:#f2f7ff;font-size:26px;line-height:1.2;letter-spacing:-.045em;font-weight:800}
+.login-subtitle{margin:10px 0 25px;text-align:center;color:#8998ad;font-size:13px}
+.login-alert{margin:-8px 0 18px;padding:11px 12px;border:1px solid rgba(255,111,125,.28);border-radius:10px;background:rgba(255,80,100,.08);color:#ffb2bb;font-size:12px;line-height:1.5}
+.login-form{display:flex;flex-direction:column;gap:17px}
+.login-field{display:flex;flex-direction:column;gap:8px;color:#c4cfdf;font-size:12px;font-weight:700}
+.login-input-wrap{height:51px;display:flex;align-items:center;gap:11px;padding:0 13px;border:1px solid rgba(132,157,187,.22);border-radius:12px;background:rgba(3,8,16,.54);transition:border-color .2s,box-shadow .2s,background .2s}
+.login-input-wrap:focus-within{border-color:rgba(57,245,160,.72);background:rgba(5,17,22,.8);box-shadow:0 0 0 3px rgba(57,245,160,.09),0 0 24px rgba(57,245,160,.05)}
+.login-input-wrap>svg{width:18px;height:18px;flex:0 0 18px;fill:none;stroke:#71869f;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.login-input-wrap input{width:100%;min-width:0;height:100%;padding:0;border:0;outline:0!important;background:transparent!important;color:#eff7ff!important;font-size:14px;box-shadow:none!important}
+.login-input-wrap input::placeholder{color:#526176;opacity:1}
+.login-eye{width:32px;height:36px;flex:0 0 32px;display:grid;place-items:center;border:0;border-radius:8px;background:transparent;color:#8294aa;cursor:pointer}
+.login-eye:hover{color:#59f2ad;background:rgba(255,255,255,.05)}
+.login-eye svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round}
+.login-options{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:-3px}
+.login-remember{position:relative;display:flex;align-items:center;gap:8px;color:#9aa9bd;font-size:11px;cursor:pointer;user-select:none}
+.login-remember input{position:absolute;width:1px;height:1px;opacity:0}
+.login-check{width:16px;height:16px;flex:0 0 16px;border:1px solid #526176;border-radius:5px;background:rgba(4,9,17,.6);transition:all .18s}
+.login-remember input:checked+.login-check{border-color:#39e99a;background:#39e99a;box-shadow:0 0 12px rgba(57,233,154,.2)}
+.login-remember input:checked+.login-check:after{content:"";display:block;width:7px;height:4px;margin:4px 0 0 3px;border-left:2px solid #06140d;border-bottom:2px solid #06140d;transform:rotate(-45deg)}
+.login-remember input:focus-visible+.login-check{outline:2px solid #66a9ff;outline-offset:3px}
+.login-link{padding:4px 0;border:0;background:none;color:#61e9ae;font-size:11px;font-weight:700;cursor:pointer}
+.login-link:hover{text-decoration:underline;color:#a1ffd2}
+.login-submit{width:100%;min-height:51px;display:flex;align-items:center;justify-content:center;gap:12px;margin-top:2px;padding:0 17px;border:1px solid rgba(120,255,193,.48);border-radius:12px;background:linear-gradient(105deg,#38e89a,#2bd8b0 58%,#45b9ff);color:#04130e;font-size:13px;font-weight:900;letter-spacing:.01em;cursor:pointer;box-shadow:0 8px 25px rgba(39,225,151,.15);transition:transform .2s,filter .2s,box-shadow .2s}
+.login-submit:hover{transform:translateY(-1px);filter:brightness(1.06);box-shadow:0 11px 30px rgba(39,225,151,.23)}
+.login-submit:active{transform:translateY(0)}
+.login-submit:disabled{opacity:.72;cursor:wait;transform:none}
+.login-submit-arrow{font-size:17px;transition:transform .2s}
+.login-submit:hover .login-submit-arrow{transform:translate(2px,-2px)}
+.login-submit.is-loading .login-submit-arrow{animation:loginSpin 1s linear infinite}
+.login-message{min-height:14px;margin:0;color:#8da0b7;font-size:11px;line-height:1.5;text-align:center}
+.login-footer{display:flex;align-items:center;justify-content:center;gap:10px;margin-top:19px;color:#5e7188;font-size:9px;font-weight:800;letter-spacing:.2em}
+.login-footer-line{width:27px;height:1px;background:linear-gradient(90deg,transparent,rgba(100,128,157,.5))}
+.login-footer-line:last-child{transform:rotate(180deg)}
+@keyframes loginRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
+@keyframes loginOrbit{to{transform:rotate(360deg)}}
+@keyframes loginBlink{0%,100%{opacity:.6}50%{opacity:1}}
+@keyframes loginSpin{to{transform:rotate(360deg)}}
+@media(max-width:480px){body.login-screen main{padding:18px 14px 25px}body.login-screen main>.brand{margin-bottom:14px;font-size:15px}.login-panel{padding:27px 21px 20px;border-radius:21px}.login-title{font-size:24px}.login-subtitle{margin-bottom:22px}.login-orbit-a{right:-170px}.login-orbit-b{left:-140px}.login-input-wrap{height:50px}}
+@media(max-width:360px){.login-panel{padding:24px 16px 18px}.login-title{font-size:22px}.login-options{align-items:flex-start;flex-direction:column;gap:8px}.login-link{align-self:flex-end}}
+@media(prefers-reduced-motion:reduce){.login-shell,.login-orbit,.login-status-dot,.login-submit-arrow{animation:none!important;transition:none!important}}
+
 </style>
 </head>
 <body>
@@ -3051,7 +3111,17 @@ function render(){
 const SUPABASE_URL = 'https://gyiydjusayehqabtwlmg.supabase.co'; 
 const SUPABASE_KEY = 'sb_publishable_P51kHlySw4w6-Pzd7lub4w_5E1MwIfd';
 
-const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let loginPersistir=true;
+const authStorage={
+  getItem:async(key)=>localStorage.getItem(key)??sessionStorage.getItem(key),
+  setItem:async(key,value)=>{
+    const destino=loginPersistir?localStorage:sessionStorage;
+    const outro=loginPersistir?sessionStorage:localStorage;
+    destino.setItem(key,value);outro.removeItem(key);
+  },
+  removeItem:async(key)=>{localStorage.removeItem(key);sessionStorage.removeItem(key);}
+};
+const sb = supabase.createClient(SUPABASE_URL, SUPABASE_KEY,{auth:{storage:authStorage,persistSession:true,autoRefreshToken:true,detectSessionInUrl:true}});
 
 const TABELAS={produtos:'p',clientes:'c',vendas:'v',gastos:'d'};
 
@@ -3095,28 +3165,62 @@ async function carregarTudo(){
   }
 }
 function mostrarLogin(mensagem=''){
-  $('#app').innerHTML=`<div class="card" style="margin-top:30px"><div class="form">
-    ${mensagem?`<p class="mut" style="color:#dc6464">${mensagem}</p>`:''}
-    <label class="w">E-mail<input id="le" type="email" autocomplete="username" required></label>
-    <label class="w">Senha<input id="ls" type="password" autocomplete="current-password" required></label></div>
-    <button class="btn" id="lbtn">Entrar</button>
-    <button class="sm" id="esqueci" type="button" style="margin-top:12px">Esqueci minha senha</button>
-    <p id="loginmsg" class="mut" style="margin-top:10px"></p></div>`;
+  document.body.classList.add('login-screen');
+  $('#app').innerHTML=`<section class="login-shell">
+    <div class="login-orbit login-orbit-a" aria-hidden="true"></div>
+    <div class="login-orbit login-orbit-b" aria-hidden="true"></div>
+    <div class="login-panel">
+      <div class="login-emblem" aria-hidden="true"><span class="login-emblem-core">S</span><i></i></div>
+      <p class="login-eyebrow"><span class="login-status-dot"></span> ACESSO AO SISTEMA</p>
+      <h2 class="login-title">Bem-vindo de volta</h2>
+      <p class="login-subtitle">Entre na sua conta para continuar.</p>
+      ${mensagem?`<div class="login-alert" role="status">${mensagem}</div>`:''}
+      <form id="loginform" class="login-form" novalidate>
+        <label class="login-field" for="le"><span>E-mail</span>
+          <span class="login-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="3"></rect><path d="m4 7 8 6 8-6"></path></svg><input id="le" type="email" autocomplete="username" placeholder="voce@exemplo.com" required></span>
+        </label>
+        <label class="login-field" for="ls"><span>Senha</span>
+          <span class="login-input-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="10" width="16" height="11" rx="3"></rect><path d="M8 10V7a4 4 0 0 1 8 0v3"></path></svg><input id="ls" type="password" autocomplete="current-password" placeholder="Digite sua senha" required><button class="login-eye" id="toggleSenha" type="button" aria-label="Mostrar senha" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2.5 12s3.4-6 9.5-6 9.5 6 9.5 6-3.4 6-9.5 6-9.5-6-9.5-6Z"></path><circle cx="12" cy="12" r="2.7"></circle></svg></button></span>
+        </label>
+        <div class="login-options"><label class="login-remember"><input id="manterConectado" type="checkbox" checked><span class="login-check"></span><span>Manter conectado</span></label><button class="login-link" id="esqueci" type="button">Esqueci minha senha</button></div>
+        <button class="login-submit" id="lbtn" type="submit"><span class="login-submit-text">Entrar no sistema</span><span class="login-submit-arrow" aria-hidden="true">↗</span></button>
+        <p id="loginmsg" class="login-message" role="status" aria-live="polite"></p>
+      </form>
+      <div class="login-footer"><span class="login-footer-line"></span><span>AMBIENTE SEGURO</span><span class="login-footer-line"></span></div>
+    </div>
+  </section>`;
   $('#nav').innerHTML='';
-  $('#lbtn').onclick=async()=>{
-    const email=$('#le').value.trim(), password=$('#ls').value;
-    if(!email||!password)return alert('Informe seu e-mail e sua senha.');
-    const{error}=await sb.auth.signInWithPassword({email,password});
-    if(error)return alert('Não foi possível entrar. '+(error.message||'Confira o e-mail e a senha.'));
-    location.reload();
+  const emailInput=$('#le'),senhaInput=$('#ls'),form=$('#loginform'),botao=$('#lbtn'),msg=$('#loginmsg');
+  $('#toggleSenha').onclick=()=>{
+    const mostrar=senhaInput.type==='password';
+    senhaInput.type=mostrar?'text':'password';
+    $('#toggleSenha').setAttribute('aria-label',mostrar?'Ocultar senha':'Mostrar senha');
+    $('#toggleSenha').setAttribute('aria-pressed',String(mostrar));
+  };
+  $('#manterConectado').onchange=e=>{loginPersistir=e.target.checked;};
+  form.onsubmit=async e=>{
+    e.preventDefault();
+    const email=emailInput.value.trim(),password=senhaInput.value;
+    if(!email||!password){msg.textContent='Informe seu e-mail e sua senha.';return;}
+    loginPersistir=$('#manterConectado').checked;
+    botao.disabled=true;botao.classList.add('is-loading');msg.textContent='Verificando seus dados…';
+    try{
+      const{error}=await sb.auth.signInWithPassword({email,password});
+      if(error){msg.textContent='Não foi possível entrar. Confira o e-mail e a senha e tente novamente.';return;}
+      location.reload();
+    }catch(err){msg.textContent='Não foi possível conectar agora. Verifique sua internet e tente novamente.';}
+    finally{botao.disabled=false;botao.classList.remove('is-loading');}
   };
   $('#esqueci').onclick=async()=>{
-    const email=$('#le').value.trim();
-    if(!email)return alert('Digite seu e-mail no campo acima primeiro.');
-    const msg=$('#loginmsg'); msg.textContent='Enviando e-mail de recuperação…';
-    const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
-    if(error){msg.textContent='Não foi possível enviar o e-mail: '+error.message;return;}
-    msg.textContent='Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha. Confira também o spam.';
+    const email=emailInput.value.trim();
+    if(!email){msg.textContent='Digite seu e-mail no campo acima primeiro.';emailInput.focus();return;}
+    const link=$('#esqueci');link.disabled=true;msg.textContent='Enviando e-mail de recuperação…';
+    try{
+      const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+window.location.pathname});
+      if(error){msg.textContent='Não foi possível enviar o e-mail. Tente novamente.';return;}
+      msg.textContent='Se o e-mail estiver cadastrado, você receberá um link para criar uma nova senha. Confira também o spam.';
+    }catch(err){msg.textContent='Não foi possível enviar o e-mail. Verifique sua conexão.';}
+    finally{link.disabled=false;}
   };
 }
 function mostrarRedefinirSenha(mensagem=''){
@@ -3138,6 +3242,7 @@ function mostrarRedefinirSenha(mensagem=''){
   };
 }
 async function entrarNoApp(){
+  document.body.classList.remove('login-screen');
   REMOTE=true;ST=supabaseStore();READY=false;
   render();
   await carregarTudo();
