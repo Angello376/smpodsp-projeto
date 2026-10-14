@@ -1198,6 +1198,58 @@ input,select,textarea{min-width:0}
 .fin-fechamento .prazos-caixa-resumo .home-metricas{margin-top:12px}
 @media(max-width:480px){.fin-fechamento{padding:13px}.fin-section-title h3{font-size:17px}.fin-fechamento .home-metrica{padding:9px}.fin-fechamento .home-metrica b{font-size:14px}}
 
+
+/* Página financeira refeita: hierarquia simples e leitura rápida */
+.fin-page{display:flex;flex-direction:column;gap:16px;max-width:1120px;margin:0 auto;padding-bottom:26px}
+.fin-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:6px 2px 15px;border-bottom:1px solid var(--bd)}
+.fin-header h1{font-size:27px;line-height:1.15;margin:5px 0 6px;letter-spacing:-.035em}
+.fin-header p,.fin-section-heading p{font-size:12px;line-height:1.55;color:var(--mut);margin:0}
+.fin-kicker,.home-eyebrow{font-size:10px;letter-spacing:.12em;font-weight:800;color:var(--mut)}
+.fin-cash-card{padding:20px;border:1px solid rgba(57,255,136,.2);border-radius:16px;background:linear-gradient(130deg,rgba(12,28,35,.78),rgba(10,15,26,.96) 60%);box-shadow:none}
+.fin-cash-top{display:flex;justify-content:space-between;align-items:center;gap:16px}
+.fin-cash-value{font-size:34px;line-height:1.25;font-weight:850;letter-spacing:-.04em;margin-top:5px;color:var(--fg)}
+.fin-cash-top p{font-size:11px;color:var(--mut);margin:4px 0 0}
+.fin-cash-symbol{display:grid;place-items:center;width:48px;height:48px;border:1px solid rgba(57,255,136,.2);border-radius:13px;color:#65f5ad;font-size:15px;font-weight:850;background:rgba(57,255,136,.07)}
+.fin-cash-input{margin-top:17px;padding-top:14px;border-top:1px solid rgba(120,150,190,.15)}
+.fin-cash-input label,.fin-opening label{display:block;font-size:12px;color:var(--fg);font-weight:700;margin-bottom:7px}
+.fin-cash-input>div,.fin-opening>div{display:flex;align-items:center;gap:8px}
+.fin-cash-input input,.fin-opening input{min-width:0;flex:1}
+.fin-cash-input .btn,.fin-opening .btn{white-space:nowrap;margin:0}
+.fin-cash-input small,.fin-opening small{display:block;color:var(--mut);font-size:10px;line-height:1.5;margin-top:8px}
+.fin-metrics-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.fin-metric{min-width:0;padding:14px;border:1px solid var(--bd);border-radius:12px;background:rgba(10,15,26,.62)}
+.fin-metric span,.fin-dues-grid span,.fin-partners span{display:block;color:var(--mut);font-size:11px;line-height:1.45}
+.fin-metric b{display:block;font-size:17px;line-height:1.4;margin-top:6px;overflow-wrap:anywhere}
+.fin-section{padding:18px;border:1px solid var(--bd);border-radius:15px;background:rgba(10,15,26,.65)}
+.fin-section-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:14px;margin-bottom:15px}
+.fin-section-heading h2{font-size:18px;line-height:1.3;margin:4px 0}
+.fin-dues-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.fin-dues-grid>div{padding:12px;border-radius:10px;background:rgba(255,255,255,.018);border:1px solid rgba(120,150,190,.13)}
+.fin-dues-grid b{display:block;font-size:20px;margin:5px 0 2px}
+.fin-dues-grid small{font-size:11px;color:var(--mut)}
+.fin-actions{display:flex;justify-content:flex-start;margin-top:12px}
+.fin-month-select{display:flex;flex-direction:column;gap:5px;min-width:120px;font-size:11px;color:var(--mut)}
+.fin-month-select select{min-width:120px}
+.fin-opening{padding:13px;border:1px solid rgba(120,150,190,.16);border-radius:11px;background:rgba(255,255,255,.018)}
+.fin-opening>div>span{color:var(--mut);font-size:12px}
+.fin-calc{margin-top:14px;padding:3px 13px;border:1px solid var(--bd);border-radius:11px}
+.fin-calc>div{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 0;border-bottom:1px solid rgba(120,150,190,.12)}
+.fin-calc>div:last-child{border-bottom:0}
+.fin-calc span{font-size:12px;color:var(--mut)}
+.fin-calc b{font-size:13px;text-align:right}
+.fin-calc-total{border-top:1px solid var(--bd)}
+.fin-calc-total span,.fin-calc-total b{color:var(--fg);font-weight:750}
+.fin-distribution{margin:0 -1px;padding:14px 0!important}
+.fin-distribution span{color:var(--fg);font-weight:800}
+.fin-distribution b{font-size:19px;color:#65f5ad}
+.fin-partners{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin-top:12px}
+.fin-partners>div{padding:13px;border:1px solid rgba(57,255,136,.15);border-radius:11px;background:rgba(57,255,136,.035)}
+.fin-partners b{display:block;margin-top:6px;font-size:18px;color:#65f5ad}
+.fin-note{font-size:11px;line-height:1.6;color:var(--mut);margin:13px 0}
+.fin-copy-close{width:100%}
+@media(max-width:720px){.fin-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fin-cash-card,.fin-section{padding:14px}.fin-cash-value{font-size:29px}}
+@media(max-width:480px){.fin-header h1{font-size:24px}.fin-header{align-items:flex-start}.fin-month-tag{font-size:11px}.fin-cash-input>div,.fin-opening>div{flex-wrap:wrap}.fin-cash-input input,.fin-opening input{flex-basis:100%}.fin-cash-input .btn,.fin-opening .btn{flex:1}.fin-dues-grid{gap:6px}.fin-dues-grid>div{padding:9px}.fin-dues-grid span{font-size:10px}.fin-dues-grid b{font-size:18px}.fin-section-heading{flex-direction:column}.fin-month-select,.fin-month-select select{width:100%}.fin-calc{padding:3px 10px}}
+
 </style>
 </head>
 <body>
@@ -1740,6 +1792,10 @@ function salvarCaixaRealFechamento(){
   else localStorage.setItem(chaveCaixaReal(mes),String(valor));
   render();
 }
+function limparCaixaRealFechamento(){
+  const mes=document.getElementById('fech-mes')?.value||mesFechamentoAtual();
+  localStorage.removeItem(chaveCaixaReal(mes));render();
+}
 function salvarSaldoInicialFechamento(){
   const mes=document.getElementById('fech-mes')?.value||mesFechamentoAtual();
   const campo=document.getElementById('fech-inicial');
@@ -1751,42 +1807,43 @@ function salvarSaldoInicialFechamento(){
 }
 function trocarMesFechamento(mes){if(mes)localStorage.setItem('smpodsp_fech_mes',mes);render()}
 function view_prazos(){
+  const hojeData=hoje();
   const abertos=S.v.filter(x=>saldoDe(x)>0.005&&x.prazo);
-  const dataHoje=hoje();
-  const atrasados=abertos.filter(x=>x.venc&&x.venc<dataHoje);
-  const hojeV=abertos.filter(x=>x.venc===dataHoje);
-  const futuros=abertos.filter(x=>x.venc&&x.venc>dataHoje);
+  const atrasados=abertos.filter(x=>x.venc&&x.venc<hojeData);
+  const venceHoje=abertos.filter(x=>x.venc===hojeData);
+  const aVencer=abertos.filter(x=>x.venc&&x.venc>hojeData);
+  const somaSaldo=lista=>lista.reduce((s,x)=>s+saldoDe(x),0);
   const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
   const inicialSalvo=localStorage.getItem(chaveSaldoInicial(mes));
   const inicial=inicialSalvo===null?0:Number(inicialSalvo);
   const caixaRealSalvo=localStorage.getItem(chaveCaixaReal(mes));
   const caixaReal=caixaRealSalvo===null?null:Number(caixaRealSalvo);
-  const dentroMes=d=>String(d||'').slice(0,7)===mes;
+  const doMes=d=>String(d||'').slice(0,7)===mes;
   const recebimentos=S.v.reduce((total,x)=>{
-    if(x.pagamentos&&x.pagamentos.length)return total+x.pagamentos.filter(p=>dentroMes(p.data)).reduce((s,p)=>s+(+p.valor||0),0);
-    return total+(x.pago&&dentroMes(x.dpag||x.data)?x.q*x.preco:0);
+    if(x.pagamentos&&x.pagamentos.length)return total+x.pagamentos.filter(p=>doMes(p.data)).reduce((s,p)=>s+(Number(p.valor)||0),0);
+    return total+(x.pago&&doMes(x.dpag||x.data)?(Number(x.q)||0)*(Number(x.preco)||0):0);
   },0);
-  const despesas=S.d.filter(x=>dentroMes(x.data)).reduce((s,x)=>s+(+x.valor||0),0);
+  const despesas=S.d.filter(x=>doMes(x.data)).reduce((s,x)=>s+(Number(x.valor)||0),0);
   const caixaCalculado=inicial+recebimentos-despesas;
-  const caixaFechamento=caixaReal===null?caixaCalculado:caixaReal;
-  const distribuivel=Math.max(0,caixaFechamento-1500);
-  const moeda=v=>R(v);
-  const meses=[];const base=new Date(hoje()+'T12:00:00');
+  const caixaAtual=caixaReal===null?caixaCalculado:caixaReal;
+  const reserva=1500;
+  const disponivel=Math.max(0,caixaAtual-reserva);
+  const meses=[];const base=new Date(hojeData+'T12:00:00');
   for(let i=0;i<18;i++){const d=new Date(base.getFullYear(),base.getMonth()-i,1);meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))}
   const opMes=meses.map(m=>'<option value="'+m+'" '+(m===mes?'selected':'')+'>'+m.slice(5,7)+'/'+m.slice(0,4)+'</option>').join('');
-  const fechamento='<section class="card fin-fechamento"><div class="fin-section-title"><div><span class="home-eyebrow">CONTROLE DO CAIXA</span><h3>Fechamento mensal</h3><p class="mut">Confira o dinheiro disponível antes de dividir os resultados.</p></div><span class="fin-month-tag">'+mes.slice(5,7)+'/'+mes.slice(0,4)+'</span></div><div class="prazos-fechamento-conteudo">'+
-  '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Mês</label><select id="fech-mes" onchange="trocarMesFechamento(this.value)">'+opMes+'</select>'+
-  '<div class="home-metricas prazos-mini-metricas" style="margin-top:10px"><div class="home-metrica"><span>Recebido</span><b class="pos">'+moeda(recebimentos)+'</b></div><div class="home-metrica"><span>Despesas</span><b class="neg">'+moeda(despesas)+'</b></div></div>'+
-  '<label class="fech-label">Saldo no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex.: 1500,00" value="'+(inicialSalvo===null?'':inicial)+'"><button class="btn sec prazos-salvar" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button>'+
-  '<div class="fech-caixa-real"><label class="fech-label" for="fech-caixa-real">Quanto tem no caixa hoje? (R$)</label><p class="mut fech-ajuda">Informe o dinheiro que realmente está disponível agora. Ao salvar, esse valor será usado no cálculo da divisão, sem somar novamente as vendas e despesas.</p><div class="fech-caixa-linha"><input id="fech-caixa-real" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex.: 3200,00" value="'+(caixaRealSalvo===null?'':caixaReal)+'"><button class="btn sec" onclick="salvarCaixaRealFechamento()">Salvar caixa</button></div></div>'+
-  '<div class="prazos-caixa-resumo"><div class="line"><span>Caixa calculado no mês</span><b>'+moeda(caixaCalculado)+'</b></div><div class="line"><span>Caixa usado no fechamento</span><b>'+moeda(caixaFechamento)+'</b></div><div class="line"><span>Reserva protegida</span><b>'+moeda(1500)+'</b></div><div class="line t"><span>Disponível para divisão</span><b class="'+(distribuivel>0?'pos':'')+'">'+moeda(distribuivel)+'</b></div><div class="home-metricas prazos-mini-metricas"><div class="home-metrica"><span>Angello · 50%</span><b>'+moeda(distribuivel/2)+'</b></div><div class="home-metrica"><span>Michel · 50%</span><b>'+moeda(distribuivel/2)+'</b></div></div></div>'+
-  '<p class="mut" style="font-size:11px;margin-top:10px">A divisão considera a reserva de R$ 1.500. Se preencher o caixa real, ele substitui o valor calculado para evitar contar vendas e despesas duas vezes. Esses valores ficam salvos neste navegador.</p></div></section>';
-  return '<div class="home-heading"><div><div class="home-eyebrow">PRAZOS</div><div class="home-heading-title">Cobranças pendentes</div><div class="home-heading-sub">Copie uma mensagem pronta com os prazos para enviar no WhatsApp.</div></div></div>'+
-  '<div class="home-metricas prazos-resumo"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
-  '<div class="card prazos-copiar-card"><button class="btn prazos-copiar-btn" onclick="copiarRelacaoPrazos()">Copiar relação de prazos</button><button class="btn sec prazos-copiar-btn" style="margin-top:8px" onclick="copiarRelacaoSocios()">Copiar relação financeira dos sócios</button><p class="mut">A lista de clientes não aparece aqui. O texto completo é copiado para você colar onde quiser.</p></div>'+
-  (!abertos.length?'<div class="empty">Nenhum prazo pendente no momento.</div>':'')+fechamento;
+  const metric=(label,value,cls='')=>'<div class="fin-metric"><span>'+label+'</span><b class="'+cls+'">'+R(value)+'</b></div>';
+  const monthName=mes.slice(5,7)+'/'+mes.slice(0,4);
+  return '<div class="fin-page">'+
+    '<header class="fin-header"><div><div class="home-eyebrow">GESTÃO FINANCEIRA</div><h1>Financeiro</h1><p>Veja o caixa, acompanhe as cobranças e feche o mês com segurança.</p></div><span class="fin-month-tag">'+monthName+'</span></header>'+
+    '<section class="fin-cash-card"><div class="fin-cash-top"><div><span class="fin-kicker">CAIXA DISPONÍVEL</span><div class="fin-cash-value">'+R(caixaAtual)+'</div><p>'+(caixaReal===null?'Estimativa com base nos lançamentos do mês':'Valor real informado por você')+'</p></div><div class="fin-cash-symbol">R$</div></div><div class="fin-cash-input"><label for="fech-caixa-real">Atualizar quanto tem no caixa hoje</label><div><input id="fech-caixa-real" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex.: 3200,00" value="'+(caixaRealSalvo===null?'':caixaReal)+'"><button class="btn" onclick="salvarCaixaRealFechamento()">Salvar caixa</button>'+(caixaRealSalvo!==null?'<button class="btn sec" onclick="limparCaixaRealFechamento()">Usar cálculo</button>':'')+'</div><small>Ao informar o caixa real, ele substitui a estimativa no fechamento para não contar recebimentos e despesas duas vezes.</small></div></section>'+
+    '<section class="fin-metrics-grid">'+metric('Recebido no mês',recebimentos,'pos')+metric('Despesas no mês',despesas,'neg')+metric('Cobranças em atraso',somaSaldo(atrasados),'neg')+metric('A receber no total',somaSaldo(abertos))+'</section>'+
+    '<section class="fin-section fin-dues"><div class="fin-section-heading"><div><h2>Cobranças e prazos</h2><p>Resumo do que ainda falta receber.</p></div></div><div class="fin-dues-grid"><div><span>Em atraso</span><b class="neg">'+atrasados.length+'</b><small>'+R(somaSaldo(atrasados))+'</small></div><div><span>Vence hoje</span><b>'+venceHoje.length+'</b><small>'+R(somaSaldo(venceHoje))+'</small></div><div><span>A vencer</span><b class="pos">'+aVencer.length+'</b><small>'+R(somaSaldo(aVencer))+'</small></div></div><div class="fin-actions"><button class="btn" onclick="copiarRelacaoPrazos()">Copiar relação de prazos</button></div></section>'+
+    '<section class="fin-section fin-close"><div class="fin-section-heading"><div><span class="home-eyebrow">ORGANIZAÇÃO DOS SÓCIOS</span><h2>Fechamento mensal</h2><p>Confira o resultado e veja quanto pode ser dividido sem mexer na reserva.</p></div><label class="fin-month-select">Mês<select id="fech-mes" onchange="trocarMesFechamento(this.value)">'+opMes+'</select></label></div>'+
+    '<div class="fin-opening"><label for="fech-inicial">Saldo que já existia no caixa no início do mês</label><div><span>R$</span><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="0,00" value="'+(inicialSalvo===null?'':inicial)+'"><button class="btn sec" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button></div><small>Use esse campo para registrar o dinheiro que já estava no caixa no primeiro dia do mês.</small></div>'+
+    '<div class="fin-calc"><div><span>Saldo inicial</span><b>'+R(inicial)+'</b></div><div><span>Recebimentos</span><b class="pos">+ '+R(recebimentos)+'</b></div><div><span>Despesas</span><b class="neg">− '+R(despesas)+'</b></div><div class="fin-calc-total"><span>Caixa calculado</span><b>'+R(caixaCalculado)+'</b></div><div><span>Caixa considerado</span><b>'+R(caixaAtual)+'</b></div><div><span>Reserva do negócio</span><b>− '+R(reserva)+'</b></div><div class="fin-distribution"><span>Disponível para divisão</span><b>'+R(disponivel)+'</b></div></div>'+
+    '<div class="fin-partners"><div><span>Angello · 50%</span><b>'+R(disponivel/2)+'</b></div><div><span>Michel · 50%</span><b>'+R(disponivel/2)+'</b></div></div><p class="fin-note">A divisão é uma estimativa baseada nos valores registrados. Antes de retirar dinheiro, confira também as compras de estoque, contas futuras e outros compromissos que ainda não foram lançados.</p><button class="btn sec fin-copy-close" onclick="copiarRelacaoSocios()">Copiar fechamento para WhatsApp</button></section>'+
+    '</div>';
 }
-
 function view_vendas(){
   const first=S.p.find(x=>x.id===VS.pid)||S.p[0];
   if(first&&VS.pid!==first.id){VS.pid=first.id;const L=norm(first);VS.sab=L[0]?L[0].nome:''}
