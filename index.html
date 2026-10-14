@@ -1598,6 +1598,23 @@ main .sair,#app .sair,main button.sair,#app button.sair{display:none!important;v
 .logout-icon{position:fixed!important;top:18px!important;right:max(18px,calc((100vw - 980px)/2))!important;bottom:auto!important;width:38px!important;height:38px!important;z-index:120!important}
 @media(max-width:520px){.logout-icon{top:calc(10px + env(safe-area-inset-top,0px))!important;right:14px!important;width:34px!important;height:34px!important}}
 
+
+/* Botão de sair integrado ao cabeçalho da marca */
+.logout-icon{
+ position:absolute!important;top:12px!important;right:0!important;bottom:auto!important;
+ width:34px!important;height:34px!important;padding:0!important;
+ display:grid!important;place-items:center!important;
+ border:1px solid rgba(95,135,180,.20)!important;border-radius:11px!important;
+ background:rgba(9,14,24,.72)!important;color:#8492a8!important;
+ box-shadow:none!important;opacity:.82;cursor:pointer;
+ transition:color .18s ease,border-color .18s ease,background .18s ease,opacity .18s ease!important
+}
+.logout-icon svg{display:block!important;width:16px!important;height:16px!important;stroke:currentColor!important;stroke-width:1.8!important;fill:none!important}
+.logout-icon:hover,.logout-icon:focus-visible{color:#ff8293!important;border-color:rgba(255,105,130,.32)!important;background:rgba(255,85,110,.07)!important;opacity:1}
+@media(max-width:520px){
+ .logout-icon{position:absolute!important;top:8px!important;right:0!important;width:32px!important;height:32px!important;border-radius:10px!important}
+}
+
 </style>
 </head>
 <body>
@@ -3152,7 +3169,8 @@ async function entrarNoApp(){
     sair.id='sairbtn';sair.className='logout-icon';sair.type='button';
     sair.setAttribute('aria-label','Sair da conta');sair.title='Sair da conta';
     sair.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>';
-    document.body.appendChild(sair);
+    const cabecalho=document.querySelector('main .brand');
+    if(cabecalho){cabecalho.style.position='relative';cabecalho.appendChild(sair)}else{document.body.appendChild(sair)}
     sair.onclick=async()=>{const{error}=await sb.auth.signOut();if(error){avisar('Não foi possível sair. Tente novamente.');return}location.reload()};
   }
 }
