@@ -1320,6 +1320,24 @@ input,select,textarea{min-width:0}
  .fin-partners>div{padding:11px}
 }
 
+
+/* Diálogos: menos cara de alerta padrão, mais integrados ao app */
+.ov{background:rgba(2,5,12,.78);backdrop-filter:blur(8px);padding:18px;animation:dialogBackdropIn .18s ease both}
+.md{position:relative;max-width:400px;padding:24px;border-radius:20px;background:linear-gradient(155deg,rgba(16,24,40,.99),rgba(8,12,21,.99));border:1px solid rgba(105,145,205,.25);box-shadow:0 24px 80px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.025) inset;animation:dialogCardIn .22s cubic-bezier(.2,.8,.2,1) both}
+.md-excluido{border-color:rgba(255,95,121,.28)!important;box-shadow:0 24px 80px rgba(0,0,0,.55)!important;text-align:left}
+.md-excluido .mdx-icone{width:44px;height:44px;margin:0 0 16px;border-radius:14px;background:rgba(255,95,121,.1);border:1px solid rgba(255,95,121,.24);color:#ff7188;font-size:25px;box-shadow:none}
+.mdm{font-size:15px;line-height:1.65;color:var(--fg);margin:0 0 20px}
+.md-excluido .mdm{font-weight:500}
+.mdb{display:flex;flex-direction:row-reverse;gap:10px;justify-content:flex-start;margin-top:4px}
+.mdb button{min-height:43px;padding:0 19px;border-radius:11px;font-size:12px;font-weight:800}
+.mdb .mdok{min-width:100px;width:auto}
+.mdb #mdc{background:rgba(255,255,255,.035);border:1px solid var(--bd);color:var(--mut)}
+.md-excluido .mdok{background:rgba(255,95,121,.12)!important;border:1px solid rgba(255,95,121,.25)!important;color:#ff879a!important;box-shadow:none!important}
+@keyframes dialogBackdropIn{from{opacity:0}to{opacity:1}}
+@keyframes dialogCardIn{from{opacity:0;transform:translateY(8px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@media(max-width:480px){.md{padding:20px;border-radius:17px}.mdb button{flex:1}}
+@media(prefers-reduced-motion:reduce){.ov,.md{animation:none}}
+
 </style>
 </head>
 <body>
@@ -2102,7 +2120,7 @@ async function delV(id){
     await ST.del('vendas',id)
   });
   if(!ok&&linha){linha.getAnimations().forEach(a=>a.cancel());linha.style.opacity='';linha.style.transform='';linha.style.height='';linha.style.overflow='';linha.style.willChange='';linha.style.transition='';linha.style.margin='';linha.style.padding='';linha.style.borderWidth='';linha.classList.remove('removendo');}
-  else if(ok){await modal({msg:'Venda apagada com sucesso! '+x.q+' unidade(s) de '+x.nome+' voltaram para o estoque.',ok:'OK'});}
+  else if(ok){avisar('Venda removida. '+x.q+' unidade(s) de '+x.nome+' foram devolvidas ao estoque.');}
 }async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
 async function editarValoresProduto(pid){
   const p=S.p.find(x=>x.id===pid);if(!p)return;
