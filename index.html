@@ -1572,19 +1572,22 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
 }
 
 
-/* Conteúdo perde contraste suavemente ao passar por trás da dock */
-body:after{content:"";position:fixed;left:0;right:0;bottom:0;height:190px;z-index:90;pointer-events:none;background:linear-gradient(to bottom,rgba(5,8,14,0),rgba(5,8,14,.18) 30%,rgba(5,8,14,.72) 100%);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.28) 26%,#000 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.28) 26%,#000 100%)}
-#nav{z-index:100}
-main{position:relative;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
-.logout-icon{position:absolute;top:14px;right:0;z-index:20;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(110,140,180,.22);border-radius:12px;background:rgba(12,18,30,.8);color:#8e9bb0;cursor:pointer;transition:color .2s ease,border-color .2s ease,background .2s ease}
-.logout-icon:hover{color:#ff7185;border-color:rgba(255,90,115,.35);background:rgba(255,70,95,.08)}
-.logout-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
-.sair{display:none!important}
-@media(max-width:520px){
- body:after{height:160px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
- main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
- .logout-icon{top:8px;right:0;width:34px;height:34px;border-radius:11px}
+
+/* Fade inferior discreto: o conteúdo desaparece gradualmente atrás da dock */
+body:after{
+ content:"";position:fixed;left:0;right:0;bottom:0;height:125px;z-index:90;pointer-events:none;
+ background:linear-gradient(to bottom,
+  rgba(5,8,14,0) 0%,
+  rgba(5,8,14,.025) 22%,
+  rgba(5,8,14,.10) 48%,
+  rgba(5,8,14,.30) 72%,
+  rgba(5,8,14,.60) 100%);
+ -webkit-backdrop-filter:blur(1px);backdrop-filter:blur(1px);
+ -webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.10) 28%,rgba(0,0,0,.48) 63%,#000 100%);
+ mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.10) 28%,rgba(0,0,0,.48) 63%,#000 100%);
 }
+#nav{z-index:100}
+@media(max-width:520px){body:after{height:108px;-webkit-backdrop-filter:blur(.7px);backdrop-filter:blur(.7px)}}
 
 </style>
 </head>
