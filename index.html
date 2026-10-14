@@ -70,7 +70,24 @@ input,select{padding:11px;min-height:44px;border:1px solid var(--bd);border-radi
 .legenda i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:middle}
 .invok{background:var(--grn);color:#fff;border-radius:14px;padding:14px;margin:10px 0}
 .invok b{font-size:17px}
-.toast{position:fixed;left:12px;right:12px;bottom:86px;background:var(--grn);color:#fff;padding:14px 16px;border-radius:12px;font-weight:700;z-index:99;box-shadow:0 6px 20px rgba(0,0,0,.25);text-align:center}
+/* Notificações SMPODSP: toast compacto, empilhado e não bloqueante */
+#smp-toast-area{position:fixed;z-index:9999;top:18px;right:18px;width:min(390px,calc(100vw - 28px));display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.smp-toast{--toast-accent:#55efad;position:relative;display:grid;grid-template-columns:34px minmax(0,1fr) 28px;align-items:center;gap:11px;overflow:hidden;padding:14px 12px 16px;background:rgba(10,16,28,.96);border:1px solid rgba(101,245,173,.25);border-radius:15px;color:var(--fg);box-shadow:0 14px 38px rgba(0,0,0,.35),0 0 0 1px rgba(255,255,255,.025) inset;backdrop-filter:blur(18px);pointer-events:auto;animation:smpToastIn .28s cubic-bezier(.2,.8,.2,1) both;cursor:pointer}
+.smp-toast.is-error{--toast-accent:#ff5f79;border-color:rgba(255,95,121,.28)}
+.smp-toast.is-warning{--toast-accent:#ffc65c;border-color:rgba(255,198,92,.28)}
+.smp-toast-icon{display:grid;place-items:center;width:32px;height:32px;border-radius:11px;background:color-mix(in srgb,var(--toast-accent) 12%,transparent);border:1px solid color-mix(in srgb,var(--toast-accent) 25%,transparent);color:var(--toast-accent);font-size:20px;font-weight:800}
+.smp-toast-body{display:flex;flex-direction:column;gap:4px;min-width:0}
+.smp-toast-body strong{font-size:12px;line-height:1.3;color:var(--toast-accent);letter-spacing:.01em}
+.smp-toast-body span{font-size:12px;line-height:1.45;color:#e0e8f5;overflow-wrap:anywhere}
+.smp-toast-close{display:grid;place-items:center;width:28px;height:28px;padding:0;border:0;border-radius:8px;background:transparent;color:var(--mut);font-size:21px;cursor:pointer}
+.smp-toast-close:hover{background:rgba(255,255,255,.07);color:var(--fg)}
+.smp-toast-progress{position:absolute;left:0;bottom:0;height:2px;width:100%;background:var(--toast-accent);transform-origin:left;animation:smpToastProgress 4.6s linear forwards;opacity:.8}
+.smp-toast.is-leaving{animation:smpToastOut .2s ease forwards}
+@keyframes smpToastIn{from{opacity:0;transform:translateY(-9px) scale(.985)}to{opacity:1;transform:translateY(0) scale(1)}}
+@keyframes smpToastOut{to{opacity:0;transform:translateY(-6px) scale(.985)}}
+@keyframes smpToastProgress{to{transform:scaleX(0)}}
+@media(max-width:520px){#smp-toast-area{top:10px;right:10px;width:calc(100vw - 20px)}.smp-toast{padding:12px 10px 14px;grid-template-columns:30px minmax(0,1fr) 26px;gap:9px}.smp-toast-icon{width:29px;height:29px}}
+@media(prefers-reduced-motion:reduce){.smp-toast,.smp-toast.is-leaving{animation:none}.smp-toast-progress{animation:none;display:none}}
 .hero.amarelo{background:#f5c518;color:#1c1f26}
 .hero.amarelo small{opacity:.8}
 .hero.amarelo b{font-size:22px;display:block;margin:4px 0}
@@ -1410,10 +1427,25 @@ function animarVendaSucesso(dados){
 }
 
 function avisar(msg){
-  try{if('Notification' in window&&Notification.permission==='granted')new Notification('SMPODSP',{body:msg})}catch(e){}
-  const t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);
-  const fechar=()=>{if(!t.isConnected)return;t.classList.add('saindo');setTimeout(()=>t.remove(),220)};
-  setTimeout(fechar,4200);t.addEventListener('click',fechar,{once:true});
+  const texto=String(msg??'');
+  const erro=/erro|falha|não foi possível|inválid|atenção|problema/i.test(texto);
+  const alerta=/atenção|estoque baixo|venc|pendente/i.test(texto);
+  const sucesso=!erro&&!alerta;
+  try{if('Notification' in window&&Notification.permission==='granted')new Notification('SMPODSP',{body:texto})}catch(e){}
+  let area=document.getElementById('smp-toast-area');
+  if(!area){area=document.createElement('div');area.id='smp-toast-area';area.setAttribute('aria-live','polite');area.setAttribute('aria-relevant','additions');document.body.appendChild(area)}
+  const t=document.createElement('div');t.className='smp-toast '+(erro?'is-error':alerta?'is-warning':sucesso?'is-success':'');
+  const icon=document.createElement('span');icon.className='smp-toast-icon';icon.setAttribute('aria-hidden','true');icon.textContent=erro?'×':alerta?'!':'✓';
+  const body=document.createElement('div');body.className='smp-toast-body';
+  const title=document.createElement('strong');title.textContent=erro?'Não foi possível concluir':alerta?'Atenção':'Tudo certo';
+  const detail=document.createElement('span');detail.textContent=texto;
+  const close=document.createElement('button');close.className='smp-toast-close';close.type='button';close.setAttribute('aria-label','Fechar notificação');close.textContent='×';
+  const progress=document.createElement('span');progress.className='smp-toast-progress';
+  body.append(title,detail);t.append(icon,body,close,progress);area.appendChild(t);
+  const fechar=()=>{if(!t.isConnected)return;t.classList.add('is-leaving');setTimeout(()=>t.remove(),200)};
+  close.addEventListener('click',fechar);t.addEventListener('click',e=>{if(e.target!==close)fechar()});
+  const timer=setTimeout(fechar,4600);close.addEventListener('click',()=>clearTimeout(timer),{once:true});
+  while(area.children.length>4)area.firstElementChild.remove();
 }
 function checkInvest(I){
   const K='smp_inv_ok';const prev=localStorage.getItem(K);
