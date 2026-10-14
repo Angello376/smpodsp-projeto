@@ -1159,6 +1159,17 @@ input,select,textarea{min-width:0}
  .prod-detail span{font-size:10px}
  .prod-detail b{font-size:11px}
 }
+
+/* Fechamento financeiro mais claro */
+.fech-label{display:block;color:var(--mut);font-size:12px;margin:12px 0 6px}
+.fech-caixa-real{margin-top:18px;padding:14px;border:1px solid rgba(57,255,136,.2);border-radius:12px;background:rgba(57,255,136,.035)}
+.fech-caixa-real .fech-label{margin-top:0;color:var(--fg);font-weight:750;font-size:13px}
+.fech-ajuda{font-size:11px;line-height:1.5;margin:5px 0 10px}
+.fech-caixa-linha{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:center}
+.fech-caixa-linha input{min-width:0}
+.fech-caixa-linha .btn{margin:0;white-space:nowrap}
+.prazos-caixa-resumo{margin-top:14px}
+@media(max-width:480px){.fech-caixa-real{padding:10px}.fech-caixa-linha{grid-template-columns:minmax(0,1fr)}.fech-caixa-linha .btn{width:100%}}
 </style>
 </head>
 <body>
@@ -1665,6 +1676,8 @@ function abrirRelacaoPrazosWhats(){
 function textoRelacaoSocios(mes){
   const inicialSalvo=localStorage.getItem(chaveSaldoInicial(mes));
   const inicial=inicialSalvo===null?0:Number(inicialSalvo);
+  const caixaRealSalvo=localStorage.getItem(chaveCaixaReal(mes));
+  const caixaReal=caixaRealSalvo===null?null:Number(caixaRealSalvo);
   const dentroMes=d=>String(d||'').slice(0,7)===mes;
   const recebimentos=S.v.reduce((total,x)=>{
     if(x.pagamentos&&x.pagamentos.length)return total+x.pagamentos.filter(p=>dentroMes(p.data)).reduce((s,p)=>s+(+p.valor||0),0);
@@ -1688,6 +1701,16 @@ async function copiarRelacaoSocios(){
 }
 function mesFechamentoAtual(){return hoje().slice(0,7)}
 function chaveSaldoInicial(mes){return 'smpodsp_caixa_inicial_'+mes}
+function chaveCaixaReal(mes){return 'smpodsp_caixa_real_'+mes}
+function salvarCaixaRealFechamento(){
+  const mes=document.getElementById('fech-mes')?.value||mesFechamentoAtual();
+  const campo=document.getElementById('fech-caixa-real');
+  const valor=campo&&campo.value.trim()!==''?Number(campo.value):null;
+  if(valor!==null&&(!Number.isFinite(valor)||valor<0)){alert('Informe um valor de caixa válido, igual ou maior que zero.');return}
+  if(valor===null)localStorage.removeItem(chaveCaixaReal(mes));
+  else localStorage.setItem(chaveCaixaReal(mes),String(valor));
+  render();
+}
 function salvarSaldoInicialFechamento(){
   const mes=document.getElementById('fech-mes')?.value||mesFechamentoAtual();
   const campo=document.getElementById('fech-inicial');
@@ -1707,6 +1730,8 @@ function view_prazos(){
   const mes=localStorage.getItem('smpodsp_fech_mes')||mesFechamentoAtual();
   const inicialSalvo=localStorage.getItem(chaveSaldoInicial(mes));
   const inicial=inicialSalvo===null?0:Number(inicialSalvo);
+  const caixaRealSalvo=localStorage.getItem(chaveCaixaReal(mes));
+  const caixaReal=caixaRealSalvo===null?null:Number(caixaRealSalvo);
   const dentroMes=d=>String(d||'').slice(0,7)===mes;
   const recebimentos=S.v.reduce((total,x)=>{
     if(x.pagamentos&&x.pagamentos.length)return total+x.pagamentos.filter(p=>dentroMes(p.data)).reduce((s,p)=>s+(+p.valor||0),0);
@@ -1714,7 +1739,8 @@ function view_prazos(){
   },0);
   const despesas=S.d.filter(x=>dentroMes(x.data)).reduce((s,x)=>s+(+x.valor||0),0);
   const caixaCalculado=inicial+recebimentos-despesas;
-  const distribuivel=Math.max(0,caixaCalculado-1500);
+  const caixaFechamento=caixaReal===null?caixaCalculado:caixaReal;
+  const distribuivel=Math.max(0,caixaFechamento-1500);
   const moeda=v=>R(v);
   const meses=[];const base=new Date(hoje()+'T12:00:00');
   for(let i=0;i<18;i++){const d=new Date(base.getFullYear(),base.getMonth()-i,1);meses.push(d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0'))}
@@ -1722,8 +1748,9 @@ function view_prazos(){
   const fechamento='<details class="card prazos-fechamento"><summary>Fechamento mensal e divisão dos sócios</summary><div class="prazos-fechamento-conteudo">'+
   '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Mês</label><select id="fech-mes" onchange="trocarMesFechamento(this.value)">'+opMes+'</select>'+
   '<div class="home-metricas prazos-mini-metricas" style="margin-top:10px"><div class="home-metrica"><span>Recebido</span><b class="pos">'+moeda(recebimentos)+'</b></div><div class="home-metrica"><span>Despesas</span><b class="neg">'+moeda(despesas)+'</b></div></div>'+
-  '<label style="display:block;color:var(--mut);font-size:12px;margin:12px 0 6px">Saldo no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Sem saldo anterior = R$ 0,00" value="'+(inicialSalvo===null?'':inicial)+'"><button class="btn sec prazos-salvar" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button>'+
-  '<div class="prazos-caixa-resumo"><div class="line"><span>Caixa estimado</span><b>'+moeda(caixaCalculado)+'</b></div><div class="line"><span>Reserva protegida</span><b>'+moeda(1500)+'</b></div><div class="line t"><span>Disponível para divisão</span><b class="'+(distribuivel>0?'pos':'')+'">'+moeda(distribuivel)+'</b></div><div class="home-metricas prazos-mini-metricas"><div class="home-metrica"><span>Angello · 50%</span><b>'+moeda(distribuivel/2)+'</b></div><div class="home-metrica"><span>Michel · 50%</span><b>'+moeda(distribuivel/2)+'</b></div></div></div>'+
+  '<label class="fech-label">Saldo no caixa no início do mês (R$)</label><input id="fech-inicial" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex.: 1500,00" value="'+(inicialSalvo===null?'':inicial)+'"><button class="btn sec prazos-salvar" style="margin-top:8px" onclick="salvarSaldoInicialFechamento()">Salvar saldo inicial</button>'+
+  '<div class="fech-caixa-real"><label class="fech-label" for="fech-caixa-real">Quanto tem no caixa hoje? (R$)</label><p class="mut fech-ajuda">Informe o dinheiro que realmente está disponível agora. Ao salvar, esse valor será usado no cálculo da divisão, sem somar novamente as vendas e despesas.</p><div class="fech-caixa-linha"><input id="fech-caixa-real" type="number" min="0" step="0.01" inputmode="decimal" placeholder="Ex.: 3200,00" value="'+(caixaRealSalvo===null?'':caixaReal)+'"><button class="btn sec" onclick="salvarCaixaRealFechamento()">Salvar caixa</button></div></div>'+
+  '<div class="prazos-caixa-resumo"><div class="line"><span>Caixa calculado no mês</span><b>'+moeda(caixaCalculado)+'</b></div><div class="line"><span>Caixa usado no fechamento</span><b>'+moeda(caixaFechamento)+'</b></div><div class="line"><span>Reserva protegida</span><b>'+moeda(1500)+'</b></div><div class="line t"><span>Disponível para divisão</span><b class="'+(distribuivel>0?'pos':'')+'">'+moeda(distribuivel)+'</b></div><div class="home-metricas prazos-mini-metricas"><div class="home-metrica"><span>Angello · 50%</span><b>'+moeda(distribuivel/2)+'</b></div><div class="home-metrica"><span>Michel · 50%</span><b>'+moeda(distribuivel/2)+'</b></div></div></div>'+
   '<p class="mut" style="font-size:11px;margin-top:10px">Se não informar saldo inicial, o cálculo considera R$ 0,00. Vendas ainda não recebidas não entram no caixa. Confira o dinheiro real e a reposição do estoque antes de retirar. O saldo inicial fica salvo apenas neste navegador.</p></div></details>';
   return '<div class="home-heading"><div><div class="home-eyebrow">PRAZOS</div><div class="home-heading-title">Cobranças pendentes</div><div class="home-heading-sub">Copie uma mensagem pronta com os prazos para enviar no WhatsApp.</div></div></div>'+
   '<div class="home-metricas prazos-resumo"><div class="home-metrica"><span>Em atraso</span><b class="neg">'+R(atrasados.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>Vence hoje</span><b>'+R(hojeV.reduce((s,x)=>s+saldoDe(x),0))+'</b></div><div class="home-metrica"><span>A vencer</span><b class="pos">'+R(futuros.reduce((s,x)=>s+saldoDe(x),0))+'</b></div></div>'+
