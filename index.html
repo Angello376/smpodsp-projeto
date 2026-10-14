@@ -1250,6 +1250,59 @@ input,select,textarea{min-width:0}
 @media(max-width:720px){.fin-metrics-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.fin-cash-card,.fin-section{padding:14px}.fin-cash-value{font-size:29px}}
 @media(max-width:480px){.fin-header h1{font-size:24px}.fin-header{align-items:flex-start}.fin-month-tag{font-size:11px}.fin-cash-input>div,.fin-opening>div{flex-wrap:wrap}.fin-cash-input input,.fin-opening input{flex-basis:100%}.fin-cash-input .btn,.fin-opening .btn{flex:1}.fin-dues-grid{gap:6px}.fin-dues-grid>div{padding:9px}.fin-dues-grid span{font-size:10px}.fin-dues-grid b{font-size:18px}.fin-section-heading{flex-direction:column}.fin-month-select,.fin-month-select select{width:100%}.fin-calc{padding:3px 10px}}
 
+
+/* Financeiro: campos maiores e fluxo de leitura mais claro */
+.fin-page{gap:20px}
+.fin-header{padding:8px 2px 17px}
+.fin-header h1{font-size:30px}
+.fin-cash-card{padding:24px}
+.fin-cash-top{align-items:flex-start}
+.fin-cash-value{font-size:clamp(34px,4vw,44px);font-variant-numeric:tabular-nums}
+.fin-cash-input{margin-top:22px;padding-top:18px}
+.fin-cash-input label{font-size:14px;margin-bottom:10px}
+.fin-cash-input>div{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px}
+.fin-cash-input input{width:100%;min-height:56px;padding:14px 16px;font-size:20px;font-weight:750;border-radius:12px}
+.fin-cash-input .btn{min-height:56px;padding:0 24px;font-size:13px;font-weight:800}
+.fin-cash-input small{font-size:11px;margin-top:10px}
+.fin-metrics-grid{gap:12px}
+.fin-metric{padding:16px}
+.fin-metric span{font-size:12px}
+.fin-metric b{font-size:19px;margin-top:8px}
+.fin-section{padding:22px}
+.fin-section-heading h2{font-size:20px}
+.fin-dues-grid{gap:12px}
+.fin-dues-grid>div{padding:15px}
+.fin-dues-grid span{font-size:12px}
+.fin-dues-grid b{font-size:23px}
+.fin-dues-grid small{font-size:12px}
+.fin-actions .btn,.fin-copy-close{min-height:46px;padding:0 18px;font-weight:800}
+.fin-calc{padding:4px 17px}
+.fin-calc>div{padding:14px 0}
+.fin-calc span{font-size:13px}
+.fin-calc b{font-size:14px}
+.fin-distribution b{font-size:22px}
+.fin-partners>div{padding:16px}
+.fin-partners span{font-size:12px}
+.fin-partners b{font-size:21px}
+@media(max-width:720px){
+ .fin-cash-card{padding:18px}
+ .fin-cash-input>div{grid-template-columns:minmax(0,1fr)}
+ .fin-cash-input input{font-size:19px;min-height:58px}
+ .fin-cash-input .btn{width:100%;min-height:50px}
+ .fin-section{padding:16px}
+ .fin-metric{padding:12px}
+ .fin-metric b{font-size:17px}
+}
+@media(max-width:420px){
+ .fin-header h1{font-size:26px}
+ .fin-cash-value{font-size:32px}
+ .fin-cash-symbol{width:40px;height:40px}
+ .fin-dues-grid>div{padding:10px 8px}
+ .fin-dues-grid b{font-size:19px}
+ .fin-partners{gap:7px}
+ .fin-partners>div{padding:11px}
+}
+
 </style>
 </head>
 <body>
