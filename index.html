@@ -1589,6 +1589,10 @@ body:after{
 #nav{z-index:100}
 @media(max-width:520px){body:after{height:108px;-webkit-backdrop-filter:blur(.7px);backdrop-filter:blur(.7px)}}
 
+
+/* Esconde controles antigos de sair no rodapé; só o ícone do cabeçalho permanece */
+main .sair,#app .sair,main button.sair,#app button.sair{display:none!important;visibility:hidden!important;pointer-events:none!important}
+
 </style>
 </head>
 <body>
@@ -3131,6 +3135,11 @@ async function entrarNoApp(){
   window.addEventListener('focus',sincronizarTudoSilencioso);
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible')sincronizarTudoSilencioso();
+  });
+  // Remove qualquer botão legado "Sair" que tenha ficado no conteúdo das páginas.
+  document.querySelectorAll('main .sair, #app .sair').forEach(el=>el.remove());
+  document.querySelectorAll('main button, #app button').forEach(btn=>{
+    if(btn.id!=='sairbtn' && btn.textContent.trim().toLowerCase()==='sair')btn.remove();
   });
   let sair=$('#sairbtn');
   if(!sair){
