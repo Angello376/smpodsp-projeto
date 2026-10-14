@@ -1634,134 +1634,24 @@ main{position:relative;z-index:1;background:transparent}
 @media(prefers-reduced-motion:reduce){#ambient-bg .ambient-glow{will-change:auto}}
 
 
-/* Vape técnico em montagem: decoração de baixa opacidade, sempre atrás do conteúdo */
-#vape-build{position:absolute;width:clamp(155px,24vw,265px);height:auto;right:clamp(-72px,3vw,38px);top:clamp(110px,20vh,210px);opacity:.105;overflow:visible;filter:saturate(.78);pointer-events:none;will-change:transform}
-#vape-build .vb-part{transform-box:fill-box;transform-origin:center;transition:opacity .15s linear}
-#vape-build .vb-vapor{opacity:.35}
-@media(max-width:700px){
- #vape-build{width:145px;right:-48px;top:20vh;opacity:.075}
-}
-@media(prefers-reduced-motion:reduce){#vape-build{will-change:auto}}
 
-
-/* Responsividade global: prioridade para uso por toque e telas estreitas */
-html{width:100%;min-width:0;overflow-x:clip;scroll-behavior:smooth}
-body{width:100%;min-width:0;overflow-x:clip;overscroll-behavior-y:contain}
-button,a,input,select,textarea,summary{touch-action:manipulation}
-button,a,summary{ -webkit-user-select:none;user-select:none}
-button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
-img,svg,canvas,video{max-width:100%}
-#app{min-width:0;width:100%}
-main{width:100%;min-width:0}
-.card,.hero,.dcard,.cl,.cob,.md{min-width:0;max-width:100%}
-.form{grid-template-columns:repeat(2,minmax(0,1fr))}
-.form label{min-width:0;overflow-wrap:anywhere}
-input,select,textarea{min-width:0;max-width:100%;font:inherit;font-size:16px}
-button{font-family:inherit}
-.it,.line,.vrow,.ptop,.pact,.frow,.ctop,.cbot,.cl-top,.ch-row{min-width:0;max-width:100%}
-.ov{padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
-.md,.cob{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
-#nav{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));padding-bottom:max(8px,env(safe-area-inset-bottom))}
-@media(max-width:600px){
- main{padding:16px 12px calc(112px + env(safe-area-inset-bottom))}
- h1{font-size:clamp(17px,5vw,20px);flex-wrap:wrap;line-height:1.25}
- .card,.cl{padding-left:12px;padding-right:12px}
- .hero{padding:18px 15px}
- .hero b{font-size:clamp(25px,8vw,36px);overflow-wrap:anywhere}
- .form{grid-template-columns:minmax(0,1fr);gap:9px}
- .form .w{grid-column:1}
- .line{align-items:flex-start;flex-wrap:wrap}
- .line>*{min-width:0;overflow-wrap:anywhere}
- .act,.vact,.pact{flex-wrap:wrap}
- .act input{width:min(100px,28vw)}
- .vrow{align-items:flex-start;gap:9px;padding:11px 9px}
- .vr{white-space:normal;overflow-wrap:anywhere}
- .vact{justify-content:flex-start}
- .vact .sm,.sm{min-height:40px}
- .seg button{min-height:42px}
- .schip{margin:0 4px 6px 0;padding:9px 11px}
- .cob-acts{grid-template-columns:minmax(0,1fr)}
- .cob-open{line-height:1.3;padding:15px 12px;display:flex;align-items:center;justify-content:center}
- .mdb{flex-wrap:wrap}
- .mdb .btn,.mdok{min-height:44px;flex:1}
- #vape-build{width:clamp(112px,30vw,145px);right:-38px;top:18vh;opacity:.07}
-}
-@media(max-width:360px){
- main{padding-left:9px;padding-right:9px}
- .card,.cl{padding-left:10px;padding-right:10px}
- .floatnav-shell{max-width:calc(100vw - 18px)}
- .floatnav-item{min-width:0}
- .vact .sm{padding:0 9px;font-size:12px}
- .hero b{font-size:25px}
-}
-@media(min-width:601px) and (max-width:900px){
- main{max-width:680px;padding-left:18px;padding-right:18px}
-}
-@media(prefers-reduced-motion:reduce){
- html{scroll-behavior:auto}
- *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
-}
+/* Brilhos azul e verde sutis, sem padrões ou ilustrações */
+#ambient-bg{position:fixed;inset:0;z-index:-1;overflow:hidden;pointer-events:none;isolation:isolate;background:#05060b}
+#ambient-bg .ambient-glow{position:absolute;width:min(72vw,760px);height:min(72vw,760px);border-radius:50%;filter:blur(90px);opacity:.15;transform:translate3d(0,0,0);will-change:transform,opacity;animation:ambientPulse 12s ease-in-out infinite alternate}
+#ambient-bg .ambient-blue{top:-24%;right:-20%;background:radial-gradient(circle,rgba(49,128,255,.8) 0%,rgba(49,128,255,.24) 36%,transparent 70%);animation-name:ambientBlueDrift}
+#ambient-bg .ambient-green{top:26%;left:-34%;background:radial-gradient(circle,rgba(45,255,143,.66) 0%,rgba(45,255,143,.18) 38%,transparent 70%);animation-name:ambientGreenDrift;animation-delay:-5s}
+#ambient-bg .ambient-violet{display:none}
+@keyframes ambientBlueDrift{0%{transform:translate3d(0,0,0) scale(.92);opacity:.11}50%{transform:translate3d(-3vw,4vh,0) scale(1.04);opacity:.18}100%{transform:translate3d(-1vw,8vh,0) scale(.97);opacity:.13}}
+@keyframes ambientGreenDrift{0%{transform:translate3d(0,0,0) scale(1.02);opacity:.09}50%{transform:translate3d(5vw,-3vh,0) scale(.94);opacity:.16}100%{transform:translate3d(2vw,5vh,0) scale(1.06);opacity:.11}}
+@media(max-width:600px){#ambient-bg .ambient-glow{width:115vw;height:115vw;filter:blur(64px)}#ambient-bg .ambient-blue{top:-10%;right:-62%}#ambient-bg .ambient-green{top:35%;left:-68%}}
+@media(prefers-reduced-motion:reduce){#ambient-bg .ambient-glow{animation:none!important;will-change:auto}}
 
 </style>
 </head>
 <body>
 <div id="ambient-bg" aria-hidden="true">
   <div class="ambient-glow ambient-blue"></div><div class="ambient-glow ambient-green"></div><div class="ambient-glow ambient-violet"></div>
-  <svg id="vape-build" viewBox="0 0 240 520" role="presentation" aria-hidden="true">
-    <defs>
-      <linearGradient id="vb-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d2deed"/><stop offset=".25" stop-color="#71849d"/><stop offset=".62" stop-color="#29374c"/><stop offset="1" stop-color="#111a29"/></linearGradient>
-      <linearGradient id="vb-glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9cebd5" stop-opacity=".22"/><stop offset=".18" stop-color="#4fc9b0" stop-opacity=".12"/><stop offset=".55" stop-color="#83caff" stop-opacity=".3"/><stop offset="1" stop-color="#6be8c2" stop-opacity=".1"/></linearGradient>
-      <linearGradient id="vb-liquid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4ee7b1" stop-opacity=".42"/><stop offset="1" stop-color="#258fbd" stop-opacity=".22"/></linearGradient>
-      <linearGradient id="vb-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34435a"/><stop offset=".28" stop-color="#172337"/><stop offset=".72" stop-color="#0b1220"/><stop offset="1" stop-color="#25334a"/></linearGradient>
-      <linearGradient id="vb-highlight" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
-      <filter id="vb-shadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="7"/></filter>
-    </defs>
-    <ellipse cx="121" cy="462" rx="57" ry="9" fill="#000" opacity=".5" filter="url(#vb-shadow)"/>
-    <g class="vb-part vb-vapor" fill="none" stroke="#66e9b4" stroke-width="2.4" stroke-linecap="round" opacity=".7">
-      <path d="M105 60 C83 44 124 32 104 13"/><path d="M128 57 C151 38 115 28 139 7"/>
-    </g>
-    <g class="vb-part vb-mouth">
-      <path d="M101 99 L104 54 Q105 46 114 45 L129 45 Q138 46 139 55 L142 99 Z" fill="url(#vb-metal)" stroke="#b5c8df" stroke-opacity=".65" stroke-width="1.4"/>
-      <path d="M112 51 L131 51 L134 84 L109 84 Z" fill="#080d16" stroke="#52657e" stroke-width="1"/>
-      <path d="M108 88 Q121 92 135 88 L136 98 L107 98 Z" fill="#3a4a61"/>
-      <path d="M111 91 L132 91" stroke="#70e7c0" stroke-width="2" stroke-linecap="round" opacity=".8"/>
-    </g>
-    <g class="vb-part vb-pod">
-      <path d="M89 111 Q89 99 102 99 L141 99 Q154 99 153 112 L149 193 Q148 207 136 210 L105 210 Q93 207 92 194 Z" fill="url(#vb-glass)" stroke="#9cc3d7" stroke-opacity=".9" stroke-width="1.7"/>
-      <path d="M97 151 L145 151 L142 190 Q141 200 132 201 L108 201 Q99 199 99 190 Z" fill="url(#vb-liquid)"/>
-      <path d="M98 151 Q120 146 145 151" fill="none" stroke="#7ff0ca" stroke-opacity=".8" stroke-width="1.4"/>
-      <path d="M98 114 Q99 106 108 106 L136 106" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
-      <path d="M101 118 L99 180" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
-      <path d="M145 118 L142 180" stroke="#70bfff" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>
-      <path d="M102 129 L140 129" stroke="#72e9c1" stroke-opacity=".35" stroke-width="1"/>
-      <rect x="107" y="202" width="29" height="14" rx="4" fill="url(#vb-metal)" stroke="#91a9c5" stroke-opacity=".6"/>
-      <rect x="113" y="205" width="17" height="8" rx="2" fill="#111b2a"/>
-    </g>
-    <g class="vb-part vb-coil">
-      <rect x="108" y="214" width="27" height="31" rx="5" fill="#101927" stroke="#8ca5bf" stroke-width="1.2"/>
-      <path d="M112 220 Q121 214 130 220 T130 231 T112 242" fill="none" stroke="#d1a76c" stroke-width="2.2" stroke-linecap="round"/>
-      <path d="M116 218 L116 241 M126 218 L126 241" stroke="#6d829e" stroke-width="1"/>
-    </g>
-    <g class="vb-part vb-body">
-      <path d="M89 250 Q89 241 99 241 L143 241 Q153 241 153 251 L157 407 Q157 423 142 425 L99 425 Q84 423 85 407 Z" fill="url(#vb-body)" stroke="#7388a5" stroke-opacity=".85" stroke-width="1.6"/>
-      <path d="M96 253 Q96 249 102 249 L140 249 Q146 249 146 255 L149 399 Q149 413 138 414 L103 414 Q93 413 93 399 Z" fill="none" stroke="#60738e" stroke-opacity=".4" stroke-width="1"/>
-      <path d="M98 260 L98 394" stroke="url(#vb-highlight)" stroke-width="3" stroke-linecap="round" opacity=".6"/>
-      <path d="M143 267 L145 388" stroke="#91a8c4" stroke-opacity=".15" stroke-width="2" stroke-linecap="round"/>
-      <rect x="103" y="276" width="36" height="4" rx="2" fill="#53e4b0" opacity=".9"/>
-      <rect x="103" y="286" width="24" height="2" rx="1" fill="#6dafff" opacity=".7"/>
-      <rect x="107" y="330" width="29" height="29" rx="9" fill="#0a111d" stroke="#667b97" stroke-opacity=".75"/>
-      <circle cx="121.5" cy="344.5" r="6" fill="url(#vb-metal)" stroke="#9aadc3" stroke-width=".8"/>
-      <circle cx="121.5" cy="344.5" r="2" fill="#61efba"/>
-      <path d="M105 383 L137 383" stroke="#3d506a" stroke-width="2" stroke-linecap="round"/>
-      <path d="M104 390 L137 390" stroke="#26364c" stroke-width="1" stroke-linecap="round"/>
-      <circle cx="145" cy="405" r="2" fill="#63e9b7" opacity=".75"/>
-    </g>
-    <g class="vb-part vb-base">
-      <path d="M95 425 L146 425 L142 442 Q141 448 133 448 L108 448 Q100 448 99 442 Z" fill="url(#vb-metal)" stroke="#a5b7ce" stroke-opacity=".65"/>
-      <path d="M105 432 L136 432" stroke="#101827" stroke-width="3.5" stroke-linecap="round"/>
-      <path d="M111 440 L131 440" stroke="#e2edf8" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/>
-    </g>
-  </svg>
+  
 </div>
 
 <main>
@@ -3342,65 +3232,10 @@ sb.auth.onAuthStateChange((event, session)=>{
   else mostrarLogin();
 })();
 
-/* Movimento do fundo vinculado à rolagem, com custo mínimo por frame */
-(function(){
- const bg=document.getElementById('ambient-bg');
- if(!bg)return;
- const glows=[...bg.querySelectorAll('.ambient-glow')];
- let ticking=false,lastY=-1;
- function update(){
-   const y=window.scrollY||document.documentElement.scrollTop||0;
-   if(y!==lastY){
-     lastY=y;
-     glows.forEach((el,i)=>{
-       const speed=[.12,-.075,.18][i]||.1;
-       const offset=Math.max(-220,Math.min(420,y*speed));
-       el.style.transform='translate3d(0,'+offset.toFixed(1)+'px,0)';
-     });
-   }
-   ticking=false;
- }
- window.addEventListener('scroll',function(){
-   if(!ticking){ticking=true;requestAnimationFrame(update)}
- },{passive:true});
- update();
-})();
 
 
-/* A montagem do vape acompanha o progresso de rolagem, sem interferir nos controles. */
-(function(){
- const svg=document.getElementById('vape-build');
- if(!svg)return;
- const parts={
-  '.vb-vapor':{from:[0,24],to:[0,0],scale:.9},
-  '.vb-mouth':{from:[0,-62],to:[0,0],scale:.94},
-  '.vb-pod':{from:[-42,-10],to:[0,0],scale:.96},
-  '.vb-coil':{from:[38,-8],to:[0,0],scale:.9},
-  '.vb-body':{from:[0,48],to:[0,0],scale:.96},
-  '.vb-base':{from:[0,82],to:[0,0],scale:.9}
- };
- const nodes=Object.entries(parts).map(([sel,p])=>({el:svg.querySelector(sel),p})).filter(x=>x.el);
- let pending=false;
- function draw(){
-  const max=Math.max(1,document.documentElement.scrollHeight-window.innerHeight);
-  const progress=Math.max(0,Math.min(1,(window.scrollY||window.pageYOffset||0)/max));
-  // Montagem gradativa no primeiro trecho; desmonta suavemente ao voltar para o topo.
-  const t=Math.max(0,Math.min(1,progress*2.8));
-  nodes.forEach(({el,p})=>{
-   const x=p.from[0]+(p.to[0]-p.from[0])*t;
-   const y=p.from[1]+(p.to[1]-p.from[1])*t;
-   const scale=p.scale+(1-p.scale)*t;
-   el.setAttribute('transform','translate('+x.toFixed(2)+' '+y.toFixed(2)+') scale('+scale.toFixed(3)+')');
-   el.style.opacity=String(.35+.65*t);
-  });
-  svg.style.opacity=String(.055+.055*t);
-  pending=false;
- }
- function onScroll(){if(!pending){pending=true;requestAnimationFrame(draw)}}
- window.addEventListener('scroll',onScroll,{passive:true});
- window.addEventListener('resize',onScroll,{passive:true});
- draw();
-})();
+
+
 
 </script>
 <!-- Vercel deploy trigger: mobile dashboard fixes -->
