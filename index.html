@@ -1571,6 +1571,21 @@ main{padding-bottom:calc(96px + env(safe-area-inset-bottom,0px))}
  .bnav .floatnav-icon{width:34px;height:34px;font-size:19px}
 }
 
+
+/* Conteúdo perde contraste suavemente ao passar por trás da dock */
+body:after{content:"";position:fixed;left:0;right:0;bottom:0;height:190px;z-index:90;pointer-events:none;background:linear-gradient(to bottom,rgba(5,8,14,0),rgba(5,8,14,.18) 30%,rgba(5,8,14,.72) 100%);-webkit-backdrop-filter:blur(3px);backdrop-filter:blur(3px);mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.28) 26%,#000 100%);-webkit-mask-image:linear-gradient(to bottom,transparent 0%,rgba(0,0,0,.28) 26%,#000 100%)}
+#nav{z-index:100}
+main{position:relative;padding-bottom:calc(112px + env(safe-area-inset-bottom,0px))}
+.logout-icon{position:absolute;top:14px;right:0;z-index:20;width:38px;height:38px;display:grid;place-items:center;border:1px solid rgba(110,140,180,.22);border-radius:12px;background:rgba(12,18,30,.8);color:#8e9bb0;cursor:pointer;transition:color .2s ease,border-color .2s ease,background .2s ease}
+.logout-icon:hover{color:#ff7185;border-color:rgba(255,90,115,.35);background:rgba(255,70,95,.08)}
+.logout-icon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sair{display:none!important}
+@media(max-width:520px){
+ body:after{height:160px;-webkit-backdrop-filter:blur(2px);backdrop-filter:blur(2px)}
+ main{padding-bottom:calc(104px + env(safe-area-inset-bottom,0px))}
+ .logout-icon{top:8px;right:0;width:34px;height:34px;border-radius:11px}
+}
+
 </style>
 </head>
 <body>
@@ -3114,11 +3129,15 @@ async function entrarNoApp(){
   document.addEventListener('visibilitychange',()=>{
     if(document.visibilityState==='visible')sincronizarTudoSilencioso();
   });
-  const sair=document.createElement('div');
-  sair.className='sair';
-  sair.innerHTML='<button class="sm" id="sairbtn">Sair</button>';
-  document.querySelector('main').appendChild(sair);
-  $('#sairbtn').onclick=async()=>{await sb.auth.signOut();location.reload()};
+  let sair=$('#sairbtn');
+  if(!sair){
+    sair=document.createElement('button');
+    sair.id='sairbtn';sair.className='logout-icon';sair.type='button';
+    sair.setAttribute('aria-label','Sair da conta');sair.title='Sair da conta';
+    sair.innerHTML='<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10 17l5-5-5-5M15 12H3M12 3h6a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-6"/></svg>';
+    document.querySelector('main').appendChild(sair);
+    sair.onclick=async()=>{const{error}=await sb.auth.signOut();if(error){avisar('Não foi possível sair. Tente novamente.');return}location.reload()};
+  }
 }
 sb.auth.onAuthStateChange((event, session)=>{
   if(event==='PASSWORD_RECOVERY')mostrarRedefinirSenha();
