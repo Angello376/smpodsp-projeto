@@ -1024,6 +1024,34 @@ input,select,textarea{min-width:0}
   .form{gap:7px}
   .bnav button{font-size:9px}
 }
+
+/* Refinamento adicional do painel de produtos */
+.prod-overview{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:0 0 16px}
+.prod-stat{display:flex;align-items:center;gap:10px;min-width:0;padding:13px 12px;border:1px solid rgba(80,160,255,.16);border-radius:14px;background:linear-gradient(145deg,rgba(16,24,42,.92),rgba(8,12,22,.96))}
+.prod-stat-icon{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:10px;background:rgba(57,255,136,.1);border:1px solid rgba(57,255,136,.17);color:#65f5ad;font-size:17px;font-weight:850}
+.prod-stat-icon.warning{background:rgba(255,193,59,.1);border-color:rgba(255,193,59,.18);color:#ffd37a}
+.prod-stat-icon.blue{background:rgba(59,130,255,.12);border-color:rgba(59,130,255,.2);color:#8dbbff;font-size:11px}
+.prod-stat>div{display:flex;flex-direction:column;gap:5px;min-width:0}
+.prod-stat small{font-size:10px;line-height:1.35;color:var(--mut)}
+.prod-stat b{font-size:16px;line-height:1.2;overflow-wrap:anywhere;color:var(--fg)}
+.prod-card .prod-edit{font-weight:750}
+.prod-card .pact .sm:not(.d){background:rgba(59,130,255,.09);border-color:rgba(59,130,255,.2)}
+.prod-card .pact .prod-edit{background:linear-gradient(100deg,rgba(59,130,255,.2),rgba(57,255,136,.09));border-color:rgba(80,160,255,.32);color:#c4dcff}
+.prod-card .phead{width:100%;text-align:left;background:transparent;color:inherit;cursor:pointer}
+.prod-card .phead:focus-visible,.prod-card .pact button:focus-visible{outline:2px solid #65f5ad;outline-offset:3px}
+@media(max-width:600px){
+  .prod-overview{grid-template-columns:repeat(3,minmax(0,1fr));gap:7px}
+  .prod-stat{display:block;padding:10px 8px}
+  .prod-stat-icon{width:28px;height:28px;margin-bottom:8px;font-size:14px}
+  .prod-stat small{font-size:9px}
+  .prod-stat b{font-size:13px}
+}
+@media(max-width:380px){
+  .prod-overview{gap:5px}
+  .prod-stat{padding:9px 6px}
+  .prod-stat small{font-size:8px}
+  .prod-stat b{font-size:11px}
+}
 </style>
 </head>
 <body>
@@ -1306,7 +1334,11 @@ const PROD_OPEN=new Set();
 function toggleProd(id){PROD_OPEN.has(id)?PROD_OPEN.delete(id):PROD_OPEN.add(id);render()}
 function view_produtos(){
   if(VISTA==='sabor')return segProd()+viewSabor();
-  return `<div class="prod-intro"><div><span class="prod-kicker">ESTOQUE</span><h2>Seus produtos</h2><p>Gerencie preços, sabores e quantidades em um só lugar.</p></div><div class="prod-count"><b>${S.p.length}</b><span>${S.p.length===1?'produto':'produtos'}</span></div></div>
+  const totalUnidades=S.p.reduce((total,p)=>total+(Number(p.est)||0),0);
+  const estoqueBaixo=S.p.filter(p=>(Number(p.est)||0)<=5).length;
+  const valorCustoEstoque=S.p.reduce((total,p)=>total+((Number(p.custo)||0)*(Number(p.est)||0)),0);
+  return `<div class="prod-intro"><div><span class="prod-kicker">GESTÃO DE ESTOQUE</span><h2>Seus produtos</h2><p>Preços, estoque e sabores organizados em um só lugar.</p></div><div class="prod-count"><b>${S.p.length}</b><span>${S.p.length===1?'produto':'produtos'}</span></div></div>
+  <div class="prod-overview"><div class="prod-stat"><span class="prod-stat-icon">▦</span><div><small>Unidades em estoque</small><b>${totalUnidades}</b></div></div><div class="prod-stat"><span class="prod-stat-icon warning">!</span><div><small>Produtos com estoque baixo</small><b>${estoqueBaixo}</b></div></div><div class="prod-stat"><span class="prod-stat-icon blue">R$</span><div><small>Valor de custo em estoque</small><b>${R(valorCustoEstoque)}</b></div></div></div>
   ${segProd()}
   <details class="prod-novo" ${FORM.prod?'open':''} ontoggle="FORM.prod=this.open"><summary>＋ Cadastrar produto</summary><div class="card"><div class="form">
   <label class="w">Nome do produto<input id="pn" placeholder="Ex.: Pod Ignite 5000"></label>
@@ -1324,7 +1356,7 @@ function view_produtos(){
       </button>
       <div class="prod-price-row"><div class="prod-price"><small>PREÇO DE VENDA</small><b>${R(Number(p.preco)||0)}</b></div><div class="prod-detail"><span>Custo</span><b>${R(Number(p.custo)||0)}</b></div><div class="prod-detail"><span>Margem</span><b class="${margem<0?'neg':'pos'}">${margem}%</b></div></div>
       ${aberto?`<div class="prod-expanded"><div class="prod-expanded-title">${L.length?'Estoque por sabor':'Controle de estoque'}</div>${corpo}
-      <div class="pact"><button class="sm prod-edit" onclick="editarValoresProduto('${p.id}')">Editar preço de venda</button><button class="sm" onclick="addSab('${p.id}')">＋ Sabor</button><button class="sm d" onclick="delProd('${p.id}')">Excluir</button></div></div>`:''}
+      <div class="pact"><button class="sm prod-edit" onclick="editarValoresProduto('${p.id}')">Editar produto</button><button class="sm" onclick="addSab('${p.id}')">＋ Sabor</button><button class="sm d" onclick="delProd('${p.id}')">Excluir</button></div></div>`:''}
     </article>`}).join('')||'<div class="prod-empty"><span>▦</span><b>Nenhum produto cadastrado</b><p>Cadastre seu primeiro produto para começar a controlar o estoque.</p></div>'}</div>`;
 }
 
@@ -1776,12 +1808,17 @@ async function delV(id){
 }async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
 async function editarValoresProduto(pid){
   const p=S.p.find(x=>x.id===pid);if(!p)return;
-  const precoTexto=await pedirValor('Novo preço de venda de '+p.nome+' (R$)',String(p.preco??0));
+  const custoTexto=await pedirValor('Preço de custo de '+p.nome+' (R$)',String(p.custo??0));
+  if(custoTexto===null||custoTexto===false)return;
+  const precoTexto=await pedirValor('Preço de venda de '+p.nome+' (R$)',String(p.preco??0));
   if(precoTexto===null||precoTexto===false)return;
-  const preco=Number(String(precoTexto).trim().replace(',','.'));
+  const converterValor=v=>Number(String(v).trim().replace(/\\s/g,'').replace(',','.'));
+  const custo=converterValor(custoTexto);
+  const preco=converterValor(precoTexto);
+  if(!Number.isFinite(custo)||custo<0)return alert('Informe um preço de custo válido, igual ou maior que zero.');
   if(!Number.isFinite(preco)||preco<0)return alert('Informe um preço de venda válido, igual ou maior que zero.');
-  const ok=await run(()=>ST.upd('produtos',pid,{preco}));
-  if(ok){if(REMOTE)await carregarTudo();render();avisar('Preço de venda atualizado.');}
+  const ok=await run(()=>ST.upd('produtos',pid,{custo,preco}));
+  if(ok){if(REMOTE)await carregarTudo();render();avisar('Produto atualizado com sucesso.');}
 }
 async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;const p=S.p.find(x=>x.id===pid);const nome=p?.nome||'Produto';const ok=await run(()=>ST.del('produtos',pid));if(ok)await modal({msg:'Produto excluído com sucesso! '+nome+' foi removido do estoque.',ok:'OK',excluido:true});}
 async function removeSab(pid,nome){
