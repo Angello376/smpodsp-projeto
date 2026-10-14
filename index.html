@@ -1399,6 +1399,35 @@ input,select,textarea{min-width:0}
  .fin-partners>div{padding:10px}
 }
 
+
+/* Floating toolbar inspirada em barras expansíveis, adaptada à identidade SMPODSP */
+.bnav{position:fixed;left:50%;right:auto;bottom:max(14px,env(safe-area-inset-bottom,14px));transform:translateX(-50%);width:min(690px,calc(100vw - 32px));display:block;padding:0;background:transparent;border:0;z-index:100}
+.floatnav-shell{padding:6px;border:1px solid rgba(108,145,190,.23);border-radius:22px;background:rgba(8,12,21,.88);box-shadow:0 12px 38px rgba(0,0,0,.38),0 0 0 1px rgba(255,255,255,.025) inset;backdrop-filter:blur(22px);-webkit-backdrop-filter:blur(22px)}
+.floatnav-track{position:relative;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:4px;align-items:center}
+.bnav .floatnav-item{position:relative;isolation:isolate;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:54px;padding:7px 4px;border:1px solid transparent;border-radius:15px;background:transparent;color:#8391a8;font-size:10px;font-weight:650;line-height:1.1;cursor:pointer;transition:color .22s ease,background .22s ease,border-color .22s ease,transform .22s ease}
+.bnav .floatnav-icon{display:grid;place-items:center;min-width:23px;height:23px;font-size:21px;line-height:1;transition:transform .28s cubic-bezier(.2,.8,.2,1),filter .28s ease}
+.bnav .floatnav-label{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:10px;letter-spacing:.01em}
+.bnav .floatnav-item:hover{color:#e5edf9;background:rgba(255,255,255,.045)}
+.bnav .floatnav-item.on{color:#6af2b0;background:linear-gradient(145deg,rgba(56,130,246,.13),rgba(54,240,160,.09));border-color:rgba(101,245,173,.19);box-shadow:0 0 18px rgba(48,220,146,.07)}
+.bnav .floatnav-item.on .floatnav-icon{transform:translateY(-1px) scale(1.08);filter:drop-shadow(0 0 7px rgba(101,245,173,.28))}
+.bnav .floatnav-item:active{transform:scale(.96)}
+.bnav .floatnav-item:focus-visible{outline:2px solid #65f5ad;outline-offset:2px}
+main{padding-bottom:112px}
+@media(max-width:520px){
+ .bnav{width:calc(100vw - 20px);bottom:max(9px,env(safe-area-inset-bottom,9px))}
+ .floatnav-shell{padding:5px;border-radius:19px}
+ .floatnav-track{gap:2px}
+ .bnav .floatnav-item{min-height:51px;padding:6px 2px;border-radius:13px;gap:3px}
+ .bnav .floatnav-icon{font-size:19px;height:21px}
+ .bnav .floatnav-label{font-size:9px}
+ main{padding-bottom:100px}
+}
+@media(max-width:360px){
+ .bnav .floatnav-label{font-size:8px}
+ .bnav .floatnav-item{min-height:48px}
+}
+@media(prefers-reduced-motion:reduce){.bnav .floatnav-item,.bnav .floatnav-icon{transition:none}}
+
 </style>
 </head>
 <body>
@@ -2757,7 +2786,7 @@ function countUps(root){
   });
 }
 function renderAgora(){
-  const nav=TABS.map(t=>`<button class="${t[0]===tab?'on':''}" onclick="setTab('${t[0]}')"><span>${t[1]}</span>${t[2]}</button>`).join('');
+  const nav='<div class="floatnav-shell"><div class="floatnav-track" role="navigation" aria-label="Navegação principal">'+TABS.map((t,i)=>'<button class="floatnav-item '+(t[0]===tab?'on':'')+'" data-tab="'+t[0]+'" aria-current="'+(t[0]===tab?'page':'false')+'" onclick="setTab(\''+t[0]+'\')"><span class="floatnav-icon">'+t[1]+'</span><span class="floatnav-label">'+t[2]+'</span></button>').join('')+'</div></div>';
   if(nav!==LAST_NAV){$('#nav').innerHTML=nav;LAST_NAV=nav}
   const html=READY||!REMOTE?window['view_'+tab]():'<div class="empty">Carregando dados…</div>';
   const app=$('#app');
