@@ -1643,6 +1643,65 @@ main{position:relative;z-index:1;background:transparent}
 }
 @media(prefers-reduced-motion:reduce){#vape-build{will-change:auto}}
 
+
+/* Responsividade global: prioridade para uso por toque e telas estreitas */
+html{width:100%;min-width:0;overflow-x:clip;scroll-behavior:smooth}
+body{width:100%;min-width:0;overflow-x:clip;overscroll-behavior-y:contain}
+button,a,input,select,textarea,summary{touch-action:manipulation}
+button,a,summary{ -webkit-user-select:none;user-select:none}
+button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible{outline:2px solid var(--ac);outline-offset:3px}
+img,svg,canvas,video{max-width:100%}
+#app{min-width:0;width:100%}
+main{width:100%;min-width:0}
+.card,.hero,.dcard,.cl,.cob,.md{min-width:0;max-width:100%}
+.form{grid-template-columns:repeat(2,minmax(0,1fr))}
+.form label{min-width:0;overflow-wrap:anywhere}
+input,select,textarea{min-width:0;max-width:100%;font:inherit;font-size:16px}
+button{font-family:inherit}
+.it,.line,.vrow,.ptop,.pact,.frow,.ctop,.cbot,.cl-top,.ch-row{min-width:0;max-width:100%}
+.ov{padding:max(12px,env(safe-area-inset-top)) max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left))}
+.md,.cob{max-height:calc(100dvh - 24px);overflow-y:auto;overscroll-behavior:contain}
+#nav{padding-left:max(8px,env(safe-area-inset-left));padding-right:max(8px,env(safe-area-inset-right));padding-bottom:max(8px,env(safe-area-inset-bottom))}
+@media(max-width:600px){
+ main{padding:16px 12px calc(112px + env(safe-area-inset-bottom))}
+ h1{font-size:clamp(17px,5vw,20px);flex-wrap:wrap;line-height:1.25}
+ .card,.cl{padding-left:12px;padding-right:12px}
+ .hero{padding:18px 15px}
+ .hero b{font-size:clamp(25px,8vw,36px);overflow-wrap:anywhere}
+ .form{grid-template-columns:minmax(0,1fr);gap:9px}
+ .form .w{grid-column:1}
+ .line{align-items:flex-start;flex-wrap:wrap}
+ .line>*{min-width:0;overflow-wrap:anywhere}
+ .act,.vact,.pact{flex-wrap:wrap}
+ .act input{width:min(100px,28vw)}
+ .vrow{align-items:flex-start;gap:9px;padding:11px 9px}
+ .vr{white-space:normal;overflow-wrap:anywhere}
+ .vact{justify-content:flex-start}
+ .vact .sm,.sm{min-height:40px}
+ .seg button{min-height:42px}
+ .schip{margin:0 4px 6px 0;padding:9px 11px}
+ .cob-acts{grid-template-columns:minmax(0,1fr)}
+ .cob-open{line-height:1.3;padding:15px 12px;display:flex;align-items:center;justify-content:center}
+ .mdb{flex-wrap:wrap}
+ .mdb .btn,.mdok{min-height:44px;flex:1}
+ #vape-build{width:clamp(112px,30vw,145px);right:-38px;top:18vh;opacity:.07}
+}
+@media(max-width:360px){
+ main{padding-left:9px;padding-right:9px}
+ .card,.cl{padding-left:10px;padding-right:10px}
+ .floatnav-shell{max-width:calc(100vw - 18px)}
+ .floatnav-item{min-width:0}
+ .vact .sm{padding:0 9px;font-size:12px}
+ .hero b{font-size:25px}
+}
+@media(min-width:601px) and (max-width:900px){
+ main{max-width:680px;padding-left:18px;padding-right:18px}
+}
+@media(prefers-reduced-motion:reduce){
+ html{scroll-behavior:auto}
+ *,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
 </style>
 </head>
 <body>
@@ -1650,43 +1709,58 @@ main{position:relative;z-index:1;background:transparent}
   <div class="ambient-glow ambient-blue"></div><div class="ambient-glow ambient-green"></div><div class="ambient-glow ambient-violet"></div>
   <svg id="vape-build" viewBox="0 0 240 520" role="presentation" aria-hidden="true">
     <defs>
-      <linearGradient id="vb-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#a9b8cb"/><stop offset=".42" stop-color="#48566d"/><stop offset="1" stop-color="#202a3b"/></linearGradient>
-      <linearGradient id="vb-glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#40d9a0" stop-opacity=".12"/><stop offset=".5" stop-color="#70b7ff" stop-opacity=".28"/><stop offset="1" stop-color="#40d9a0" stop-opacity=".06"/></linearGradient>
-      <linearGradient id="vb-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#27354b"/><stop offset=".5" stop-color="#101827"/><stop offset="1" stop-color="#080d16"/></linearGradient>
+      <linearGradient id="vb-metal" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#d2deed"/><stop offset=".25" stop-color="#71849d"/><stop offset=".62" stop-color="#29374c"/><stop offset="1" stop-color="#111a29"/></linearGradient>
+      <linearGradient id="vb-glass" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#9cebd5" stop-opacity=".22"/><stop offset=".18" stop-color="#4fc9b0" stop-opacity=".12"/><stop offset=".55" stop-color="#83caff" stop-opacity=".3"/><stop offset="1" stop-color="#6be8c2" stop-opacity=".1"/></linearGradient>
+      <linearGradient id="vb-liquid" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#4ee7b1" stop-opacity=".42"/><stop offset="1" stop-color="#258fbd" stop-opacity=".22"/></linearGradient>
+      <linearGradient id="vb-body" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#34435a"/><stop offset=".28" stop-color="#172337"/><stop offset=".72" stop-color="#0b1220"/><stop offset="1" stop-color="#25334a"/></linearGradient>
+      <linearGradient id="vb-highlight" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient>
+      <filter id="vb-shadow" x="-30%" y="-20%" width="160%" height="150%"><feGaussianBlur stdDeviation="7"/></filter>
     </defs>
+    <ellipse cx="121" cy="462" rx="57" ry="9" fill="#000" opacity=".5" filter="url(#vb-shadow)"/>
     <g class="vb-part vb-vapor" fill="none" stroke="#66e9b4" stroke-width="2.4" stroke-linecap="round" opacity=".7">
       <path d="M105 60 C83 44 124 32 104 13"/><path d="M128 57 C151 38 115 28 139 7"/>
     </g>
     <g class="vb-part vb-mouth">
-      <path d="M101 91 L105 56 Q106 49 114 49 L129 49 Q137 50 137 57 L141 91 Z" fill="url(#vb-metal)" stroke="#7a91ad" stroke-opacity=".7"/>
-      <path d="M112 55 L131 55 L133 82 L110 82 Z" fill="#0a101b"/>
-      <path d="M110 87 L132 87 L133 94 L109 94 Z" fill="#5de7ad" opacity=".7"/>
+      <path d="M101 99 L104 54 Q105 46 114 45 L129 45 Q138 46 139 55 L142 99 Z" fill="url(#vb-metal)" stroke="#b5c8df" stroke-opacity=".65" stroke-width="1.4"/>
+      <path d="M112 51 L131 51 L134 84 L109 84 Z" fill="#080d16" stroke="#52657e" stroke-width="1"/>
+      <path d="M108 88 Q121 92 135 88 L136 98 L107 98 Z" fill="#3a4a61"/>
+      <path d="M111 91 L132 91" stroke="#70e7c0" stroke-width="2" stroke-linecap="round" opacity=".8"/>
     </g>
     <g class="vb-part vb-pod">
-      <path d="M91 105 Q91 96 101 96 L141 96 Q151 96 151 106 L147 191 Q146 202 136 202 L106 202 Q96 202 95 191 Z" fill="url(#vb-glass)" stroke="#6e9eb8" stroke-opacity=".75" stroke-width="1.5"/>
-      <path d="M100 111 L142 111 L139 183 Q138 191 132 191 L110 191 Q104 191 103 183 Z" fill="#0b1722" opacity=".7"/>
-      <path d="M102 124 L140 124" stroke="#65edb5" stroke-opacity=".6" stroke-width="2"/>
-      <path d="M101 180 Q121 172 141 180" stroke="#5aa9ff" stroke-opacity=".55" fill="none" stroke-width="2"/>
-      <rect x="108" y="197" width="26" height="13" rx="4" fill="url(#vb-metal)"/>
+      <path d="M89 111 Q89 99 102 99 L141 99 Q154 99 153 112 L149 193 Q148 207 136 210 L105 210 Q93 207 92 194 Z" fill="url(#vb-glass)" stroke="#9cc3d7" stroke-opacity=".9" stroke-width="1.7"/>
+      <path d="M97 151 L145 151 L142 190 Q141 200 132 201 L108 201 Q99 199 99 190 Z" fill="url(#vb-liquid)"/>
+      <path d="M98 151 Q120 146 145 151" fill="none" stroke="#7ff0ca" stroke-opacity=".8" stroke-width="1.4"/>
+      <path d="M98 114 Q99 106 108 106 L136 106" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="2" stroke-linecap="round"/>
+      <path d="M101 118 L99 180" stroke="#fff" stroke-opacity=".28" stroke-width="2.5" stroke-linecap="round"/>
+      <path d="M145 118 L142 180" stroke="#70bfff" stroke-opacity=".22" stroke-width="2" stroke-linecap="round"/>
+      <path d="M102 129 L140 129" stroke="#72e9c1" stroke-opacity=".35" stroke-width="1"/>
+      <rect x="107" y="202" width="29" height="14" rx="4" fill="url(#vb-metal)" stroke="#91a9c5" stroke-opacity=".6"/>
+      <rect x="113" y="205" width="17" height="8" rx="2" fill="#111b2a"/>
     </g>
     <g class="vb-part vb-coil">
-      <rect x="109" y="210" width="24" height="28" rx="5" fill="#111a28" stroke="#66e9b4" stroke-opacity=".8"/>
-      <path d="M113 216 Q121 211 129 216 T129 226 T113 236" fill="none" stroke="#7daeff" stroke-width="2"/>
+      <rect x="108" y="214" width="27" height="31" rx="5" fill="#101927" stroke="#8ca5bf" stroke-width="1.2"/>
+      <path d="M112 220 Q121 214 130 220 T130 231 T112 242" fill="none" stroke="#d1a76c" stroke-width="2.2" stroke-linecap="round"/>
+      <path d="M116 218 L116 241 M126 218 L126 241" stroke="#6d829e" stroke-width="1"/>
     </g>
     <g class="vb-part vb-body">
-      <path d="M91 244 Q91 237 99 237 L141 237 Q149 237 149 245 L153 408 Q153 419 142 419 L98 419 Q87 419 88 408 Z" fill="url(#vb-body)" stroke="#6c829f" stroke-opacity=".7" stroke-width="1.5"/>
-      <path d="M98 251 L142 251 L145 398 Q145 408 136 408 L105 408 Q96 408 96 398 Z" fill="none" stroke="#30445d" stroke-width="1"/>
-      <rect x="104" y="276" width="34" height="3" rx="1.5" fill="#5de7ad" opacity=".8"/>
-      <rect x="104" y="286" width="24" height="2" rx="1" fill="#5aa9ff" opacity=".55"/>
-      <rect x="108" y="335" width="26" height="26" rx="8" fill="#111e2d" stroke="#536a85" stroke-opacity=".6"/>
-      <circle cx="121" cy="348" r="5" fill="#5de7ad" opacity=".8"/>
-      <path d="M105 385 L137 385" stroke="#3b4c62" stroke-width="2" stroke-linecap="round"/>
+      <path d="M89 250 Q89 241 99 241 L143 241 Q153 241 153 251 L157 407 Q157 423 142 425 L99 425 Q84 423 85 407 Z" fill="url(#vb-body)" stroke="#7388a5" stroke-opacity=".85" stroke-width="1.6"/>
+      <path d="M96 253 Q96 249 102 249 L140 249 Q146 249 146 255 L149 399 Q149 413 138 414 L103 414 Q93 413 93 399 Z" fill="none" stroke="#60738e" stroke-opacity=".4" stroke-width="1"/>
+      <path d="M98 260 L98 394" stroke="url(#vb-highlight)" stroke-width="3" stroke-linecap="round" opacity=".6"/>
+      <path d="M143 267 L145 388" stroke="#91a8c4" stroke-opacity=".15" stroke-width="2" stroke-linecap="round"/>
+      <rect x="103" y="276" width="36" height="4" rx="2" fill="#53e4b0" opacity=".9"/>
+      <rect x="103" y="286" width="24" height="2" rx="1" fill="#6dafff" opacity=".7"/>
+      <rect x="107" y="330" width="29" height="29" rx="9" fill="#0a111d" stroke="#667b97" stroke-opacity=".75"/>
+      <circle cx="121.5" cy="344.5" r="6" fill="url(#vb-metal)" stroke="#9aadc3" stroke-width=".8"/>
+      <circle cx="121.5" cy="344.5" r="2" fill="#61efba"/>
+      <path d="M105 383 L137 383" stroke="#3d506a" stroke-width="2" stroke-linecap="round"/>
+      <path d="M104 390 L137 390" stroke="#26364c" stroke-width="1" stroke-linecap="round"/>
+      <circle cx="145" cy="405" r="2" fill="#63e9b7" opacity=".75"/>
     </g>
     <g class="vb-part vb-base">
-      <path d="M96 420 L145 420 L141 438 Q140 444 133 444 L107 444 Q100 444 99 438 Z" fill="url(#vb-metal)" stroke="#778ca6" stroke-opacity=".7"/>
-      <path d="M104 428 L137 428" stroke="#0c1420" stroke-width="3" stroke-linecap="round"/>
+      <path d="M95 425 L146 425 L142 442 Q141 448 133 448 L108 448 Q100 448 99 442 Z" fill="url(#vb-metal)" stroke="#a5b7ce" stroke-opacity=".65"/>
+      <path d="M105 432 L136 432" stroke="#101827" stroke-width="3.5" stroke-linecap="round"/>
+      <path d="M111 440 L131 440" stroke="#e2edf8" stroke-opacity=".3" stroke-width="1.2" stroke-linecap="round"/>
     </g>
-    <ellipse cx="121" cy="463" rx="53" ry="7" fill="#05070c" opacity=".38"/>
   </svg>
 </div>
 
