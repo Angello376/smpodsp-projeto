@@ -1812,7 +1812,7 @@ async function editarValoresProduto(pid){
   if(custoTexto===null||custoTexto===false)return;
   const precoTexto=await pedirValor('Preço de venda de '+p.nome+' (R$)',String(p.preco??0));
   if(precoTexto===null||precoTexto===false)return;
-  const converterValor=v=>Number(String(v).trim().replace(/\\s/g,'').replace(',','.'));
+  const converterValor=v=>Number(String(v).trim().replace(/\s/g,'').replace(',','.'));
   const custo=converterValor(custoTexto);
   const preco=converterValor(precoTexto);
   if(!Number.isFinite(custo)||custo<0)return alert('Informe um preço de custo válido, igual ou maior que zero.');
