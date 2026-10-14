@@ -1214,7 +1214,7 @@ function view_produtos(){
       : `<div class="stepper"><button onclick="stepEst('${p.id}',-5)">−5</button><button onclick="stepEst('${p.id}',-1)">−1</button><b>${p.est}</b><button onclick="stepEst('${p.id}',1)">+1</button><button onclick="stepEst('${p.id}',5)">+5</button></div>`;
     return `<div class="pcard"><button class="phead" onclick="toggleProd('${p.id}')"><div><b>${esc(p.nome)}</b><div class="mut">${L.length?L.length+' sabor(es)':'sem sabores'} · Margem ${p.preco?Math.round((p.preco-p.custo)/p.preco*100):0}%</div></div><div class="ptot">${p.est} un. <span class="chev">${aberto?'▾':'▸'}</span></div></button>
     ${aberto?`<div style="margin-top:10px">${corpo}</div>
-    <div class="pact"><button class="sm" onclick="editarValoresProduto('${p.id}')">Editar valores</button><button class="sm" onclick="addSab('${p.id}')">＋ Sabor</button><button class="sm d" onclick="delProd('${p.id}')">Excluir</button></div>`:''}</div>`}).join('')||'<div class="empty">Nenhum produto ainda.</div>'}</div>`;
+    <div class="pact"><button class="sm" onclick="editarValoresProduto('${p.id}')">Editar preço de venda</button><button class="sm" onclick="addSab('${p.id}')">＋ Sabor</button><button class="sm d" onclick="delProd('${p.id}')">Excluir</button></div>`:''}</div>`}).join('')||'<div class="empty">Nenhum produto ainda.</div>'}</div>`;
 }
 
 
@@ -1665,16 +1665,12 @@ async function delV(id){
 }async function delC(id){if(!(await confirmar('Excluir cliente?',true)))return;await run(()=>ST.del('clientes',id))}
 async function editarValoresProduto(pid){
   const p=S.p.find(x=>x.id===pid);if(!p)return;
-  const custoTexto=await pedirValor('Custo atual de '+p.nome+' (R$)',String(p.custo??0));
-  if(custoTexto===null||custoTexto===false)return;
-  const precoTexto=await pedirValor('Preço de venda de '+p.nome+' (R$)',String(p.preco??0));
+  const precoTexto=await pedirValor('Novo preço de venda de '+p.nome+' (R$)',String(p.preco??0));
   if(precoTexto===null||precoTexto===false)return;
-  const custo=Number(String(custoTexto).trim().replace(',','.'));
   const preco=Number(String(precoTexto).trim().replace(',','.'));
-  if(!Number.isFinite(custo)||custo<0)return alert('Informe um custo válido, igual ou maior que zero.');
   if(!Number.isFinite(preco)||preco<0)return alert('Informe um preço de venda válido, igual ou maior que zero.');
-  const ok=await run(()=>ST.upd('produtos',pid,{custo,preco}));
-  if(ok){if(REMOTE)await carregarTudo();render();avisar('Valores do produto atualizados.');}
+  const ok=await run(()=>ST.upd('produtos',pid,{preco}));
+  if(ok){if(REMOTE)await carregarTudo();render();avisar('Preço de venda atualizado.');}
 }
 async function delProd(pid){if(!(await confirmar('Excluir produto?',true)))return;const p=S.p.find(x=>x.id===pid);const nome=p?.nome||'Produto';const ok=await run(()=>ST.del('produtos',pid));if(ok)await modal({msg:'Produto excluído com sucesso! '+nome+' foi removido do estoque.',ok:'OK',excluido:true});}
 async function removeSab(pid,nome){
