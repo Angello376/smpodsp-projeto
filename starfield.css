@@ -1,4 +1,4 @@
-/* Starfield animado: movimento visível em camadas e sem bloquear cliques. */
+/* Starfield animado com deslocamento real das camadas, sem bloquear cliques. */
 .starfield-bg{
   position:fixed;
   inset:0;
@@ -13,11 +13,11 @@
 .starfield-bg::before{
   content:"";
   position:absolute;
-  inset:0;
+  inset:-4%;
   background:
-    radial-gradient(ellipse at 15% 20%,rgba(59,130,255,.09),transparent 44%),
-    radial-gradient(ellipse at 85% 75%,rgba(57,255,136,.055),transparent 42%);
-  animation:nebula-drift 28s ease-in-out infinite alternate;
+    radial-gradient(ellipse at 15% 20%,rgba(59,130,255,.11),transparent 44%),
+    radial-gradient(ellipse at 85% 75%,rgba(57,255,136,.07),transparent 42%);
+  animation:nebula-drift 16s ease-in-out infinite alternate;
 }
 #stars,#stars2,#stars3{
   position:absolute;
@@ -26,10 +26,10 @@
   width:100%;
   pointer-events:none;
   background-repeat:repeat;
-  will-change:background-position;
+  will-change:transform;
 }
 #stars{
-  opacity:.85;
+  opacity:.9;
   background-image:
     radial-gradient(1px 1px at 20px 28px,rgba(255,255,255,.95) 99%,transparent),
     radial-gradient(1px 1px at 110px 78px,rgba(190,218,255,.9) 99%,transparent),
@@ -38,40 +38,48 @@
     radial-gradient(1px 1px at 325px 215px,rgba(255,255,255,.85) 99%,transparent),
     radial-gradient(1px 1px at 70px 275px,rgba(255,255,255,.8) 99%,transparent);
   background-size:400px 400px;
-  animation:starfield-drift 18s linear infinite;
+  animation:stars-float-a 7s ease-in-out infinite alternate;
 }
 #stars2{
-  opacity:.65;
+  opacity:.7;
   background-image:
     radial-gradient(1.5px 1.5px at 55px 90px,rgba(255,255,255,.98) 99%,transparent),
     radial-gradient(1px 1px at 155px 250px,rgba(145,196,255,.95) 99%,transparent),
     radial-gradient(1.5px 1.5px at 280px 120px,rgba(255,255,255,.9) 99%,transparent),
     radial-gradient(1px 1px at 350px 310px,rgba(255,255,255,.85) 99%,transparent);
   background-size:400px 400px;
-  animation:starfield-drift 27s linear infinite reverse;
+  animation:stars-float-b 11s ease-in-out infinite alternate;
 }
 #stars3{
-  opacity:.55;
+  opacity:.6;
   background-image:
     radial-gradient(2px 2px at 95px 180px,rgba(255,255,255,1) 99%,transparent),
     radial-gradient(2px 2px at 305px 55px,rgba(170,220,255,.95) 99%,transparent),
     radial-gradient(1.5px 1.5px at 220px 340px,rgba(255,255,255,.9) 99%,transparent);
   background-size:400px 400px;
-  animation:starfield-drift 36s linear infinite;
+  animation:stars-float-c 9s ease-in-out infinite alternate;
 }
-@keyframes starfield-drift{
-  from{background-position:0 0}
-  to{background-position:80px 400px}
+@keyframes stars-float-a{
+  from{transform:translate3d(-18px,-32px,0)}
+  to{transform:translate3d(24px,38px,0)}
+}
+@keyframes stars-float-b{
+  from{transform:translate3d(22px,42px,0)}
+  to{transform:translate3d(-28px,-36px,0)}
+}
+@keyframes stars-float-c{
+  from{transform:translate3d(-30px,28px,0)}
+  to{transform:translate3d(32px,-42px,0)}
 }
 @keyframes nebula-drift{
-  from{transform:translate3d(-1.5%,0,0) scale(1)}
-  to{transform:translate3d(1.5%,-1%,0) scale(1.04)}
+  from{transform:translate3d(-1.5%,1%,0) scale(1)}
+  to{transform:translate3d(1.5%,-1%,0) scale(1.05)}
 }
 @media(prefers-reduced-motion:reduce){
-  #stars{animation-duration:32s}
-  #stars2{animation-duration:44s}
-  #stars3{animation-duration:56s}
-  .starfield-bg::before{animation-duration:45s}
+  #stars{animation-duration:18s}
+  #stars2{animation-duration:24s}
+  #stars3{animation-duration:21s}
+  .starfield-bg::before{animation-duration:28s}
 }
 /* Mantém o conteúdo principal acima da camada decorativa. */
 main{position:relative;z-index:1}
