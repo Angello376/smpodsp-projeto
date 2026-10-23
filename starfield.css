@@ -65,3 +65,6 @@
 @media(prefers-reduced-motion:reduce){
   #stars,#stars2,#stars3{animation:none!important;will-change:auto}
 }
+
+/* Mantém todo o conteúdo do aplicativo acima da camada decorativa. */
+main{position:relative;z-index:1}
