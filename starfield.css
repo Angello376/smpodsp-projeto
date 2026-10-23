@@ -1,0 +1,67 @@
+/* Starfield inspirado no efeito CSS do Uiverse; camada decorativa sem interação. */
+.starfield-bg{
+  position:fixed;
+  inset:0;
+  z-index:0;
+  overflow:hidden;
+  pointer-events:none;
+  isolation:isolate;
+  background:
+    radial-gradient(ellipse at 50% 100%,rgba(18,35,58,.44) 0%,rgba(5,6,11,.18) 72%),
+    linear-gradient(180deg,rgba(5,6,11,.12),rgba(5,6,11,.24));
+}
+.starfield-bg::before{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:
+    radial-gradient(ellipse at 15% 20%,rgba(59,130,255,.09),transparent 44%),
+    radial-gradient(ellipse at 85% 75%,rgba(57,255,136,.055),transparent 42%);
+}
+#stars,#stars2,#stars3{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  pointer-events:none;
+  background-repeat:repeat;
+  will-change:background-position;
+}
+#stars{
+  opacity:.72;
+  background-image:
+    radial-gradient(1px 1px at 20px 28px,rgba(255,255,255,.9) 99%,transparent),
+    radial-gradient(1px 1px at 110px 78px,rgba(190,218,255,.82) 99%,transparent),
+    radial-gradient(1px 1px at 180px 150px,rgba(255,255,255,.72) 99%,transparent),
+    radial-gradient(1px 1px at 245px 35px,rgba(205,230,255,.8) 99%,transparent),
+    radial-gradient(1px 1px at 325px 215px,rgba(255,255,255,.75) 99%,transparent),
+    radial-gradient(1px 1px at 70px 275px,rgba(255,255,255,.7) 99%,transparent);
+  background-size:400px 400px;
+  animation:starfield-drift 55s linear infinite;
+}
+#stars2{
+  opacity:.52;
+  background-image:
+    radial-gradient(1.5px 1.5px at 55px 90px,rgba(255,255,255,.95) 99%,transparent),
+    radial-gradient(1px 1px at 155px 250px,rgba(145,196,255,.85) 99%,transparent),
+    radial-gradient(1.5px 1.5px at 280px 120px,rgba(255,255,255,.85) 99%,transparent),
+    radial-gradient(1px 1px at 350px 310px,rgba(255,255,255,.75) 99%,transparent);
+  background-size:400px 400px;
+  animation:starfield-drift 90s linear infinite;
+}
+#stars3{
+  opacity:.4;
+  background-image:
+    radial-gradient(2px 2px at 95px 180px,rgba(255,255,255,.95) 99%,transparent),
+    radial-gradient(2px 2px at 305px 55px,rgba(170,220,255,.9) 99%,transparent),
+    radial-gradient(1.5px 1.5px at 220px 340px,rgba(255,255,255,.85) 99%,transparent);
+  background-size:400px 400px;
+  animation:starfield-drift 130s linear infinite;
+}
+@keyframes starfield-drift{
+  from{background-position:0 0}
+  to{background-position:0 400px}
+}
+@media(prefers-reduced-motion:reduce){
+  #stars,#stars2,#stars3{animation:none!important;will-change:auto}
+}
