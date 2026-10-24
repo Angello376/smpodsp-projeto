@@ -718,7 +718,9 @@
     1662px 1994px #fff,
     1111px 106px #fff,
     1954px 838px #fff;
-  animation: animStar 50s linear infinite;
+  animation: starfieldTravel 24s linear infinite !important;
+  animation-play-state: running !important;
+  will-change: transform;
 }
 #stars:after {
   content: " ";
@@ -1638,7 +1640,9 @@
     104px 1683px #fff,
     934px 1387px #fff,
     314px 739px #fff;
-  animation: animStar 100s linear infinite;
+  animation: starfieldTravel 36s linear infinite !important;
+  animation-play-state: running !important;
+  will-change: transform;
 }
 #stars2:after {
   content: " ";
@@ -1958,7 +1962,9 @@
     785px 1654px #fff,
     1543px 1757px #fff,
     287px 1272px #fff;
-  animation: animStar 150s linear infinite;
+  animation: starfieldTravel 48s linear infinite !important;
+  animation-play-state: running !important;
+  will-change: transform;
 }
 #stars3:after {
   content: " ";
@@ -2093,7 +2099,7 @@
   -webkit-text-fill-color: transparent;
 }
 
-@keyframes animStar {
+@keyframes starfieldTravel {
   from {
     transform: translateY(0px);
   }
