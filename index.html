@@ -934,6 +934,31 @@ button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-vis
 }
 @media(prefers-reduced-motion:reduce){.logo-mark{box-shadow:none}}
 
+
+/* Navegação flutuante consistente em celular, tablet e desktop */
+.bnav{
+  position:fixed!important;
+  left:50%!important;
+  right:auto!important;
+  bottom:calc(12px + env(safe-area-inset-bottom,0px))!important;
+  transform:translateX(-50%)!important;
+  width:min(620px,calc(100% - 24px))!important;
+  border:1px solid rgba(125,155,205,.24)!important;
+  border-radius:18px!important;
+  padding:6px 8px!important;
+  background:rgba(10,14,24,.88)!important;
+  box-shadow:0 12px 36px rgba(0,0,0,.38),0 0 24px rgba(59,130,255,.10)!important;
+  backdrop-filter:blur(18px)!important;
+  -webkit-backdrop-filter:blur(18px)!important;
+  z-index:50!important;
+}
+.bnav button{border-radius:12px!important;min-width:0}
+@media(max-width:600px){
+  .bnav{gap:3px!important;padding:6px 5px calc(6px + env(safe-area-inset-bottom,0px))!important}
+  .bnav button{padding:5px 1px 4px!important;font-size:10px!important;letter-spacing:0!important}
+  .bnav button span{width:28px;height:24px;font-size:20px}
+}
+
 </style>
   <link rel="stylesheet" href="./starfield.css?v=3">
 </head>
